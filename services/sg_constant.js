@@ -22,7 +22,7 @@ module.exports = {
         strategy: 3//军师
     },
     //节点类型
-    stageType: {
+    stage_type: {
         city:1,//城池
         conscription:2,//征兵
         draft:3,//招将
