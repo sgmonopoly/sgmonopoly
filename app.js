@@ -7,11 +7,10 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
-const index = require('./routes').router;
-
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const myRouter = require('./routes').router;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -25,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//app.use('/test', index);
+app.use('/', myRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

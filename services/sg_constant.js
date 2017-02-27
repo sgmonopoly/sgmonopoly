@@ -8,7 +8,9 @@ module.exports = {
         heart: 1,//红桃
         spade: 2,//黑桃
         diamond: 3,//方块
-        club: 4//梅花
+        club: 4,//梅花
+        smallKing: 5,//小王
+        bigKing: 6//大王
     },
     hero_type: {
         person: 1,//人物
@@ -23,18 +25,18 @@ module.exports = {
     },
     //节点类型
     stage_type: {
-        city:1,//城池
-        conscription:2,//征兵
-        draft:3,//招将
-        park:4,//游乐园
-        massage:5,//按摩院
-        tax:6,//缴税
-        cottage:7,//茅庐
-        island:8,//金银岛
-        bet:9,//赌馆
-        situation:10,//紧急军情
-        suggestion:11,//锦囊妙计
-        start:12//起点
+        city: 1,//城池
+        conscription: 2,//征兵
+        draft: 3,//招将
+        park: 4,//游乐园
+        massage: 5,//按摩院
+        tax: 6,//缴税
+        cottage: 7,//茅庐
+        island: 8,//金银岛
+        bet: 9,//赌馆
+        situation: 10,//紧急军情
+        suggestion: 11,//锦囊妙计
+        start: 12//起点
     },
     //城池同花色的类型
     city_follow: {
@@ -45,10 +47,28 @@ module.exports = {
         follow5: 5,
         ancient: 6//古战场
     },
+    city_build_fee: 600,//默认建城费用为600
     city_type: {
         normal: 1,//普通
         small: 2,//小城
         big: 4//大城
     },
-
+    //点数对应的角色信息,方便初始化用
+    point2info: {
+        1: {a: 1900, d: 2000},
+        2: {a: 1550, d: 1600},
+        3: {a: 1600, d: 1550},
+        4: {a: 1500, d: 1750},
+        5: {a: 1700, d: 1650},
+        6: {a: 1800, d: 1700},
+        7: {a: 1750, d: 1850},
+        8: {a: 1850, d: 1750},
+        9: {a: 1850, d: 1850},
+        10: {a: 2000, d: 1800},
+        11: {a: 1600, d: 1900},
+        12: {a: 3000, d: 0},
+        13: {a: 3000, d: 0},
+        14: {a: 5000, d: 0},//小王
+        15: {a: 5000, d: 0}//大王
+    }
 };

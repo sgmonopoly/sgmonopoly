@@ -8,7 +8,6 @@ class SG_City extends require('./sg_stage') {
     constructor(_stageNumber, _stageType, _cityName, _des, _occupyPrice, _buildPrice,
                 _colorFollow, _cityType = 1, sameColorCityCount) {
         super(_stageNumber, _stageType, _cityName, _des);
-        this._ownerId = "";
         this._occupyPrice = _occupyPrice;//占领地价格
         this._buildPrice = _buildPrice;//建城费
         this._colorFollow = _colorFollow;//相同颜色区分(1~5,6是古战场)

@@ -3,9 +3,9 @@
 const express = require('express');
 const router = express.Router();
 
-const gameController = require('../../controller/game_info_contrl');
+const gameController = require('../../api/game_info_contrl');
 
-/* GET home page. */
-router.get('/gameMap', gameController.gameMapInfo);
+router.get('/mapInfo', gameController.mapInfo);
+router.get('/heroInfo', gameController.heroInfo);
 
 module.exports = router;

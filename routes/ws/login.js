@@ -1,7 +1,8 @@
 'use strict';
 const nicknameList = new Set();
-
+let _io;
 exports.init = (_socket,io) => {
+    _io = io;
     console.log("login ws : ",_socket.id);
     /**
     输入昵称登入
@@ -14,7 +15,7 @@ exports.init = (_socket,io) => {
         _socket._nickname = _nickname;
         nicknameList.add(_nickname);
         _socket.emit('change_nickname_done', _nickname);
-        updateOnlinePlayerCount(io);
+        updateOnlinePlayerCount();
     });
     /**
      * 更改昵称
@@ -33,6 +34,6 @@ exports.init = (_socket,io) => {
  * 更新全局在线人数
  * @param io
  */
-const updateOnlinePlayerCount = (io) => {
-    io.sockets.emit("online_player_count",nicknameList.size);
+const updateOnlinePlayerCount = () => {
+    _io.sockets.emit("online_player_count",nicknameList.size);
 };
