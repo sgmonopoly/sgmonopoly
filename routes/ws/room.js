@@ -47,7 +47,7 @@ const enterRoom = (currentRoom, _socket) => {
     //给该房间所有人发送进入消息
     global_io.to(currentRoom).emit("enterRoomSuccess", _socket.nickname + "进入房间" + currentRoom);
     //更新全局房间信息
-    updateAllRoomStatus(_socket);
+    updateAllRoomStatus();
 };
 
 const checkRoomIsFull = (currentRoom) => {
@@ -83,7 +83,7 @@ const leave = (_socket, room, ifEmit = true) => {
         console.log("踢出指定房间", room);
         if (ifEmit) global_io.to(room).emit("quitRoomSuccess", _socket.nickname + "退出房间" + room);
         _socket.leave(room);
-        updateAllRoomStatus(_socket);
+        updateAllRoomStatus();
         return;
     }
     //踢出所有房间
@@ -93,7 +93,7 @@ const leave = (_socket, room, ifEmit = true) => {
         if (k.startsWith(roomNamePrefix)) {
             if (ifEmit) global_io.to(k).emit("quitRoomSuccess", _socket.nickname + "退出房间" + k);
             _socket.leave(k);
-            updateAllRoomStatus(_socket);
+            updateAllRoomStatus();
         }
     }
 };
@@ -107,7 +107,7 @@ const leave = (_socket, room, ifEmit = true) => {
  * TODO 另外A方式可以优化,没必要全局更新,只需要更新小部分就够了,有待完成
  * @param _socket
  */
-const updateAllRoomStatus = (_socket) => {
+const updateAllRoomStatus = () => {
     //源生的房间对象,充斥着自带的属性,需要过滤一下
     const socketRooms = global_io.sockets.adapter.rooms;
     let realRooms = [];
