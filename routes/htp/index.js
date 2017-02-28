@@ -3,9 +3,17 @@
 const express = require('express');
 const router = express.Router();
 
-const gameController = require('../../api/game_info_contrl');
+const base = require('./base');
+const login = require('./login');
 
-router.get('/mapInfo', gameController.mapInfo);
-router.get('/heroInfo', gameController.heroInfo);
+/**
+ * 登入相关
+ */
+router.use('/login', login);
+
+/**
+ * 基本信息相关
+ */
+router.use('/base', base);
 
 module.exports = router;
