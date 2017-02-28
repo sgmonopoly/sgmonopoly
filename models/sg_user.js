@@ -6,6 +6,7 @@ class SG_User{
     constructor(_money = 18000,_troop = 2000){
         this._userId = "";//用户ID,socketId
         this._nickname = "";//昵称
+        this._avatar = "";//头像
         this._money = _money;//默认金额18000
         this._troop = _troop;//默认兵力2000
         this._citys = [];//占有的城池

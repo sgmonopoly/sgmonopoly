@@ -4,12 +4,12 @@ const express = require('express');
 const router = express.Router();
 
 const base = require('./base');
-const login = require('./login');
+const user = require('./user');
 
 /**
- * 登入相关
+ * 一般用户相关
  */
-router.use('/login', login);
+router.use('/user', user);
 
 /**
  * 基本信息相关

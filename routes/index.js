@@ -10,6 +10,7 @@ const io = require('socket.io')();
 io.on('connection', (_socket) => {
     console.log("1 connection ",_socket.id);
     require("./ws/room").init(_socket,io);//注入_socket对象
+    require("./ws/user").init(_socket,io);
 });
 
 exports.router = router;
