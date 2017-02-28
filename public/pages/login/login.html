@@ -3,9 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>sgmonopoly</title>
+    <link rel="stylesheet" href="./login.css">
 </head>
-<body>
-
-<script src="../../dist/login.bundle.js"></script>
+<body class="login">
+    <div class="background-container">
+        <div class="background"></div>
+    </div>
+    <div class="input-container">
+        <div class="header">登录</div>
+        <div class="content">
+            <div class="title">三国游记</div>
+            <div class="input-form">
+                <div class="form-key">请输入你的昵称：</div>
+                <input class="form-value" id="name" type="text">
+                <div class="err-msg">
+                    <span id="err-content"></span>
+                </div>
+            </div>
+        </div>
+        <div class="confirm-bottom">
+            <span id="start-game" class="btn">开始游戏</span>
+        </div>
+    </div>
+    <script src="../../dist/login.bundle.js"></script>
 </body>
 </html>

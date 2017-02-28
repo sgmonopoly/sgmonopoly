@@ -1,4 +1,3 @@
 {
-    "index": "./public/pages/index/index.main.js",
     "login": "./public/pages/login/login.main.js"
 }
