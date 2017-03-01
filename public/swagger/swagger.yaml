@@ -1,0 +1,233 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: 三国强手棋 API
+  description: |
+    所有HEAD请求都是websocket的客户端on,服务端emit。
+    所有PUT请求都是websocket的客户端emit,服务端on
+  version: "1.0.0"
+# the domain of the service
+host: localhost:18080
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: /
+produces:
+  - application/json
+paths:
+  /user/login:
+    post:
+      summary: 登入
+      description: |
+        这个方法在成功返回后,前端需调用ws接口
+        socket.emit('changeUserInfo',nickname,avatar);
+        来更新socket信息(昵称和头像)
+      parameters: 
+        - name: body
+          in: body
+          description: 昵称和头像的json
+          required: true
+          type: string
+          schema:
+            $ref: '#/definitions/LoginParam'
+      tags:
+        - User
+      responses:
+        200:
+          description: |
+            成功直接返回success
+          schema:
+            type: string
+        400:
+          description: |
+            此昵称已被人使用
+          schema:
+            type: string
+            
+  /user/changeUserInfo:
+    post:
+      summary: 修改用户信息
+      description: |
+        这个方法在成功返回后,前端需调用ws接口
+        socket.emit('changeUserInfo',nickname,avatar);
+        来更新socket信息(昵称和头像)
+      parameters:
+        - name: body
+          in: body
+          description: 昵称和头像的json
+          required: true
+          type: string
+          schema:
+            $ref: '#/definitions/LoginParam'
+      tags:
+        - User
+      responses:
+        200:
+          description: |
+            成功直接返回success
+          schema:
+            type: string
+        400:
+          description: |
+            此昵称已被人使用
+          schema:
+            type: string
+  /user/onlineCount:
+    get:
+      summary: 返回当前在线人数
+      tags:
+        - User
+      responses:
+        200:
+          description: |
+            成功直接返回人数
+          schema:
+            type: string
+  /changeUserInfo:
+    head:
+      summary: 修改用户信息ws
+      description: |
+        这个方法在http请求之后调用，修改ws对象
+      parameters:
+        - name: nickname
+          in: query
+          description: 昵称
+          required: true
+          type: string
+        - name: avatar
+          in: query
+          description: 头像
+          required: false
+          type: string
+      tags:
+        - User
+      responses:
+        200:
+          description: n/a
+  
+  /base/mapInfo:
+    get:
+      summary: 基本的地图信息
+      tags:
+        - Base
+      responses:
+        200:
+          description: n/a
+  /base/heroInfo:
+    get:
+      summary: 基本的人物信息
+      tags:
+        - Base
+      responses:
+        200:
+          description: n/a
+  room1:
+    put:
+      summary: 进入房间
+      description: |
+        进入房间，还有room2，目前暂时就2个房间
+        这个方法在http请求之后调用，修改ws对象
+      tags:
+        - Room
+      responses:
+        200:
+          description: n/a
+  roomIsFull:
+    head:
+      summary: 房间满了
+      description: |
+        房间满了
+      tags:
+        - Room
+      responses:
+        200:
+          description: |
+            XXXX房间满了
+  enterRoomSuccess:
+    head:
+      summary: 进入房间成功
+      description: |
+        当前房间的所有人，会收到某人进入房间消息
+      tags:
+        - Room
+      responses:
+        200:
+          description: |
+            XXXX进入房间XXX
+  quitRoomSuccess:
+    head:
+      summary: 退出房间成功
+      description: |
+        当前房间的所有人，会收到某人退出房间消息
+      tags:
+        - Room
+      responses:
+        200:
+          description: |
+            XXXX退出房间XXX
+  allRoomStatus:
+    head:
+      summary: 获取所有房间信息(全局广播)
+      description: |
+        所有人会收到这条消息，一般在进出房间时会发。
+      tags:
+        - Room
+      responses:
+        200:
+          description: |
+            [
+              {
+                "_roomName":"room1",
+                "_currentNum":2,
+                "_maxNum":4,
+                "_users":[
+                  {
+                  "_id":"lKzD-en_6_c_NsXqAAAB",
+                  "_nickname":"test2",
+                  "_avatar":"xxxxxxxxxxxxx",
+                  },
+                  {
+                  "_id":"OsmxJECgdvLuMtS7AAAC",
+                  "_nickname":"test1"
+                  }
+                ]
+              }
+            ]
+  quitRoom:
+    put:
+      summary: 退出当前房间
+      description: |
+        退出当前房间
+      parameters:
+        - name: room
+          in: query
+          description: 房间号
+          required: true
+          type: string
+      tags:
+        - Room
+      responses:
+        200:
+          description: n/a
+definitions:
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
+  LoginParam:
+    type: object
+    properties:
+      nickname:
+        type: string
+        description: 昵称
+      avatar:
+        type: string
+        description: 头像图片地址

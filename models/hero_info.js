@@ -285,4 +285,6 @@ hero = new SG_Hero("霸王卡", sg_constant.hero_suit.bigKing, i, sg_constant.po
     sg_constant.hero_type.bigboss, null, "", "");
 hero_info[count++] = hero;
 
+//console.log(JSON.stringify(hero_info));
+
 module.exports = hero_info;

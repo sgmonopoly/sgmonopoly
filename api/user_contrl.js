@@ -6,6 +6,9 @@ const nicknameList = new Set();
 
 /**
  * 登入
+ * 这个方法在成功返回后,前端需调用
+ * socket.emit('changeUserInfo',nickname,avatar);
+ * 来更新socket信息(昵称和头像)
  * @param req
  * @param res
  * @returns {*}
