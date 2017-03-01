@@ -56,11 +56,11 @@ paths:
       parameters:
         - name: body
           in: body
-          description: 昵称和头像的json
+          description: 旧昵称,新昵称和头像的json
           required: true
           type: string
           schema:
-            $ref: '#/definitions/LoginParam'
+            $ref: '#/definitions/ChangeUserParam'
       tags:
         - User
       responses:
@@ -228,6 +228,18 @@ definitions:
       nickname:
         type: string
         description: 昵称
+      avatar:
+        type: string
+        description: 头像图片地址
+  ChangeUserParam:
+    type: object
+    properties:
+      oldNickname:
+        type: string
+        description: 旧昵称
+      nickname:
+        type: string
+        description: 新昵称
       avatar:
         type: string
         description: 头像图片地址
