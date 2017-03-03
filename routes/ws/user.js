@@ -1,5 +1,6 @@
 'use strict';
 
+
 exports.init = (_socket, io) => {
 
     /**
@@ -8,6 +9,14 @@ exports.init = (_socket, io) => {
     _socket.on('changeUserInfo', (nickname,avatar)=> {
         _socket.nickname = nickname;
         _socket.avatar = avatar;
+    });
+
+    /**
+     * 断开事件,在线人数减少
+     */
+    _socket.on('disconnect', () => {
+        const onlineUsers = require("../../api/user_contrl").onlineUsers;
+        onlineUsers.delete(_socket.nickname);
     });
 
 };

@@ -52,3 +52,5 @@ exports.changeUserInfo = (req, res) => {
 exports.onlineCount = (req, res) => {
     res.send(nicknameList.size+'');
 };
+
+exports.onlineUsers = nicknameList;
