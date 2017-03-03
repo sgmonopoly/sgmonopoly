@@ -211,6 +211,14 @@ paths:
       responses:
         200:
           description: n/a
+  /ping:
+    get:
+      summary: 心跳检测
+      tags:
+        - common
+      responses:
+        200:
+          description: n/a
 definitions:
   Error:
     type: object

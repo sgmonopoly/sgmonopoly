@@ -7,6 +7,13 @@ const base = require('./base');
 const user = require('./user');
 
 /**
+ * 心跳检测
+ */
+router.get('/ping', (req, res) => {
+    res.send('');
+});
+
+/**
  * 一般用户相关
  */
 router.use('/user', user);

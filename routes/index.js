@@ -8,7 +8,7 @@ router.use('/', require("./htp"));
 //websocket
 const io = require('socket.io')();
 io.on('connection', (_socket) => {
-    console.log("1 connection ",_socket.id);
+    console.log("1 connection ",_socket.id,_socket.nickname);
     require("./ws/room").init(_socket,io);//注入_socket对象
     require("./ws/user").init(_socket,io);
 });
