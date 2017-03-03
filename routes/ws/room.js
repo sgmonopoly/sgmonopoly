@@ -36,6 +36,13 @@ exports.init = (_socket, _io) => {
     _socket.on('disconnect', () => {
         leave(_socket);
     });
+
+    /**
+     * 主动要求返回房间信息,测试用
+     */
+    _socket.on('allRoomStatus', updateAllRoomStatus);
+
+
 };
 
 const enterRoom = (currentRoom, _socket) => {
@@ -54,7 +61,7 @@ const enterRoom = (currentRoom, _socket) => {
 
 const checkRoomIsFull = (currentRoom) => {
 
-    const roomClients = global_io.sockets.adapter.rooms[currentRoom];
+    const roomClients = global_io.adapter.rooms[currentRoom];
     console.log("checkRoomIsFull:", roomClients);
     //由于是回调函数,该客户端已经进入房间了,所以判断是大于4个人,然后再踢出去
     if (roomClients.length > 4) {
@@ -112,7 +119,7 @@ const leave = (_socket, room, ifEmit = true) => {
  */
 const updateAllRoomStatus = () => {
     //源生的房间对象,充斥着自带的属性,需要过滤一下
-    const socketRooms = global_io.sockets.adapter.rooms;
+    const socketRooms = global_io.adapter.rooms;
     let realRooms = [];
     roomNames.forEach(roomName => {
         //console.log("socketRooms:",socketRooms);
@@ -121,14 +128,19 @@ const updateAllRoomStatus = () => {
             const roomSockets = socketRooms[roomName].sockets;
             for (const _id in roomSockets) {
                 //根据socketID 返回 socket对象,并获得nickname
-                const socketObj = global_io.sockets.connected[_id];
-                users.push({"_id": _id, "_nickname": socketObj.nickname, "_avatar": socketObj.avatar});
+                const socketObj = global_io.connected[_id];
+                users.push({
+                    "_id": _id,
+                    "_userId": socketObj.userId,
+                    "_nickname": socketObj.nickname,
+                    "_avatar": socketObj.avatar
+                });
             }
             const gr = new GAME_Room(roomName, users, socketRooms[roomName].length);
             realRooms.push(gr);
         }
 
     });
-    //console.log("allRoomStatus", JSON.stringify(realRooms));
+    console.log("allRoomStatus", JSON.stringify(realRooms));
     global_io.emit("allRoomStatus",realRooms);
 };
