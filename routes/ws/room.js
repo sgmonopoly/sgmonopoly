@@ -33,7 +33,9 @@ exports.init = (_socket, _io) => {
     /**
      * 断开事件,踢出所有房间
      */
-    _socket.on('disconnect', leave);
+    _socket.on('disconnect', () => {
+        leave(_socket);
+    });
 };
 
 const enterRoom = (currentRoom, _socket) => {
@@ -78,9 +80,10 @@ const checkUserOnlyEnterOneRoom = (currentRoom, _socket) => {
     }
 };
 const leave = (_socket, room, ifEmit = true) => {
+    console.log(_socket.id," ",_socket.nickname," leave");
     //踢出指定房间
     if (room) {
-        console.log("踢出指定房间", room);
+        console.log(_socket.nickname,"踢出指定房间", room);
         if (ifEmit) global_io.to(room).emit("quitRoomSuccess", _socket.nickname + "退出房间" + room);
         _socket.leave(room);
         updateAllRoomStatus();
@@ -88,7 +91,7 @@ const leave = (_socket, room, ifEmit = true) => {
     }
     //踢出所有房间
     const allRooms = _socket.rooms;
-    console.log("踢出所有房间");
+    console.log(_socket.nickname,"踢出所有房间");
     for (const k in allRooms) {
         if (k.startsWith(roomNamePrefix)) {
             if (ifEmit) global_io.to(k).emit("quitRoomSuccess", _socket.nickname + "退出房间" + k);
@@ -127,5 +130,5 @@ const updateAllRoomStatus = () => {
 
     });
     //console.log("allRoomStatus", JSON.stringify(realRooms));
-    global_io.sockets.emit("allRoomStatus",realRooms);
+    global_io.emit("allRoomStatus",realRooms);
 };

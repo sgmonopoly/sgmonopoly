@@ -21,9 +21,6 @@ paths:
     post:
       summary: 登入
       description: |
-        这个方法在成功返回后,前端需调用ws接口
-        socket.emit('changeUserInfo',nickname,avatar);
-        来更新socket信息(昵称和头像)
       parameters: 
         - name: body
           in: body
@@ -37,22 +34,14 @@ paths:
       responses:
         200:
           description: |
-            成功直接返回success
+            成功直接返回用户对象
           schema:
-            type: string
-        400:
-          description: |
-            此昵称已被人使用
-          schema:
-            type: string
+            $ref: '#/definitions/UserInfo'
             
   /user/changeUserInfo:
     post:
       summary: 修改用户信息
       description: |
-        这个方法在成功返回后,前端需调用ws接口
-        socket.emit('changeUserInfo',nickname,avatar);
-        来更新socket信息(昵称和头像)
       parameters:
         - name: body
           in: body
@@ -74,39 +63,17 @@ paths:
             此昵称已被人使用
           schema:
             type: string
-  /user/onlineCount:
+  /user/show:
     get:
-      summary: 返回当前在线人数
+      summary: 返回所有人
       tags:
         - User
       responses:
         200:
           description: |
-            成功直接返回人数
+            成功直接返回所有人对象
           schema:
-            type: string
-  /changeUserInfo:
-    head:
-      summary: 修改用户信息ws
-      description: |
-        这个方法在http请求之后调用，修改ws对象
-      parameters:
-        - name: nickname
-          in: query
-          description: 昵称
-          required: true
-          type: string
-        - name: avatar
-          in: query
-          description: 头像
-          required: false
-          type: string
-      tags:
-        - User
-      responses:
-        200:
-          description: n/a
-  
+            $ref: '#/definitions/UserInfo'
   /base/mapInfo:
     get:
       summary: 基本的地图信息
@@ -120,6 +87,16 @@ paths:
       summary: 基本的人物信息
       tags:
         - Base
+      responses:
+        200:
+          description: n/a
+  setRoomUserInfo:
+    put:
+      summary: 设置用户信息
+      description: |
+        再创建WS连接之后,马上调用,用来将用户属性传递给后端
+      tags:
+        - Room
       responses:
         200:
           description: n/a
@@ -249,5 +226,17 @@ definitions:
         type: string
         description: 新昵称
       avatar:
+        type: string
+        description: 头像图片地址
+  UserInfo:
+    type: object
+    properties:
+      _userId:
+        type: int32
+        description: 用户ID
+      _nickname:
+        type: string
+        description: 昵称
+      _avatar:
         type: string
         description: 头像图片地址

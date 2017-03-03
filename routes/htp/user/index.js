@@ -13,10 +13,9 @@ router.post('/login', user_contrl.loginByNickname);
  * 修改昵称
  */
 router.post('/changeUserInfo', user_contrl.changeUserInfo);
-
 /**
- * 获取在线人数
+ * 返回所有用户
  */
-router.get('/onlineCount', user_contrl.onlineCount);
+router.get('/show', user_contrl.showAllUser);
 
 module.exports = router;

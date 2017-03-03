@@ -2,13 +2,11 @@
  * Created by yuanxiang on 2/21/17.
  */
 'use strict';
-const nicknameList = new Set();
-
+const allUser = {};//所有用户,存在内存中
+const USER_Info = require("../models/user_info");
+let commonId = 1;
 /**
  * 登入
- * 这个方法在成功返回后,前端需调用
- * socket.emit('changeUserInfo',nickname,avatar);
- * 来更新socket信息(昵称和头像)
  * @param req
  * @param res
  * @returns {*}
@@ -16,18 +14,21 @@ const nicknameList = new Set();
 exports.loginByNickname = (req, res) => {
 
     const _nickname = req.body.nickname;
-    console.log("login:",_nickname);
-    if (nicknameList.has(_nickname)) {
-        return res.status(400).send('此昵称已被人使用');
+    const _avatar = req.body.avatar;
+    console.log("login:", _nickname);
+
+    //先根据昵称返回用户对象
+    if (allUser[_nickname]) {
+        //如果有,则直接返回
+        return res.send(allUser[_nickname]);
     }
-    nicknameList.add(_nickname);
-    return res.send('success');
+    const newUser = new USER_Info(commonId++, _nickname, _avatar);
+    allUser[_nickname] = newUser;
+
+    return res.send(newUser);
 };
 /**
  * 更改用户信息
- * 这个方法在成功返回后,前端需调用
- * socket.emit('changeUserInfo',nickname,avatar);
- * 来更新socket信息(昵称和头像)
  * @param req
  * @param res
  * @returns {*}
@@ -36,21 +37,17 @@ exports.changeUserInfo = (req, res) => {
 
     const _oldNickname = req.body.oldNickname;
     const _nickname = req.body.nickname;
+    const _avatar = req.body.avatar;
 
-    if (_oldNickname !== _nickname && nicknameList.has(_nickname)) {
-        return res.send(400,'此昵称已被人使用');
+    if (_oldNickname !== _nickname && allUser[_nickname]) {
+        return res.status(400).send('此昵称已被人使用');
     }
-    nicknameList.delete(_oldNickname);
-    nicknameList.add(_nickname);
+    const oldUserId = allUser[_oldNickname]._userId;
+    delete allUser[_oldNickname];
+    allUser[_nickname] = new USER_Info(oldUserId, _nickname, _avatar);
     return res.send('success');
 };
-/**
- * 获取在线人数
- * @param req
- * @param res
- */
-exports.onlineCount = (req, res) => {
-    res.send(nicknameList.size+'');
-};
 
-exports.onlineUsers = nicknameList;
+exports.showAllUser = (req, res) => {
+    res.send(allUser);
+};
