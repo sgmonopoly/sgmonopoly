@@ -90,104 +90,76 @@ paths:
       responses:
         200:
           description: n/a
-  setRoomUserInfo:
-    put:
-      summary: 设置用户信息
-      description: |
-        再创建WS连接之后,马上调用,用来将用户属性传递给后端
-      tags:
-        - Room
-      responses:
-        200:
-          description: n/a
-  room1:
-    put:
+  /room/enter/{roomNumber}:
+    get:
       summary: 进入房间
-      description: |
-        进入房间，还有room2，目前暂时就2个房间
-        这个方法在http请求之后调用，修改ws对象
-      tags:
-        - Room
-      responses:
-        200:
-          description: n/a
-  roomIsFull:
-    head:
-      summary: 房间满了
-      description: |
-        房间满了
-      tags:
-        - Room
-      responses:
-        200:
-          description: |
-            XXXX房间满了
-  enterRoomSuccess:
-    head:
-      summary: 进入房间成功
-      description: |
-        当前房间的所有人，会收到某人进入房间消息
-      tags:
-        - Room
-      responses:
-        200:
-          description: |
-            XXXX进入房间XXX
-  quitRoomSuccess:
-    head:
-      summary: 退出房间成功
-      description: |
-        当前房间的所有人，会收到某人退出房间消息
-      tags:
-        - Room
-      responses:
-        200:
-          description: |
-            XXXX退出房间XXX
-  allRoomStatus:
-    head:
-      summary: 获取所有房间信息(全局广播)
-      description: |
-        所有人会收到这条消息，一般在进出房间时会发。
-      tags:
-        - Room
-      responses:
-        200:
-          description: |
-            [
-              {
-                "_roomName":"room1",
-                "_currentNum":2,
-                "_maxNum":4,
-                "_users":[
-                  {
-                  "_id":"lKzD-en_6_c_NsXqAAAB",
-                  "_nickname":"test2",
-                  "_avatar":"xxxxxxxxxxxxx",
-                  },
-                  {
-                  "_id":"OsmxJECgdvLuMtS7AAAC",
-                  "_nickname":"test1"
-                  }
-                ]
-              }
-            ]
-  quitRoom:
-    put:
-      summary: 退出当前房间
-      description: |
-        退出当前房间
       parameters:
-        - name: room
-          in: query
-          description: 房间号
+        - name: roomNumber
+          in: path
+          description: |
+            房间号，暂时只有1和2
           required: true
-          type: string
+          type: int32
       tags:
         - Room
       responses:
         200:
-          description: n/a
+          description: |
+            succes
+        400:
+          description: |
+            房间号不正确
+        401:
+          description: |
+            房间已满
+  /room/quit/{roomNumber}:
+    get:
+      summary: 退出房间
+      parameters:
+        - name: roomNumber
+          in: path
+          description: |
+            房间号，暂时只有1和2
+          required: true
+          type: int32
+      tags:
+        - Room
+      responses:
+        200:
+          description: |
+            succes
+        400:
+          description: |
+            房间号不正确
+  /room/show/{roomNumber}:
+    get:
+      summary: 显示一个房间的信息
+      parameters:
+        - name: roomNumber
+          in: path
+          description: |
+            房间号，暂时只有1和2
+          required: true
+          type: int32
+      tags:
+        - Room
+      responses:
+        200:
+          description: |
+            一个房间信息
+          schema:
+            $ref: '#/definitions/RoomInfo'
+  /room/show:
+    get:
+      summary: 显示所有房间的信息
+      tags:
+        - Room
+      responses:
+        200:
+          description: |
+            一个房间信息
+          schema:
+            $ref: '#/definitions/RoomInfoALL'
   /ping:
     get:
       summary: 心跳检测
@@ -240,3 +212,27 @@ definitions:
       _avatar:
         type: string
         description: 头像图片地址
+  RoomInfo:
+    type: object
+    properties:
+      _roomName:
+        type: string
+        description: 房间名
+      _currentNum:
+        type: int32
+        description: 当前人数
+      _maxNum:
+        type: int32
+        description: 最大人数
+      _isGaming:
+        type: boolean
+        description: 是否正在游戏  
+      _users:
+        type: array
+        items:
+          $ref: '#/definitions/UserInfo' 
+  RoomInfoALL:
+    type: array    
+    items:
+      $ref: '#/definitions/RoomInfo' 
+        

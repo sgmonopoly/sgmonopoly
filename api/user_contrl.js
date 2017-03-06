@@ -25,6 +25,8 @@ exports.loginByNickname = (req, res) => {
     const newUser = new USER_Info(commonId++, _nickname, _avatar);
     allUser[_nickname] = newUser;
 
+    req.session.user = newUser;
+
     return res.send(newUser);
 };
 /**
@@ -50,4 +52,19 @@ exports.changeUserInfo = (req, res) => {
 
 exports.showAllUser = (req, res) => {
     res.send(allUser);
+};
+/**
+ * 判断用户是否已登入
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+exports.checkUserIsLogin = (req, res, next) => {
+    if(req.session.user){
+        next();
+    }else{
+        return res.send("userNoLogin");
+    }
+
 };

@@ -2,10 +2,19 @@
 let global_io;
 const roomNamePrefix = "room";//默认返回的房间对象中,可能会包含自带属性,用这个名称来过滤房间对象
 const GAME_Room = require("../../models/game_room");
+
 /**
  * 暂时只有2个房间,以后再加
  */
 const roomNames = [roomNamePrefix + "1", roomNamePrefix + "2"];
+/**
+ * 这是所有房间的对象
+ */
+let allRoom = [];
+
+roomNames.forEach(roomName => {
+    allRoom.push(new GAME_Room(roomName, [], 0));
+});
 
 exports.init = (_socket, _io) => {
     global_io = _io;

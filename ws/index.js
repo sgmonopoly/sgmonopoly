@@ -5,7 +5,7 @@ const io = require('socket.io')();
 io.of("/room").on('connection', (_socket) => {
     console.log("1 user enter room ", _socket.id, _socket.nickname);
 
-    /**
+     /**
      * 来更新socket的用户对象
      */
     _socket.on('setRoomUserInfo', (userId, nickname, avatar)=> {
