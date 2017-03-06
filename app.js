@@ -10,7 +10,6 @@ const bodyParser = require('body-parser');
 
 const app = express();
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
 const myRouter = require('./routes').router;
 
 // view engine setup
@@ -51,10 +50,6 @@ app.use((err, req, res, next) => {
     // render the error page
     res.status(err.status || 500);
     res.send(err.message);
-});
-
-io.on("connection", socket => {
-    console.log("一个新连接");
 });
 
 module.exports = app;

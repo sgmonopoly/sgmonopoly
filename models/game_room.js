@@ -3,8 +3,10 @@
  */
 'use strict';
 class GAME_Room {
-    constructor(_roomName, _users, _currentNum, _maxNum = 4, _isGaming = false) {
+    constructor(_roomName, _hostId, _hostNickname, _users, _currentNum, _maxNum = 4, _isGaming = false) {
         this._roomName = _roomName;
+        this._hostId = _hostId;
+        this._hostNickname = _hostNickname;
         this._currentNum = _currentNum;
         this._maxNum = _maxNum;
         this._users = _users;

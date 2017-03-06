@@ -15,7 +15,7 @@ const roomNumbers = [1, 2];
 let allRoom = [];
 
 roomNumbers.forEach(roomNumber => {
-    allRoom.push(new GAME_Room(roomNamePrefix + roomNumber, [], 0));
+    allRoom.push(new GAME_Room(roomNamePrefix + roomNumber, '', '', [], 0));
 });
 
 /**
@@ -25,10 +25,9 @@ roomNumbers.forEach(roomNumber => {
  * @returns {*}
  */
 exports.enter = (req, res) => {
-
-    console.log("当前用户", req.session.user);
-
+    const currentUser = req.session.user;
     const roomNumber = parseInt(req.params.roomNumber);
+    console.log("进房", roomNumber, "当前用户", currentUser);
 
     if (roomNumbers.indexOf(roomNumber) < 0) {
         return res.status(400).send("房间号不正确");
@@ -40,11 +39,17 @@ exports.enter = (req, res) => {
     }
 
     //判断用户是否在其他房间内,有则踢掉
-    const ifKick = kickUserFromRooms(req.session.user._userId);
+    const ifKick = kickUserFromRooms(currentUser._userId);
 
     const statusCode = ifKick ? 201 : 200;
 
-    room._users.push(req.session.user);
+    //如果没人,要设置房主
+    if (room._currentNum === 0) {
+        room._hostId = currentUser._userId;
+        room._hostNickname = currentUser._nickname;
+    }
+
+    room._users.push(currentUser);
     room._currentNum = room._users.length;
 
     console.log(allRoom);
@@ -60,9 +65,9 @@ exports.enter = (req, res) => {
  */
 exports.quit = (req, res) => {
 
-    console.log("当前用户", req.session.user);
-
+    const currentUser = req.session.user;
     const roomNumber = parseInt(req.params.roomNumber);
+    console.log("退房", roomNumber, "当前用户", currentUser);
 
     if (roomNumbers.indexOf(roomNumber) < 0) {
         return res.status(400).send("房间号不正确");
@@ -71,8 +76,10 @@ exports.quit = (req, res) => {
     const room = allRoom[roomNumber - 1];
 
     if (room._currentNum > 0) {
-        room._users = room._users.filter(item => item._userId !== req.session.user._userId);
+        room._users = room._users.filter(item => item._userId !== currentUser._userId);
         room._currentNum = room._users.length;
+        //房主检测
+        checkAndResetRoomHost(room, currentUser._userId);
     }
 
     console.log(allRoom);
@@ -125,8 +132,29 @@ const kickUserFromRooms = (userId) => {
             room._users.splice(indexUser, 1);
             room._currentNum = room._users.length;
             ifKick = true;
+
+            //房主检测
+            checkAndResetRoomHost(room, userId);
+
             break;
         }
     }
     return ifKick;
+};
+/**
+ * 房间检测,没有人就取消房主,还有人则选第一个人自动当房主
+ * @param room
+ * @param currentUserId
+ */
+const checkAndResetRoomHost = (room, currentUserId) => {
+
+    if (room._currentNum === 0) {
+        //如果房间没人取消房主
+        room._hostId = '';
+        room._hostNickname = '';
+    } else if (room._currentNum > 0 && currentUserId === room._hostId) {
+        //检测当前用户是否为原房主,是的话,则房间易主
+        room._hostId = room._users[0]._userId;
+        room._hostNickname = room._users[0]._nickname;
+    }
 };

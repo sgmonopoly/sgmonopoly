@@ -215,12 +215,19 @@ definitions:
       _avatar:
         type: string
         description: 头像图片地址
+
   RoomInfo:
     type: object
     properties:
       _roomName:
         type: string
         description: 房间名
+      _hostId:
+        type: int32
+        description: 房主ID
+      _hostNickname:
+        type: string
+        description: 房主昵称
       _currentNum:
         type: int32
         description: 当前人数
