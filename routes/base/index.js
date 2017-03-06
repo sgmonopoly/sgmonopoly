@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const gameController = require('../../../api/game_info_contrl');
+const gameController = require('../../api/game_info_contrl');
 
 /**
  * 基本的地图信息

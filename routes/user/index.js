@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const user_contrl = require('../../../api/user_contrl');
+const user_contrl = require('../../api/user_contrl');
 
 /**
  * 根据nickname登入
