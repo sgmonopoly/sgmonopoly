@@ -40,14 +40,16 @@ exports.enter = (req, res) => {
     }
 
     //判断用户是否在其他房间内,有则踢掉
-    kickUserFromRooms(req.session.user._userId, roomNumber);
+    const ifKick = kickUserFromRooms(req.session.user._userId);
+
+    const statusCode = ifKick ? 201 : 200;
 
     room._users.push(req.session.user);
     room._currentNum = room._users.length;
 
     console.log(allRoom);
 
-    return res.send("success");
+    return res.status(statusCode).send("success");
 };
 
 /**
@@ -105,6 +107,7 @@ exports.show = (req, res) => {
  * @param userId
  */
 const kickUserFromRooms = (userId) => {
+    let ifKick = false;
     for (let i = 0; i < allRoom.length; i++) {
 
         let room = allRoom[i];
@@ -121,7 +124,9 @@ const kickUserFromRooms = (userId) => {
             //找到后,删除该用户,并更新当前人数
             room._users.splice(indexUser, 1);
             room._currentNum = room._users.length;
+            ifKick = true;
             break;
         }
     }
+    return ifKick;
 };

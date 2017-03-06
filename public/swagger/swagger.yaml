@@ -105,7 +105,10 @@ paths:
       responses:
         200:
           description: |
-            succes
+            成功进入房间
+        201:
+          description: |
+            退出已进入的其他房间,再成功进入当前房间
         400:
           description: |
             房间号不正确
