@@ -3,6 +3,8 @@
  */
 'use strict';
 module.exports = {
+    roomNamePrefix: "room",//默认返回的房间对象中,可能会包含自带属性,用这个名称来过滤房间对象
+    roomNumbers: [1, 2],//暂时只有2个房间,以后再加
     // 武将花色
     hero_suit: {
         heart: 1,//红桃
@@ -70,5 +72,15 @@ module.exports = {
         13: {a: 3000, d: 0},
         14: {a: 5000, d: 0},//小王
         15: {a: 5000, d: 0}//大王
+    },
+    user_status: {
+        wait: 1,//未准备
+        ready: 2,//已准备
+        gaming: 3,//正在游戏
+        lost: 4//掉线
+    },
+    ws_name: {
+        chatMessage: "chatMessage",//聊天记录
+        roomUsers: "roomUsers"//房间所有用户信息
     }
 };

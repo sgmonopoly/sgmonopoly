@@ -2,7 +2,7 @@
 # as a demonstration of an API spec in YAML
 swagger: '2.0'
 info:
-  title: 三国强手棋 API
+  title: SAN GUO MONOPOLY (SGM) API
   description: |
     所有HEAD请求都是websocket的客户端on,服务端emit。
     所有PUT请求都是websocket的客户端emit,服务端on

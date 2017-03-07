@@ -2,21 +2,13 @@
  * Created by yuanxiang on 2/21/17.
  */
 'use strict';
-const roomNamePrefix = "room";//默认返回的房间对象中,可能会包含自带属性,用这个名称来过滤房间对象
-const GAME_Room = require("../models/game_room");
 
-/**
- * 暂时只有2个房间,以后再加
- */
-const roomNumbers = [1, 2];
+const sg_constant = require("../services/sg_constant");
+const SG_User = require("../models/sg_user");
 /**
  * 这是所有房间的对象
  */
-let allRoom = [];
-
-roomNumbers.forEach(roomNumber => {
-    allRoom.push(new GAME_Room(roomNamePrefix + roomNumber, '', '', [], 0));
-});
+let allRoom = require("../services/share_variables").allRoom;
 
 /**
  * 进入房间
@@ -29,12 +21,21 @@ exports.enter = (req, res) => {
     const roomNumber = parseInt(req.params.roomNumber);
     console.log("进房", roomNumber, "当前用户", currentUser);
 
-    if (roomNumbers.indexOf(roomNumber) < 0) {
+    if (sg_constant.roomNumbers.indexOf(roomNumber) < 0) {
         return res.status(400).send("房间号不正确");
     }
 
     const room = allRoom[roomNumber - 1];
-    if (room._currentNum >= 4) {
+    //先判断,房间内是否已经有了这个人(断线重连)
+    let ifReconnected = false;
+    for (let i = 0; i < room._users.length; i++) {
+        if (room._users[i]._userId === currentUser._userId) {
+            ifReconnected = true;
+            break;
+        }
+    }
+    //检测房间是否满
+    if (!ifReconnected && room._currentNum >= 4) {
         return res.status(401).send("房间已满");
     }
 
@@ -49,7 +50,7 @@ exports.enter = (req, res) => {
         room._hostNickname = currentUser._nickname;
     }
 
-    room._users.push(currentUser);
+    room._users.push(new SG_User(currentUser._userId,currentUser._nickname,currentUser._avatar));
     room._currentNum = room._users.length;
 
     console.log(allRoom);
@@ -69,7 +70,7 @@ exports.quit = (req, res) => {
     const roomNumber = parseInt(req.params.roomNumber);
     console.log("退房", roomNumber, "当前用户", currentUser);
 
-    if (roomNumbers.indexOf(roomNumber) < 0) {
+    if (sg_constant.roomNumbers.indexOf(roomNumber) < 0) {
         return res.status(400).send("房间号不正确");
     }
 
@@ -158,3 +159,5 @@ const checkAndResetRoomHost = (room, currentUserId) => {
         room._hostNickname = room._users[0]._nickname;
     }
 };
+//导出所有房间对象
+exports.allRoom = allRoom;
