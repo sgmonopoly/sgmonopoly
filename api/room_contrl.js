@@ -52,7 +52,7 @@ exports.enter = (req, res) => {
 
     room._users.push(new SG_User(currentUser._userId,currentUser._nickname,currentUser._avatar));
     room._currentNum = room._users.length;
-
+    console.log(1111111111111111111111111);
     console.log(allRoom);
 
     return res.status(statusCode).send("success");

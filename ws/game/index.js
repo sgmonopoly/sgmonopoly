@@ -1,9 +1,14 @@
 'use strict';
 
 const sg_constant = require("../../services/sg_constant");
-let room_io;
+const allRoom = require("../../services/share_variables").allRoom;
 
-exports.init = (_socket,_io) => {
-    room_io = _io;
+exports.init = (socket, io, roomNumber, utils) => {
+
+    /**
+     * 房间对象
+     */
+    let room = allRoom[roomNumber - 1];
+    let roomUsers = room._users;//array
 
 };

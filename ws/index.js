@@ -9,17 +9,39 @@ const sg_constant = require("../services/sg_constant");
 let allRoom = require("../services/share_variables").allRoom;
 
 sg_constant.roomNumbers.forEach(roomNumber => {
-    const room_io = io.of("/room" + roomNumber);
+    const roomIo = io.of("/room" + roomNumber);
 
-    room_io.on('connection', (_socket) => {
-        //console.log("1 user enter room", roomNumber, " ", _socket.id, " ", _socket.nickname);
+    roomIo.on('connection', (socket) => {
 
-        require("./room").init(_socket, room_io, roomNumber);//注入_socket对象
-        require("./game").init(_socket, room_io, roomNumber);
+        const utils = {
+            /**
+             * 增加聊天记录
+             */
+            chat: (message) => {
+                roomIo.emit(sg_constant.ws_name.chat, message);
+            },
+            /**
+             * 给所有人更新当前房间所有信息(包括用户),其他人触发时用
+             */
+            updateRoomToAll: (room) => {
+                roomIo.emit(sg_constant.ws_name.room, room);
+            },
+            /**
+             * 只给自己更新当前房间所有信息(包括用户),前端POLL方式给自己用
+             */
+            updateRoomToMe: (room) => {
+                socket.emit(sg_constant.ws_name.room, room);
+            }
+        };
+
+        require("./room").init(socket, roomIo, roomNumber, utils);//注入_socket对象
+        require("./game").init(socket, roomIo, roomNumber, utils);
+
     });
+
 });
 
 
-exports.listen = (_server) => {
-    return io.listen(_server);
+exports.listen = (server) => {
+    return io.listen(server);
 };

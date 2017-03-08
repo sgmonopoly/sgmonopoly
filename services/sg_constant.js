@@ -74,13 +74,14 @@ module.exports = {
         15: {a: 5000, d: 0}//大王
     },
     user_status: {
-        wait: 1,//未准备
+        unready: 1,//未准备
         ready: 2,//已准备
         gaming: 3,//正在游戏
         lost: 4//掉线
     },
     ws_name: {
-        chatMessage: "chatMessage",//聊天记录
-        roomUsers: "roomUsers"//房间所有用户信息
+        chat: "chat",//聊天记录
+        roomUsers: "roomUsers",//房间所有用户信息
+        room: "room"//房间信息
     }
 };

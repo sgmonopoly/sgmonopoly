@@ -1,10 +1,9 @@
 'use strict';
 
-const SG_User = require("../../models/sg_user");
 const sg_constant = require("../../services/sg_constant");
 const allRoom = require("../../services/share_variables").allRoom;
 
-exports.init = (socket, io, roomNumber) => {
+exports.init = (socket, roomIo, roomNumber, utils) => {
     /**
      * 房间对象
      */
@@ -39,39 +38,112 @@ exports.init = (socket, io, roomNumber) => {
             }
         }
 
-        //更新所有用户的信息
-        io.emit(sg_constant.ws_name.roomUsers, roomUsers);
+        utils.updateRoomToAll(room);
         //给聊天记录发送消息
-        io.emit(sg_constant.ws_name.chatMessage, "欢迎" + nickname + "进入房间");
+        utils.chat("欢迎" + nickname + "进入房间");
 
+    });
+    /**
+     * 退出房间(直接退出游戏)
+     */
+    socket.on('quitRoom', (userId = socket.userId)=> {
+        const lostGameUserIndex = getUserIndex(userId);
+        if (lostGameUserIndex) {
+            //直接剔除该用户
+            roomUsers.splice(lostGameUserIndex, 1);
+            utils.updateRoomToAll(room);
+            //给聊天记录发送消息
+            utils.chat(socket.nickname + "已经退出房间");
+        }
     });
 
     /**
-     * 断开事件
+     * 断开事件(区分掉线和直接退出)
      */
     socket.on('disconnect', () => {
 
-        let lostGameUserIndex;
-        for (let index = 0; index < roomUsers.length; index++) {
-            if (roomUsers[index] && roomUsers[index]._userId === socket.userId) {
-                lostGameUserIndex = index;
-                break;
-            }
-        }
+        const lostGameUserIndex = getUserIndex(socket.userId);
         if (lostGameUserIndex) {
             if (room._isGaming) {
                 //正在游戏的话,设置该用户为掉线
                 roomUsers[lostGameUserIndex]._status = sg_constant.user_status.lost;
+                utils.updateRoomToAll(room);
+                //给聊天记录发送消息
+                utils.chat(socket.nickname + "掉线");
             } else {
                 //没有正在游戏的话,直接剔除该用户
-                roomUsers.splice(lostGameUserIndex,1);
+                roomUsers.splice(lostGameUserIndex, 1);
+                utils.updateRoomToAll(room);
+                //给聊天记录发送消息
+                utils.chat(socket.nickname + "已经退出房间");
             }
         }
-
-        //更新所有用户的信息
-        io.emit(sg_constant.ws_name.roomUsers, roomUsers);
-        //给聊天记录发送消息
-        io.emit(sg_constant.ws_name.chatMessage, socket.nickname + "已经退出房间");
+    });
+    /**
+     * 全局更新当前房间用户信息
+     * 前端poll这个接口,只给自己发送
+     */
+    socket.on('updateRoom', ()=> {
+        utils.updateRoomToMe(room);
     });
 
+    /**
+     * 举手准备
+     */
+    socket.on('toReady', () => {
+        const currentUser = getUser(socket.userId);
+        currentUser._status = sg_constant.user_status.ready;
+        utils.updateRoomToAll(room);
+        utils.chat(socket.nickname + "准备好了");
+    });
+    /**
+     * 取消准备
+     */
+    socket.on('toUnready', () => {
+        const currentUser = getUser(socket.userId);
+        currentUser._status = sg_constant.user_status.unready;
+        utils.updateRoomToAll(room);
+        utils.chat(socket.nickname + "取消了准备");
+    });
+
+    /**
+     * 踢人
+     */
+    socket.on('kick', (kickUserId)=> {
+        const lostGameUserIndex = getUserIndex(kickUserId);
+        if (lostGameUserIndex) {
+            //直接剔除该用户
+            roomUsers.splice(lostGameUserIndex, 1);
+            utils.updateRoomToAllUsers(roomUsers);
+            //给聊天记录发送消息
+            utils.chat(socket.nickname + "被踢出房间");
+        }
+    });
+
+    /**
+     * 根据ID快速获取用户
+     * @param userId
+     */
+    const getUser = (userId) => {
+        for (let i = 0; i < roomUsers.length; i++) {
+            if (roomUsers[i]._userId === userId) {
+                return roomUsers[i];
+            }
+        }
+    };
+    /**
+     * 根据ID快速获取用户索引
+     * @param userId
+     * @returns {*}
+     */
+    const getUserIndex = (userId) => {
+        for (let i = 0; i < roomUsers.length; i++) {
+            if (roomUsers[i]._userId === userId) {
+                return i;
+            }
+        }
+    };
+
 };
+
+

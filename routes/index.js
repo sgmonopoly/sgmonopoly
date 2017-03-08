@@ -7,8 +7,6 @@ const base = require('./base');
 const user = require('./user');
 const room = require('./room');
 
-const user_contrl = require('../api/user_contrl');
-
 /**
  * 心跳检测
  */
@@ -29,6 +27,6 @@ router.use('/base', base);
 /**
  * 房间信息相关
  */
-router.use('/room', user_contrl.checkUserIsLogin, room);
+router.use('/room', room);
 
 exports.router = router;
