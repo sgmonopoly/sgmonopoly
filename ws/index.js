@@ -13,7 +13,7 @@ sg_constant.roomNumbers.forEach(roomNumber => {
 
     roomIo.on('connection', (socket) => {
 
-        const utils = {
+        const wsUtils = {
             /**
              * 增加聊天记录
              */
@@ -34,8 +34,8 @@ sg_constant.roomNumbers.forEach(roomNumber => {
             }
         };
 
-        require("./room").init(socket, roomIo, roomNumber, utils);//注入_socket对象
-        require("./game").init(socket, roomIo, roomNumber, utils);
+        require("./room").init(socket, roomIo, roomNumber, wsUtils);//注入_socket对象
+        require("./game").init(socket, roomIo, roomNumber, wsUtils);
 
     });
 

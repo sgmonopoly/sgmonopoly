@@ -13,7 +13,7 @@ router.get('/enter/:roomNumber', user_contrl.checkUserIsLogin, room_contrl.enter
 /**
  * 退出房间
  */
-router.get('/quit/:roomNumber', user_contrl.checkUserIsLogin, room_contrl.quit);
+//router.get('/quit/:roomNumber', user_contrl.checkUserIsLogin, room_contrl.quit);
 
 /**
  * 显示1个房间信息

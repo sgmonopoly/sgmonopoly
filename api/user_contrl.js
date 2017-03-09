@@ -64,7 +64,7 @@ exports.checkUserIsLogin = (req, res, next) => {
     if(req.session.user){
         next();
     }else{
-        return res.send("userNoLogin");
+        return res.status(401).send("userNoLogin");
     }
 
 };

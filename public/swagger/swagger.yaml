@@ -114,26 +114,29 @@ paths:
             房间号不正确
         401:
           description: |
+            用户未登入
+        402:
+          description: |
             房间已满
-  /room/quit/{roomNumber}:
-    get:
-      summary: 退出房间
-      parameters:
-        - name: roomNumber
-          in: path
-          description: |
-            房间号，暂时只有1和2
-          required: true
-          type: int32
-      tags:
-        - Room
-      responses:
-        200:
-          description: |
-            succes
-        400:
-          description: |
-            房间号不正确
+#  /room/quit/{roomNumber}:
+#    get:
+#      summary: 退出房间
+#      parameters:
+#        - name: roomNumber
+#          in: path
+#          description: |
+#            房间号，暂时只有1和2
+#          required: true
+#          type: int32
+#      tags:
+#        - Room
+#      responses:
+#        200:
+#          description: |
+#            succes
+#        400:
+#          description: |
+#            房间号不正确
   /room/show/{roomNumber}:
     get:
       summary: 显示一个房间的信息
