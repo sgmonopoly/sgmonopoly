@@ -15,18 +15,28 @@ sg_constant.roomNumbers.forEach(roomNumber => {
 
         const wsUtils = {
             /**
+             * 局部
+             * 全局错误日志
+             */
+            errorLog: (message) => {
+                socket.emit(sg_constant.ws_name.errorLog, message);
+            },
+            /**
+             * 广播
              * 增加聊天记录
              */
             chat: (message) => {
                 roomIo.emit(sg_constant.ws_name.chat, message);
             },
             /**
+             * 广播
              * 给所有人更新当前房间所有信息(包括用户),其他人触发时用
              */
             updateRoomToAll: (room) => {
                 roomIo.emit(sg_constant.ws_name.room, room);
             },
             /**
+             * 局部
              * 只给自己更新当前房间所有信息(包括用户),前端POLL方式给自己用
              */
             updateRoomToMe: (room) => {

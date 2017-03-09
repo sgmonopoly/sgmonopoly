@@ -13,6 +13,7 @@ class SG_User extends require("./user_info") {
         this._order = 0;//顺序(1,2,3,4)
         this._suspended = 0;//0不暂停,其他数字为暂停轮数
         this._status = 1;//状态 1未准备,2已准备,3开战,4掉线
+        this._socketId = "";
     }
 }
 module.exports = SG_User;
