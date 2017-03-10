@@ -237,6 +237,8 @@ paths:
   quitRoom:
     put:
       summary: 退出房间
+      description: |
+        前端调完这个方法,必须跳转到外面去,或者手动socket.close(),用来切断WS连接,从而自动触发disconnect事件
       parameters:
         - name: isKick
           in: query

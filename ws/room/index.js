@@ -45,6 +45,7 @@ exports.init = (socket, roomIo, roomNumber, wsUtils) => {
     });
     /**
      * 退出房间(直接退出游戏)
+     * 前端调完这个方法,必须跳转到外面去,或者手动socket.close(),用来切断WS连接,从而自动触发disconnect事件
      */
     socket.on('quitRoom', (isKick = false)=> {
         const lostGameUserIndex = common.getUserIndex(roomUsers, socket.userId);
@@ -71,6 +72,7 @@ exports.init = (socket, roomIo, roomNumber, wsUtils) => {
         const lostGameUserIndex = common.getUserIndex(roomUsers, socket.userId);
         console.log(`断线用户索引 ${lostGameUserIndex}`);
         if (lostGameUserIndex >= 0) {
+            //只有断线才会进入到这个条件语句中
             if (room.isGaming) {
                 //正在游戏的话,设置该用户为掉线
                 roomUsers[lostGameUserIndex].status = sg_constant.user_status.lost;
