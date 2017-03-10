@@ -124,7 +124,7 @@ paths:
           description: |
             用户ID
           required: true
-          type: int32
+          type: number
         - name: test
           in: query
           description: |
@@ -161,14 +161,14 @@ paths:
           description: n/a
   /room/enter/{roomNumber}:
     get:
-      summary: 进入房间
+      summary: 进入房间(在房间列表页调用)
       parameters:
         - name: roomNumber
           in: path
           description: |
             房间号，暂时只有1和2
           required: true
-          type: int32
+          type: number
       tags:
         - Room
       responses:
@@ -196,7 +196,7 @@ paths:
 #          description: |
 #            房间号，暂时只有1和2
 #          required: true
-#          type: int32
+#          type: number
 #      tags:
 #        - Room
 #      responses:
@@ -215,7 +215,7 @@ paths:
           description: |
             房间号，暂时只有1和2
           required: true
-          type: int32
+          type: number
       tags:
         - Room
       responses:
@@ -235,6 +235,126 @@ paths:
             一个房间信息
           schema:
             $ref: '#/definitions/RoomInfoALL'
+  enterRoom:
+    put:
+      summary: 进入房间(进入房间之后调用)
+      description: |
+        用来设置ws属性和判断掉线重连
+      parameters:
+        - name: userId
+          in: query
+          description: |
+            用户id
+          required: true
+          type: number
+      tags:
+        - InRoom
+      responses:
+        200:
+          description:
+  quitRoom:
+    put:
+      summary: 退出房间
+      parameters:
+        - name: isKick
+          in: query
+          description: |
+            非必填,是否是被踢出去的,默认false
+          required: false
+          type: boolean
+      tags:
+        - InRoom
+      responses:
+        200:
+          description:
+  updateRoom:
+    put:
+      summary: 触发返回当前房间用户信息
+      description: |
+        前端poll这个接口,会触发"room"事件,以此用来保证游戏的稳定性
+      tags:
+        - InRoom
+      responses:
+        200:
+          description:
+  room:
+    head:
+      summary: 返回当前房间用户信息
+      tags:
+        - InRoom
+      responses:
+        200:
+          description: |
+            房间信息
+          schema:
+            $ref: '#/definitions/RoomInfo'
+  toReady:
+    put:
+      summary: 用户准备
+      tags:
+        - InRoom
+      responses:
+        200:
+          description:
+  toUnready:
+    put:
+      summary: 用户取消准备
+      tags:
+        - InRoom
+      responses:
+        200:
+          description:
+  kick:
+    put:
+      summary: 踢人
+      description: |
+        会给被踢的人,发送kicked消息
+      parameters:
+        - name: kickUserId
+          in: query
+          description: |
+            被踢用户id
+          required: true
+          type: number
+      tags:
+        - InRoom
+      responses:
+        200:
+          description:
+  kicked:
+    head:
+      summary: 前端收到被踢消息后的处理动作
+      description: |
+        接收到这个消息,直接发送quitRoom事件,并设置参数true: socket.emit('quitRoom',true)
+      tags:
+        - InRoom
+      responses:
+        200:
+          description:
+  addChatMessage:
+    put:
+      summary: 发送聊天记录
+      parameters:
+        - name: message
+          in: query
+          description: |
+            聊天内容
+          required: true
+          type: string
+      tags:
+        - InRoom
+      responses:
+        200:
+          description:
+  chat:
+    head:
+      summary: 前端接收聊天记录
+      tags:
+        - InRoom
+      responses:
+        200:
+          description: |
+            返回一条聊天记录字符串
   /ping:
     get:
       summary: 心跳检测
@@ -243,13 +363,22 @@ paths:
       responses:
         200:
           description: n/a
+  errorLog:
+    head:
+      summary: 前端全局接收错误日志
+      tags:
+        - common
+      responses:
+        200:
+          description: |
+            返回一条错误日志
 definitions:
   Error:
     type: object
     properties:
       code:
         type: integer
-        format: int32
+        format: number
       message:
         type: string
       fields:
@@ -288,7 +417,7 @@ definitions:
     type: object
     properties:
       userId:
-        type: int32
+        type: number
         description: 用户ID
       nickname:
         type: string
@@ -296,6 +425,45 @@ definitions:
       avatar:
         type: string
         description: 头像图片地址
+  RoomUserInfo:
+    type: object
+    properties:
+      userId:
+        type: number
+        description: 用户ID
+      nickname:
+        type: string
+        description: 昵称
+      avatar:
+        type: string
+        description: 头像图片地址
+      money:
+        type: number
+        description: 钱
+      troop:
+        type: number
+        description: 兵力
+      citys:
+        type: string
+        description: 占有的城市数组(以后更新这个属性具体信息)
+      cityCount:
+        type: number
+        description: 占有的城市数量
+      heroCount:
+        type: number
+        description: 武将数量
+      order:
+        type: number
+        description: 顺序号
+      suspended:
+        type: number
+        description: 暂停次数
+      status:
+        type: number
+        description: 用户状态
+      socketId:
+        type: string
+        description: socketId
   RoomInfo:
     type: object
     properties:
@@ -303,16 +471,16 @@ definitions:
         type: string
         description: 房间名
       hostId:
-        type: int32
+        type: number
         description: 房主ID
       hostNickname:
         type: string
         description: 房主昵称
       currentNum:
-        type: int32
+        type: number
         description: 当前人数
       maxNum:
-        type: int32
+        type: number
         description: 最大人数
       isGaming:
         type: boolean
@@ -320,7 +488,7 @@ definitions:
       users:
         type: array
         items:
-          $ref: '#/definitions/UserInfo' 
+          $ref: '#/definitions/RoomUserInfo'
   RoomInfoALL:
     type: array    
     items:
@@ -329,5 +497,5 @@ definitions:
     type: object
     properties:
       roomNo:
-        type: int32
+        type: number
         description: 房间号
