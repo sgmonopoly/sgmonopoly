@@ -5,6 +5,7 @@
 
 const sg_constant = require("../services/sg_constant");
 const SG_User = require("../models/sg_user");
+const common = require("../services/common_roomUtils");
 /**
  * 这是所有房间的对象
  */
@@ -28,32 +29,32 @@ exports.enter = (req, res) => {
     const room = allRoom[roomNumber - 1];
     //先判断,房间内是否已经有了这个人(断线重连)
     let ifReconnected = false;
-    for (let i = 0; i < room._users.length; i++) {
-        if (room._users[i]._userId === currentUser._userId) {
+    for (let i = 0; i < room.users.length; i++) {
+        if (room.users[i].userId === currentUser.userId) {
             ifReconnected = true;
             break;
         }
     }
     //检测房间是否满
-    if (!ifReconnected && room._currentNum >= 4) {
-        return res.status(401).send("房间已满");
+    if (!ifReconnected && room.currentNum >= 4) {
+        return res.status(402).send("房间已满");
     }
 
     //判断用户是否在其他房间内,有则踢掉
-    const ifKick = kickUserFromRooms(currentUser._userId);
+    const ifKick = kickUserFromRooms(currentUser.userId);
 
     const statusCode = ifKick ? 201 : 200;
 
     //如果没人,要设置房主
-    if (room._currentNum === 0) {
-        room._hostId = currentUser._userId;
-        room._hostNickname = currentUser._nickname;
+    if (room.currentNum === 0) {
+        room.hostId = currentUser.userId;
+        room.hostNickname = currentUser.nickname;
     }
 
-    room._users.push(new SG_User(currentUser._userId,currentUser._nickname,currentUser._avatar));
-    room._currentNum = room._users.length;
-    console.log(1111111111111111111111111);
-    console.log(allRoom);
+    room.users.push(new SG_User(currentUser.userId, currentUser.nickname, currentUser.avatar));
+    room.currentNum = room.users.length;
+
+    console.log("allRoom:",allRoom);
 
     return res.status(statusCode).send("success");
 };
@@ -64,6 +65,7 @@ exports.enter = (req, res) => {
  * @param res
  * @returns {*}
  */
+/*
 exports.quit = (req, res) => {
 
     const currentUser = req.session.user;
@@ -77,17 +79,20 @@ exports.quit = (req, res) => {
     const room = allRoom[roomNumber - 1];
 
     if (room._currentNum > 0) {
-        room._users = room._users.filter(item => item._userId !== currentUser._userId);
+        const lostGameUserIndex = common.getUserIndex(room._users, currentUser._userId);
+        if (lostGameUserIndex >= 0) {
+            room._users.splice(lostGameUserIndex, 1);
+        }
         room._currentNum = room._users.length;
         //房主检测
-        checkAndResetRoomHost(room, currentUser._userId);
+        common.checkAndResetRoomHost(room, currentUser._userId);
     }
 
     console.log(allRoom);
 
     return res.send("success");
 };
-
+*/
 /**
  * 显示所有房间
  * @param req
@@ -120,44 +125,25 @@ const kickUserFromRooms = (userId) => {
 
         let room = allRoom[i];
         let indexUser = -1;
-        for (let j = 0; j < room._users.length; j++) {
-            if (userId === room._users[j]._userId) {
+        for (let j = 0; j < room.users.length; j++) {
+            if (userId === room.users[j].userId) {
                 //找到该用户
-                console.log("userId该用户已在其他房间登入,位置", i, " ", j);
+                console.log(`${userId}该用户已在其他房间登入,位置${i} ${j}`);
                 indexUser = j;
                 break;
             }
         }
         if (indexUser >= 0) {
             //找到后,删除该用户,并更新当前人数
-            room._users.splice(indexUser, 1);
-            room._currentNum = room._users.length;
+            room.users.splice(indexUser, 1);
+            room.currentNum = room.users.length;
             ifKick = true;
 
             //房主检测
-            checkAndResetRoomHost(room, userId);
+            common.checkAndResetRoomHost(room, userId);
 
             break;
         }
     }
     return ifKick;
 };
-/**
- * 房间检测,没有人就取消房主,还有人则选第一个人自动当房主
- * @param room
- * @param currentUserId
- */
-const checkAndResetRoomHost = (room, currentUserId) => {
-
-    if (room._currentNum === 0) {
-        //如果房间没人取消房主
-        room._hostId = '';
-        room._hostNickname = '';
-    } else if (room._currentNum > 0 && currentUserId === room._hostId) {
-        //检测当前用户是否为原房主,是的话,则房间易主
-        room._hostId = room._users[0]._userId;
-        room._hostNickname = room._users[0]._nickname;
-    }
-};
-//导出所有房间对象
-exports.allRoom = allRoom;

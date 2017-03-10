@@ -17,6 +17,31 @@ basePath: /
 produces:
   - application/json
 paths:
+  /user/register:
+    post:
+      summary: 注册
+      description: |
+      parameters:
+        - name: body
+          in: body
+          description: 昵称,头像,密码的json
+          required: true
+          type: string
+          schema:
+            $ref: '#/definitions/RegisterParam'
+      tags:
+        - 用户
+      responses:
+        200:
+          description: |
+            注册成功
+          schema:
+            type: string
+        400:
+          description: |
+            用户已存在
+          schema:
+            type: string
   /user/login:
     post:
       summary: 登入
@@ -24,20 +49,29 @@ paths:
       parameters: 
         - name: body
           in: body
-          description: 昵称和头像的json
+          description: 昵称和密码
           required: true
           type: string
           schema:
             $ref: '#/definitions/LoginParam'
       tags:
-        - User
+        - 用户
       responses:
         200:
           description: |
             成功直接返回用户对象
           schema:
             $ref: '#/definitions/UserInfo'
-            
+        400:
+          description: |
+            密码不对
+          schema:
+            type: string
+        401:
+          description: |
+            无此用户
+          schema:
+            type: string
   /user/changeUserInfo:
     post:
       summary: 修改用户信息
@@ -45,13 +79,13 @@ paths:
       parameters:
         - name: body
           in: body
-          description: 旧昵称,新昵称和头像的json
+          description: 新昵称和头像的json
           required: true
           type: string
           schema:
             $ref: '#/definitions/ChangeUserParam'
       tags:
-        - User
+        - 用户
       responses:
         200:
           description: |
@@ -63,22 +97,57 @@ paths:
             此昵称已被人使用
           schema:
             type: string
+        401:
+          description: |
+            用户未登入
+          schema:
+            type: string
   /user/show:
     get:
       summary: 返回所有人
       tags:
-        - User
+        - 用户
       responses:
         200:
           description: |
             成功直接返回所有人对象
           schema:
             $ref: '#/definitions/UserInfo'
+  /user/checkDisconnected/{userId}:
+    get:
+      summary: 判断指定用户之前是否掉线
+      tags:
+        - 用户
+      parameters:
+        - name: userId
+          in: path
+          description: |
+            用户ID
+          required: true
+          type: string
+        - name: test
+          in: query
+          description: |
+            这个接口比较难测,增加这个字段用来测试200通过用的,随便填啥
+          required: false
+          type: string
+      responses:
+        200:
+          description: |
+            说明用户之前已经掉线,需要直接跳转到对应的房间
+          schema:
+            $ref: '#/definitions/checkDisconnected'
+        400:
+          description: |
+            用户ID为空
+        401:
+          description: |
+            未检测到用户之前有掉线信息
   /base/mapInfo:
     get:
       summary: 基本的地图信息
       tags:
-        - Base
+        - 游戏基本信息
       responses:
         200:
           description: n/a
@@ -86,22 +155,22 @@ paths:
     get:
       summary: 基本的人物信息
       tags:
-        - Base
+        - 游戏基本信息
       responses:
         200:
           description: n/a
   /room/enter/{roomNumber}:
     get:
-      summary: 进入房间
+      summary: 进入房间(在房间列表页调用)
       parameters:
         - name: roomNumber
           in: path
           description: |
             房间号，暂时只有1和2
           required: true
-          type: int32
+          type: integer
       tags:
-        - Room
+        - 房间列表
       responses:
         200:
           description: |
@@ -114,26 +183,11 @@ paths:
             房间号不正确
         401:
           description: |
+            用户未登入
+        402:
+          description: |
             房间已满
-  /room/quit/{roomNumber}:
-    get:
-      summary: 退出房间
-      parameters:
-        - name: roomNumber
-          in: path
-          description: |
-            房间号，暂时只有1和2
-          required: true
-          type: int32
-      tags:
-        - Room
-      responses:
-        200:
-          description: |
-            succes
-        400:
-          description: |
-            房间号不正确
+
   /room/show/{roomNumber}:
     get:
       summary: 显示一个房间的信息
@@ -143,9 +197,9 @@ paths:
           description: |
             房间号，暂时只有1和2
           required: true
-          type: int32
+          type: integer
       tags:
-        - Room
+        - 房间列表
       responses:
         200:
           description: |
@@ -156,47 +210,185 @@ paths:
     get:
       summary: 显示所有房间的信息
       tags:
-        - Room
+        - 房间列表
       responses:
         200:
           description: |
             一个房间信息
           schema:
             $ref: '#/definitions/RoomInfoALL'
+  enterRoom:
+    put:
+      summary: 进入房间(进入房间之后调用)
+      description: |
+        用来设置ws属性和判断掉线重连
+      parameters:
+        - name: userId
+          in: query
+          description: |
+            用户id
+          required: true
+          type: integer
+      tags:
+        - 房间内
+      responses:
+        200:
+          description:
+  quitRoom:
+    put:
+      summary: 退出房间
+      parameters:
+        - name: isKick
+          in: query
+          description: |
+            非必填,是否是被踢出去的,默认false
+          required: false
+          type: boolean
+          default: false
+      tags:
+        - 房间内
+      responses:
+        200:
+          description:
+  updateRoom:
+    put:
+      summary: 触发返回当前房间用户信息
+      description: |
+        前端poll这个接口,会触发"room"事件,以此用来保证游戏的稳定性
+      tags:
+        - 房间内
+      responses:
+        200:
+          description:
+  room:
+    head:
+      summary: 返回当前房间用户信息
+      tags:
+        - 房间内
+      responses:
+        200:
+          description: |
+            房间信息
+          schema:
+            $ref: '#/definitions/RoomInfo'
+  toReady:
+    put:
+      summary: 用户准备
+      tags:
+        - 房间内
+      responses:
+        200:
+          description:
+  toUnready:
+    put:
+      summary: 用户取消准备
+      tags:
+        - 房间内
+      responses:
+        200:
+          description:
+  kick:
+    put:
+      summary: 踢人
+      description: |
+        会给被踢的人,发送kicked消息
+      parameters:
+        - name: kickUserId
+          in: query
+          description: |
+            被踢用户id
+          required: true
+          type: string
+      tags:
+        - 房间内
+      responses:
+        200:
+          description:
+  kicked:
+    head:
+      summary: 前端收到被踢消息后的处理动作
+      description: |
+        接收到这个消息,直接发送quitRoom事件,并设置参数true: socket.emit('quitRoom',true)
+      tags:
+        - 房间内
+      responses:
+        200:
+          description:
+  addChatMessage:
+    put:
+      summary: 发送聊天记录
+      parameters:
+        - name: message
+          in: query
+          description: |
+            聊天内容
+          required: true
+          type: string
+      tags:
+        - 房间内
+      responses:
+        200:
+          description:
+  chat:
+    head:
+      summary: 前端接收聊天记录
+      tags:
+        - 房间内
+      responses:
+        200:
+          description: |
+            返回一条聊天记录字符串
   /ping:
     get:
       summary: 心跳检测
       tags:
-        - common
+        - 公共
       responses:
         200:
           description: n/a
+  errorLog:
+    head:
+      summary: 前端全局接收错误日志
+      tags:
+        - 公共
+      responses:
+        200:
+          description: |
+            返回一条错误日志
 definitions:
   Error:
     type: object
     properties:
       code:
         type: integer
-        format: int32
       message:
         type: string
       fields:
         type: string
+  RegisterParam:
+    type: object
+    properties:
+      nickname:
+        type: string
+        description: 昵称
+      password:
+        type: string
+        description: 密码
+      avatar:
+        type: string
+        description: 头像
   LoginParam:
     type: object
     properties:
       nickname:
         type: string
         description: 昵称
-      avatar:
+      password:
         type: string
-        description: 头像图片地址
+        description: 密码
   ChangeUserParam:
     type: object
     properties:
-      oldNickname:
-        type: string
-        description: 旧昵称
       nickname:
         type: string
         description: 新昵称
@@ -206,43 +398,86 @@ definitions:
   UserInfo:
     type: object
     properties:
-      _userId:
-        type: int32
+      userId:
+        type: string
         description: 用户ID
-      _nickname:
+      nickname:
         type: string
         description: 昵称
-      _avatar:
+      avatar:
         type: string
         description: 头像图片地址
-
+  RoomUserInfo:
+    type: object
+    properties:
+      userId:
+        type: string
+        description: 用户ID
+      nickname:
+        type: string
+        description: 昵称
+      avatar:
+        type: string
+        description: 头像图片地址
+      money:
+        type: integer
+        description: 钱
+      troop:
+        type: integer
+        description: 兵力
+      citys:
+        type: string
+        description: 占有的城市数组(以后更新这个属性具体信息)
+      cityCount:
+        type: integer
+        description: 占有的城市数量
+      heroCount:
+        type: integer
+        description: 武将数量
+      order:
+        type: integer
+        description: 顺序号
+      suspended:
+        type: integer
+        description: 暂停次数
+      status:
+        type: integer
+        description: 用户状态
+      socketId:
+        type: string
+        description: socketId
   RoomInfo:
     type: object
     properties:
-      _roomName:
+      roomName:
         type: string
         description: 房间名
-      _hostId:
-        type: int32
+      hostId:
+        type: string
         description: 房主ID
-      _hostNickname:
+      hostNickname:
         type: string
         description: 房主昵称
-      _currentNum:
-        type: int32
+      currentNum:
+        type: integer
         description: 当前人数
-      _maxNum:
-        type: int32
+      maxNum:
+        type: integer
         description: 最大人数
-      _isGaming:
+      isGaming:
         type: boolean
         description: 是否正在游戏  
-      _users:
+      users:
         type: array
         items:
-          $ref: '#/definitions/UserInfo' 
+          $ref: '#/definitions/RoomUserInfo'
   RoomInfoALL:
     type: array    
     items:
-      $ref: '#/definitions/RoomInfo' 
-        
+      $ref: '#/definitions/RoomInfo'
+  checkDisconnected:
+    type: object
+    properties:
+      roomNo:
+        type: integer
+        description: 房间号

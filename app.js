@@ -5,7 +5,6 @@ const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -24,14 +23,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser("sgm"));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({
-    secret: 'sgm',
-    name: 'sgm',
-    cookie: {maxAge: 80000},
-    resave: true,
-    saveUninitialized: true,
-}));
-
+app.use(require("./session"));
 app.use('/', myRouter);
 
 // catch 404 and forward to error handler

@@ -80,6 +80,7 @@ module.exports = {
         lost: 4//掉线
     },
     ws_name: {
+        errorLog: "errorLog",//全局错误日志
         chat: "chat",//聊天记录
         roomUsers: "roomUsers",//房间所有用户信息
         room: "room"//房间信息
