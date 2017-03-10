@@ -30,7 +30,7 @@ paths:
           schema:
             $ref: '#/definitions/RegisterParam'
       tags:
-        - User
+        - 用户
       responses:
         200:
           description: |
@@ -55,7 +55,7 @@ paths:
           schema:
             $ref: '#/definitions/LoginParam'
       tags:
-        - User
+        - 用户
       responses:
         200:
           description: |
@@ -85,7 +85,7 @@ paths:
           schema:
             $ref: '#/definitions/ChangeUserParam'
       tags:
-        - User
+        - 用户
       responses:
         200:
           description: |
@@ -106,7 +106,7 @@ paths:
     get:
       summary: 返回所有人
       tags:
-        - User
+        - 用户
       responses:
         200:
           description: |
@@ -117,14 +117,14 @@ paths:
     get:
       summary: 判断指定用户之前是否掉线
       tags:
-        - User
+        - 用户
       parameters:
         - name: userId
           in: path
           description: |
             用户ID
           required: true
-          type: number
+          type: string
         - name: test
           in: query
           description: |
@@ -147,7 +147,7 @@ paths:
     get:
       summary: 基本的地图信息
       tags:
-        - Base
+        - 游戏基本信息
       responses:
         200:
           description: n/a
@@ -155,7 +155,7 @@ paths:
     get:
       summary: 基本的人物信息
       tags:
-        - Base
+        - 游戏基本信息
       responses:
         200:
           description: n/a
@@ -168,9 +168,9 @@ paths:
           description: |
             房间号，暂时只有1和2
           required: true
-          type: number
+          type: integer
       tags:
-        - Room
+        - 房间列表
       responses:
         200:
           description: |
@@ -187,25 +187,7 @@ paths:
         402:
           description: |
             房间已满
-#  /room/quit/{roomNumber}:
-#    get:
-#      summary: 退出房间
-#      parameters:
-#        - name: roomNumber
-#          in: path
-#          description: |
-#            房间号，暂时只有1和2
-#          required: true
-#          type: number
-#      tags:
-#        - Room
-#      responses:
-#        200:
-#          description: |
-#            succes
-#        400:
-#          description: |
-#            房间号不正确
+
   /room/show/{roomNumber}:
     get:
       summary: 显示一个房间的信息
@@ -215,9 +197,9 @@ paths:
           description: |
             房间号，暂时只有1和2
           required: true
-          type: number
+          type: integer
       tags:
-        - Room
+        - 房间列表
       responses:
         200:
           description: |
@@ -228,7 +210,7 @@ paths:
     get:
       summary: 显示所有房间的信息
       tags:
-        - Room
+        - 房间列表
       responses:
         200:
           description: |
@@ -246,9 +228,9 @@ paths:
           description: |
             用户id
           required: true
-          type: number
+          type: integer
       tags:
-        - InRoom
+        - 房间内
       responses:
         200:
           description:
@@ -262,8 +244,9 @@ paths:
             非必填,是否是被踢出去的,默认false
           required: false
           type: boolean
+          default: false
       tags:
-        - InRoom
+        - 房间内
       responses:
         200:
           description:
@@ -273,7 +256,7 @@ paths:
       description: |
         前端poll这个接口,会触发"room"事件,以此用来保证游戏的稳定性
       tags:
-        - InRoom
+        - 房间内
       responses:
         200:
           description:
@@ -281,7 +264,7 @@ paths:
     head:
       summary: 返回当前房间用户信息
       tags:
-        - InRoom
+        - 房间内
       responses:
         200:
           description: |
@@ -292,7 +275,7 @@ paths:
     put:
       summary: 用户准备
       tags:
-        - InRoom
+        - 房间内
       responses:
         200:
           description:
@@ -300,7 +283,7 @@ paths:
     put:
       summary: 用户取消准备
       tags:
-        - InRoom
+        - 房间内
       responses:
         200:
           description:
@@ -315,9 +298,9 @@ paths:
           description: |
             被踢用户id
           required: true
-          type: number
+          type: string
       tags:
-        - InRoom
+        - 房间内
       responses:
         200:
           description:
@@ -327,7 +310,7 @@ paths:
       description: |
         接收到这个消息,直接发送quitRoom事件,并设置参数true: socket.emit('quitRoom',true)
       tags:
-        - InRoom
+        - 房间内
       responses:
         200:
           description:
@@ -342,7 +325,7 @@ paths:
           required: true
           type: string
       tags:
-        - InRoom
+        - 房间内
       responses:
         200:
           description:
@@ -350,7 +333,7 @@ paths:
     head:
       summary: 前端接收聊天记录
       tags:
-        - InRoom
+        - 房间内
       responses:
         200:
           description: |
@@ -359,7 +342,7 @@ paths:
     get:
       summary: 心跳检测
       tags:
-        - common
+        - 公共
       responses:
         200:
           description: n/a
@@ -367,7 +350,7 @@ paths:
     head:
       summary: 前端全局接收错误日志
       tags:
-        - common
+        - 公共
       responses:
         200:
           description: |
@@ -378,7 +361,6 @@ definitions:
     properties:
       code:
         type: integer
-        format: number
       message:
         type: string
       fields:
@@ -417,7 +399,7 @@ definitions:
     type: object
     properties:
       userId:
-        type: number
+        type: string
         description: 用户ID
       nickname:
         type: string
@@ -429,7 +411,7 @@ definitions:
     type: object
     properties:
       userId:
-        type: number
+        type: string
         description: 用户ID
       nickname:
         type: string
@@ -438,28 +420,28 @@ definitions:
         type: string
         description: 头像图片地址
       money:
-        type: number
+        type: integer
         description: 钱
       troop:
-        type: number
+        type: integer
         description: 兵力
       citys:
         type: string
         description: 占有的城市数组(以后更新这个属性具体信息)
       cityCount:
-        type: number
+        type: integer
         description: 占有的城市数量
       heroCount:
-        type: number
+        type: integer
         description: 武将数量
       order:
-        type: number
+        type: integer
         description: 顺序号
       suspended:
-        type: number
+        type: integer
         description: 暂停次数
       status:
-        type: number
+        type: integer
         description: 用户状态
       socketId:
         type: string
@@ -471,16 +453,16 @@ definitions:
         type: string
         description: 房间名
       hostId:
-        type: number
+        type: string
         description: 房主ID
       hostNickname:
         type: string
         description: 房主昵称
       currentNum:
-        type: number
+        type: integer
         description: 当前人数
       maxNum:
-        type: number
+        type: integer
         description: 最大人数
       isGaming:
         type: boolean
@@ -497,5 +479,5 @@ definitions:
     type: object
     properties:
       roomNo:
-        type: number
+        type: integer
         description: 房间号
