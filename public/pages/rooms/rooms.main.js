@@ -1,7 +1,7 @@
 import $ from 'jquery'
-import {pages} from '../../config/pages'
+
 import {userLogin} from '../../restful/user'
-import {open} from '../../common/utils/router'
+
 
 function onInputFocus() {
     $('.background-container').addClass('background-focus');
@@ -38,7 +38,6 @@ function login() {
         userLogin(name)
             .then(() => {
                 console.log('success!')
-                open(pages.rooms)
             })
             .catch((err) => {
                 console.log(err)
