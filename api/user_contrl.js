@@ -71,7 +71,7 @@ exports.loginByNickname = (req, res) => {
  */
 exports.changeUserInfo = (req, res) => {
 
-    const oldNickname = req.body.oldNickname;
+    const oldNickname = req.session.user.nickname;
     const nickname = req.body.nickname;
     const avatar = req.body.avatar;
 
@@ -83,6 +83,7 @@ exports.changeUserInfo = (req, res) => {
     delete allUser[oldNickname];
     allUser[nickname] = new USER_Info(oldUserId, nickname, avatar);
     allUser[nickname].password = oldPwd;
+
     return res.send('success');
 };
 

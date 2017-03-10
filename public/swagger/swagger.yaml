@@ -35,9 +35,13 @@ paths:
         200:
           description: |
             注册成功
+          schema:
+            type: string
         400:
           description: |
             用户已存在
+          schema:
+            type: string
   /user/login:
     post:
       summary: 登入
@@ -61,9 +65,13 @@ paths:
         400:
           description: |
             密码不对
+          schema:
+            type: string
         401:
           description: |
             无此用户
+          schema:
+            type: string
   /user/changeUserInfo:
     post:
       summary: 修改用户信息
@@ -71,7 +79,7 @@ paths:
       parameters:
         - name: body
           in: body
-          description: 旧昵称,新昵称和头像的json
+          description: 新昵称和头像的json
           required: true
           type: string
           schema:
@@ -87,6 +95,11 @@ paths:
         400:
           description: |
             此昵称已被人使用
+          schema:
+            type: string
+        401:
+          description: |
+            用户未登入
           schema:
             type: string
   /user/show:
@@ -265,9 +278,6 @@ definitions:
   ChangeUserParam:
     type: object
     properties:
-      oldNickname:
-        type: string
-        description: 旧昵称
       nickname:
         type: string
         description: 新昵称
