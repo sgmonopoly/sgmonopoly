@@ -4,7 +4,14 @@
 'use strict';
 const allUser = {};//所有用户,存在内存中
 const USER_Info = require("../models/user_info");
-let commonId = 1;
+const uuid = require('uuid');
+const common_roomUtils = require("../services/common_roomUtils");
+const sg_constant = require("../services/sg_constant");
+/**
+ * 这是所有房间的对象
+ */
+let allRoom = require("../services/share_variables").allRoom;
+
 /**
  * 登入
  * @param req
@@ -22,7 +29,7 @@ exports.loginByNickname = (req, res) => {
         //如果有,则直接返回
         return res.send(allUser[nickname]);
     }
-    const newUser = new USER_Info(commonId++, nickname, avatar);
+    const newUser = new USER_Info(uuid.v1().replace(/-/g, ""), nickname, avatar);
     allUser[nickname] = newUser;
 
     req.session.user = newUser;
