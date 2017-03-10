@@ -20,12 +20,11 @@ exports.init = (socket, roomIo, roomNumber, wsUtils) => {
         if(!currentUser){
             return wsUtils.errorLog(`ID:${userId} 登入用户不存在`);
         }
-
         socket.userId = userId;
         socket.nickname = currentUser.nickname;
         socket.avatar = currentUser.avatar;
         currentUser.socketId = socket.id;//设置用户的socketid属性
-        let chatMessage = "欢迎" + nickname + "进入房间";
+        let chatMessage = "欢迎" + currentUser.nickname + "进入房间";
         //如果是正在游戏的房间的话,先判断是否为掉线重进的玩家
         if (room.isGaming) {
             for (let index = 0; index < roomUsers.length; i++) {
@@ -33,7 +32,7 @@ exports.init = (socket, roomIo, roomNumber, wsUtils) => {
                     && roomUsers[index].status === sg_constant.user_status.lost) {
                     //必须是掉线状态的玩家,然后恢复他的状态
                     roomUsers[index].status = sg_constant.user_status.gaming;
-                    chatMessage = nickname + "重新连入游戏";
+                    chatMessage = currentUser.nickname + "重新连入游戏";
                     break;
                 }
             }
