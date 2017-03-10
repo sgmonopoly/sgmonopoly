@@ -36,7 +36,6 @@
     "gulp-sourcemaps": "^2.4.1",
     "gulp-webpack": "^1.5.0",
     "node-sass": "^4.5.0",
-    "sass-loader": "^6.0.2",
     "style-loader": "^0.13.1",
     "webpack": "^1.14.0"
   }

@@ -1,5 +1,61 @@
 @import "../../common/sass/base";
 
 .rooms{
+    .banner {
+        background: linear-gradient(0deg, white, #6ecfff);
+        width: 100%;
+        height: 200px;
+        position: relative;
+        .title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            font-size: 45px;
+            color: #333333;
+            text-shadow: 10px 10px 5px #999999;
+        }
+    }
+    .container {
+        max-width: 960px;
+        min-width: 680px;
+        margin: 0 auto;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
+        display: flex;
+        .room-block {
+            margin-top: 40px;
+            display: flex;
+            width: 700px;
+            height: 125px;
+            border-radius: 5px;
+            overflow: hidden;
+            border: solid 1px #999999;
+            box-shadow: 10px 10px 5px #999999;
+            cursor: pointer;
+            transition: opacity 0.8s ease-out;
+
+            &:hover {
+                transform: translateX(20px);
+                transition: transform 0.2s linear;
+            }
+        }
+
+        .background-g-0 {
+            background: linear-gradient(270deg, white 90%, darkgreen);
+        }
+
+        .background-g-1 {
+            background: linear-gradient(270deg, white 90%, #FF9A14);
+        }
+
+        .init-block {
+            //transform: translateY(200px);
+            opacity: 0;
+        }
+    }
+
 
 }
