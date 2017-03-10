@@ -3,6 +3,8 @@
 //websocket
 const io = require('socket.io')();
 const sg_constant = require("../services/sg_constant");
+const ios = require("socket.io-express-session");
+const session = require("../session");
 /**
  * 这是所有房间的对象
  */
@@ -10,8 +12,13 @@ let allRoom = require("../services/share_variables").allRoom;
 
 sg_constant.roomNumbers.forEach(roomNumber => {
     const roomIo = io.of("/room" + roomNumber);
-
+    //让websocket也能用express的session中间件
+    roomIo.use(ios(session));
     roomIo.on('connection', (socket) => {
+
+        socket.on("testSession", ()=> {
+            console.log("test session:", socket.handshake.session.user);
+        });
 
         const wsUtils = {
             /**

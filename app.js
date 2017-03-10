@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser("sgm"));
 app.use(express.static(path.join(__dirname, 'public')));
-
+/*
 app.use(session({
     secret: 'sgm',
     name: 'sgm',
@@ -31,7 +31,8 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
 }));
-
+*/
+app.use(require("./session"));
 app.use('/', myRouter);
 
 // catch 404 and forward to error handler
