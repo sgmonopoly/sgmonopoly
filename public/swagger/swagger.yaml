@@ -74,6 +74,36 @@ paths:
             成功直接返回所有人对象
           schema:
             $ref: '#/definitions/UserInfo'
+  /user/checkDisconnected/{userId}:
+    get:
+      summary: 判断指定用户之前是否掉线
+      tags:
+        - User
+      parameters:
+        - name: userId
+          in: path
+          description: |
+            用户ID
+          required: true
+          type: int32
+        - name: test
+          in: query
+          description: |
+            这个接口比较难测,增加这个字段用来测试200通过用的,随便填啥
+          required: false
+          type: string
+      responses:
+        200:
+          description: |
+            说明用户之前已经掉线,需要直接跳转到对应的房间
+          schema:
+            $ref: '#/definitions/checkDisconnected'
+        400:
+          description: |
+            用户ID为空
+        401:
+          description: |
+            未检测到用户之前有掉线信息
   /base/mapInfo:
     get:
       summary: 基本的地图信息
@@ -209,43 +239,47 @@ definitions:
   UserInfo:
     type: object
     properties:
-      _userId:
+      userId:
         type: int32
         description: 用户ID
-      _nickname:
+      nickname:
         type: string
         description: 昵称
-      _avatar:
+      avatar:
         type: string
         description: 头像图片地址
-
   RoomInfo:
     type: object
     properties:
-      _roomName:
+      roomName:
         type: string
         description: 房间名
-      _hostId:
+      hostId:
         type: int32
         description: 房主ID
-      _hostNickname:
+      hostNickname:
         type: string
         description: 房主昵称
-      _currentNum:
+      currentNum:
         type: int32
         description: 当前人数
-      _maxNum:
+      maxNum:
         type: int32
         description: 最大人数
-      _isGaming:
+      isGaming:
         type: boolean
         description: 是否正在游戏  
-      _users:
+      users:
         type: array
         items:
           $ref: '#/definitions/UserInfo' 
   RoomInfoALL:
     type: array    
     items:
-      $ref: '#/definitions/RoomInfo' 
-        
+      $ref: '#/definitions/RoomInfo'
+  checkDisconnected:
+    type: object
+    properties:
+      roomNo:
+        type: int32
+        description: 房间号

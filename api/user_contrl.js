@@ -61,17 +61,49 @@ exports.showAllUser = (req, res) => {
     res.send(allUser);
 };
 /**
- * 判断用户是否已登入
+ * 判断当前用户是否已登入
  * @param req
  * @param res
  * @param next
  * @returns {*}
  */
 exports.checkUserIsLogin = (req, res, next) => {
-    if(req.session.user){
+    if (req.session.user) {
         next();
-    }else{
+    } else {
         return res.status(401).send("userNoLogin");
     }
+};
+/**
+ * 判断指定用户是否掉线
+ * @param req
+ * @param res
+ */
+exports.checkIndicatedUserIsDisconnected = (req, res) => {
+    const userId = req.params.userId;
+    if (!userId) {
+        return res.status(400).send("用户ID为空");
+    }
 
+    const test = req.query.test;
+    if (!test) {
+        for (let i = 0; i < allRoom.length; i++) {
+            let indicatedUser = common_roomUtils.getUser(allRoom[i].users, userId);
+            //判断必须是用户掉线
+            if (indicatedUser && indicatedUser.status === sg_constant.user_status.lost) {
+                let roomNo = i + 1;
+                //返回用户掉线的房间号
+                return res.send({
+                    roomNo: roomNo
+                });
+            }
+        }
+    } else {
+        //测试用的
+        return res.send({
+            roomNo: 1
+        });
+    }
+
+    return res.status(401).send("用户未登入过");
 };

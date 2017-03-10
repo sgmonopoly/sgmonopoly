@@ -18,4 +18,9 @@ router.post('/changeUserInfo', user_contrl.changeUserInfo);
  */
 router.get('/show', user_contrl.showAllUser);
 
+/**
+ * 判断指定用户是否已掉线
+ */
+router.get('/checkDisconnected/:userId', user_contrl.checkIndicatedUserIsDisconnected);
+
 module.exports = router;
