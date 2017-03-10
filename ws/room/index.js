@@ -137,6 +137,13 @@ exports.init = (socket, roomIo, roomNumber, wsUtils) => {
         }
     });
 
+    /**
+     * 发送聊天记录
+     */
+    socket.on('addChatMessage', (message)=> {
+        wsUtils.chat(message);
+    });
+
 };
 
 
