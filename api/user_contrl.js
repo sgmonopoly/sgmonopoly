@@ -13,17 +13,17 @@ let commonId = 1;
  */
 exports.loginByNickname = (req, res) => {
 
-    const _nickname = req.body.nickname;
-    const _avatar = req.body.avatar;
-    console.log("login:", _nickname);
+    const nickname = req.body.nickname;
+    const avatar = req.body.avatar;
+    console.log("login:", nickname);
 
     //先根据昵称返回用户对象
-    if (allUser[_nickname]) {
+    if (allUser[nickname]) {
         //如果有,则直接返回
-        return res.send(allUser[_nickname]);
+        return res.send(allUser[nickname]);
     }
-    const newUser = new USER_Info(commonId++, _nickname, _avatar);
-    allUser[_nickname] = newUser;
+    const newUser = new USER_Info(commonId++, nickname, avatar);
+    allUser[nickname] = newUser;
 
     req.session.user = newUser;
 
@@ -37,16 +37,16 @@ exports.loginByNickname = (req, res) => {
  */
 exports.changeUserInfo = (req, res) => {
 
-    const _oldNickname = req.body.oldNickname;
-    const _nickname = req.body.nickname;
-    const _avatar = req.body.avatar;
+    const oldNickname = req.body.oldNickname;
+    const nickname = req.body.nickname;
+    const avatar = req.body.avatar;
 
-    if (_oldNickname !== _nickname && allUser[_nickname]) {
+    if (oldNickname !== nickname && allUser[nickname]) {
         return res.status(400).send('此昵称已被人使用');
     }
-    const oldUserId = allUser[_oldNickname]._userId;
-    delete allUser[_oldNickname];
-    allUser[_nickname] = new USER_Info(oldUserId, _nickname, _avatar);
+    const oldUserId = allUser[oldNickname].userId;
+    delete allUser[oldNickname];
+    allUser[nickname] = new USER_Info(oldUserId, nickname, avatar);
     return res.send('success');
 };
 

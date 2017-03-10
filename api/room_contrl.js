@@ -29,30 +29,30 @@ exports.enter = (req, res) => {
     const room = allRoom[roomNumber - 1];
     //先判断,房间内是否已经有了这个人(断线重连)
     let ifReconnected = false;
-    for (let i = 0; i < room._users.length; i++) {
-        if (room._users[i]._userId === currentUser._userId) {
+    for (let i = 0; i < room.users.length; i++) {
+        if (room.users[i].userId === currentUser.userId) {
             ifReconnected = true;
             break;
         }
     }
     //检测房间是否满
-    if (!ifReconnected && room._currentNum >= 4) {
+    if (!ifReconnected && room.currentNum >= 4) {
         return res.status(402).send("房间已满");
     }
 
     //判断用户是否在其他房间内,有则踢掉
-    const ifKick = kickUserFromRooms(currentUser._userId);
+    const ifKick = kickUserFromRooms(currentUser.userId);
 
     const statusCode = ifKick ? 201 : 200;
 
     //如果没人,要设置房主
-    if (room._currentNum === 0) {
-        room._hostId = currentUser._userId;
-        room._hostNickname = currentUser._nickname;
+    if (room.currentNum === 0) {
+        room.hostId = currentUser.userId;
+        room.hostNickname = currentUser.nickname;
     }
 
-    room._users.push(new SG_User(currentUser._userId, currentUser._nickname, currentUser._avatar));
-    room._currentNum = room._users.length;
+    room.users.push(new SG_User(currentUser.userId, currentUser.nickname, currentUser.avatar));
+    room.currentNum = room.users.length;
 
     console.log("allRoom:",allRoom);
 
@@ -125,8 +125,8 @@ const kickUserFromRooms = (userId) => {
 
         let room = allRoom[i];
         let indexUser = -1;
-        for (let j = 0; j < room._users.length; j++) {
-            if (userId === room._users[j]._userId) {
+        for (let j = 0; j < room.users.length; j++) {
+            if (userId === room.users[j].userId) {
                 //找到该用户
                 console.log(`${userId}该用户已在其他房间登入,位置${i} ${j}`);
                 indexUser = j;
@@ -135,8 +135,8 @@ const kickUserFromRooms = (userId) => {
         }
         if (indexUser >= 0) {
             //找到后,删除该用户,并更新当前人数
-            room._users.splice(indexUser, 1);
-            room._currentNum = room._users.length;
+            room.users.splice(indexUser, 1);
+            room.currentNum = room.users.length;
             ifKick = true;
 
             //房主检测
@@ -147,7 +147,3 @@ const kickUserFromRooms = (userId) => {
     }
     return ifKick;
 };
-
-
-//导出所有房间对象
-exports.allRoom = allRoom;

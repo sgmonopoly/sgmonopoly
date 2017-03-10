@@ -8,7 +8,7 @@
  */
 exports.getUser = (roomUsers, userId) => {
     for (let i = 0; i < roomUsers.length; i++) {
-        if (roomUsers[i]._userId == userId) {
+        if (roomUsers[i].userId == userId) {
             return roomUsers[i];
         }
     }
@@ -21,7 +21,7 @@ exports.getUser = (roomUsers, userId) => {
  */
 exports.getUserIndex = (roomUsers, userId) => {
     for (let i = 0; i < roomUsers.length; i++) {
-        if (roomUsers[i]._userId == userId) {
+        if (roomUsers[i].userId == userId) {
             return i;
         }
     }
@@ -34,13 +34,13 @@ exports.getUserIndex = (roomUsers, userId) => {
  */
 exports.checkAndResetRoomHost = (room, currentUserId) => {
 
-    if (room._currentNum === 0) {
+    if (room.currentNum === 0) {
         //如果房间没人取消房主
-        room._hostId = '';
-        room._hostNickname = '';
-    } else if (room._currentNum > 0 && currentUserId === room._hostId) {
+        room.hostId = '';
+        room.hostNickname = '';
+    } else if (room.currentNum > 0 && currentUserId === room.hostId) {
         //检测当前用户是否为原房主,是的话,则房间易主
-        room._hostId = room._users[0]._userId;
-        room._hostNickname = room._users[0]._nickname;
+        room.hostId = room.users[0].userId;
+        room.hostNickname = room.users[0].nickname;
     }
 };

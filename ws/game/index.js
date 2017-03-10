@@ -9,6 +9,6 @@ exports.init = (socket, io, roomNumber, wsUtils) => {
      * 房间对象
      */
     let room = allRoom[roomNumber - 1];
-    let roomUsers = room._users;//array
+    let roomUsers = room.users;//array
 
 };

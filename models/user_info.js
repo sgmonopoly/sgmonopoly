@@ -5,9 +5,9 @@
 'use strict';
 class USER_Info {
     constructor(_userId, _nickname, _avatar) {
-        this._userId = _userId;
-        this._nickname = _nickname;
-        this._avatar = _avatar;
+        this.userId = _userId;
+        this.nickname = _nickname;
+        this.avatar = _avatar;
     }
 }
 module.exports = USER_Info;
