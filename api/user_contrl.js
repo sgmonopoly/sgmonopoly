@@ -7,10 +7,36 @@ const USER_Info = require("../models/user_info");
 const uuid = require('uuid');
 const common_roomUtils = require("../services/common_roomUtils");
 const sg_constant = require("../services/sg_constant");
+const _ = require("lodash");
 /**
  * 这是所有房间的对象
  */
 let allRoom = require("../services/share_variables").allRoom;
+
+/**
+ * 注册
+ * @param req
+ * @param res
+ * @returns {*}
+ */
+exports.register = (req, res) => {
+
+    const nickname = req.body.nickname;
+    const avatar = req.body.avatar;
+    const password = req.body.password;
+    console.log("register:", nickname);
+
+    //先根据昵称返回用户对象
+    if (allUser[nickname]) {
+        //如果有,则直接返回
+        return res.status(400).send("用户已存在");
+    }
+    const newUser = new USER_Info(uuid.v1().replace(/-/g, ""), nickname, avatar);
+    newUser.password = password;
+    allUser[nickname] = newUser;
+
+    return res.send("success");
+};
 
 /**
  * 登入
@@ -21,20 +47,21 @@ let allRoom = require("../services/share_variables").allRoom;
 exports.loginByNickname = (req, res) => {
 
     const nickname = req.body.nickname;
-    const avatar = req.body.avatar;
+    const password = req.body.password;
     console.log("login:", nickname);
 
     //先根据昵称返回用户对象
-    if (allUser[nickname]) {
-        //如果有,则直接返回
-        return res.send(allUser[nickname]);
+    const user = allUser[nickname];
+    if (user) {
+        if(user.password != password){
+            return res.status(400).send("密码不正确");
+        }
+        const currentUser = new USER_Info(user.userId, user.nickname, user.avatar);
+        //密码正确则直接返回
+        req.session.user = currentUser;
+        return res.send(currentUser);
     }
-    const newUser = new USER_Info(uuid.v1().replace(/-/g, ""), nickname, avatar);
-    allUser[nickname] = newUser;
-
-    req.session.user = newUser;
-
-    return res.send(newUser);
+    return res.status(401).send("无此用户");
 };
 /**
  * 更改用户信息
@@ -52,8 +79,10 @@ exports.changeUserInfo = (req, res) => {
         return res.status(400).send('此昵称已被人使用');
     }
     const oldUserId = allUser[oldNickname].userId;
+    const oldPwd = allUser[oldNickname].password;
     delete allUser[oldNickname];
     allUser[nickname] = new USER_Info(oldUserId, nickname, avatar);
+    allUser[nickname].password = oldPwd;
     return res.send('success');
 };
 

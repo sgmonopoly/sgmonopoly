@@ -17,6 +17,27 @@ basePath: /
 produces:
   - application/json
 paths:
+  /user/register:
+    post:
+      summary: 注册
+      description: |
+      parameters:
+        - name: body
+          in: body
+          description: 昵称,头像,密码的json
+          required: true
+          type: string
+          schema:
+            $ref: '#/definitions/RegisterParam'
+      tags:
+        - User
+      responses:
+        200:
+          description: |
+            注册成功
+        400:
+          description: |
+            用户已存在
   /user/login:
     post:
       summary: 登入
@@ -24,7 +45,7 @@ paths:
       parameters: 
         - name: body
           in: body
-          description: 昵称和头像的json
+          description: 昵称和密码
           required: true
           type: string
           schema:
@@ -37,7 +58,12 @@ paths:
             成功直接返回用户对象
           schema:
             $ref: '#/definitions/UserInfo'
-            
+        400:
+          description: |
+            密码不对
+        401:
+          description: |
+            无此用户
   /user/changeUserInfo:
     post:
       summary: 修改用户信息
@@ -215,15 +241,27 @@ definitions:
         type: string
       fields:
         type: string
+  RegisterParam:
+    type: object
+    properties:
+      nickname:
+        type: string
+        description: 昵称
+      password:
+        type: string
+        description: 密码
+      avatar:
+        type: string
+        description: 头像
   LoginParam:
     type: object
     properties:
       nickname:
         type: string
         description: 昵称
-      avatar:
+      password:
         type: string
-        description: 头像图片地址
+        description: 密码
   ChangeUserParam:
     type: object
     properties:
