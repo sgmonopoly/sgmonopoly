@@ -1,3 +1,4 @@
 {
-    "login": "./public/pages/login/login.main.js"
+    "login": "./public/pages/login/login.main.js",
+    "rooms": "./public/pages/rooms/rooms.main.js"
 }
