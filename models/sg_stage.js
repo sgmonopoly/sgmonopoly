@@ -6,8 +6,8 @@
  * 所有地图上节点的基类
  */
 class SG_Stage{
-    constructor(_stageNumber,_stageType,_stageName,_des){
-        this.stageNumber = _stageNumber;//序列号
+    constructor(stageId,_stageType,_stageName,_des){
+        this.stageId = stageId;//序列号
         /*
         1城池,2征兵,3招将,4游乐园,5按摩院,
         6缴税,7茅庐,8金银岛,9赌馆,
