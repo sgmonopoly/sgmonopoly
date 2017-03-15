@@ -10,8 +10,16 @@ const gameController = require('../../api/game_info_contrl');
  */
 router.get('/mapInfo', gameController.mapInfo);
 /**
- * 基本的人物信息
+ * 基本的卡片信息
  */
-router.get('/heroInfo', gameController.heroInfo);
+router.get('/cardInfo', gameController.cardInfo);
+/**
+ * 基本的紧急军情信息
+ */
+router.get('/situationInfo', gameController.situationInfo);
+/**
+ * 基本的锦囊妙计信息
+ */
+router.get('/suggestionInfo', gameController.suggestionInfo);
 
 module.exports = router;

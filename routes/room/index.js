@@ -21,7 +21,7 @@ router.get('/enter/:roomNumber', user_contrl.checkUserIsLogin, room_contrl.enter
 router.get('/show/:roomNumber', room_contrl.show);
 
 /**
- * 显示1个房间信息
+ * 显示所有房间信息
  */
 router.get('/show', room_contrl.showAll);
 
