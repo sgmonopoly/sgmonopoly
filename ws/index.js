@@ -11,7 +11,7 @@ const session = require("../session");
 let allRoom = require("../services/share_variables").allRoom;
 
 sg_constant.roomNumbers.forEach(roomNumber => {
-    const roomIo = io.of("/room" + roomNumber);
+    const roomIo = io.of("/room/" + roomNumber);
     //让websocket也能用express的session中间件
     roomIo.use(ios(session));
     roomIo.on('connection', (socket) => {
