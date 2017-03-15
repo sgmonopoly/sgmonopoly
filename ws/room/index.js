@@ -87,6 +87,13 @@ exports.init = (socket, roomIo, roomNumber, wsUtils) => {
                 wsUtils.chat(socket.nickname + "已经退出房间");
             }
         }
+        //判断房间是不是没人了,如果没人,初始化房间
+        room.currentNum = roomUsers.length;
+        if(roomUsers.length === 0){
+            room.isGaming = false;
+        }
+        //房主检测
+        common.checkAndResetRoomHost(room, socket.userId);
     });
     /**
      * 全局更新当前房间用户信息
