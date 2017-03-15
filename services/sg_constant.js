@@ -84,5 +84,10 @@ module.exports = {
         chat: "chat",//聊天记录
         roomUsers: "roomUsers",//房间所有用户信息
         room: "room"//房间信息
+    },
+    item_count: {
+        card: 54,//卡片总数量
+        situation: 16,//紧急军情总数量
+        suggestion: 20//锦囊总数量
     }
 };

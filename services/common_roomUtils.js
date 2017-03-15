@@ -1,6 +1,8 @@
 /**
  * Created by yuanxiang on 3/8/17.
  */
+const _ = require("lodash");
+
 /**
  * 根据ID快速获取用户
  * @param roomUsers
@@ -43,4 +45,16 @@ exports.checkAndResetRoomHost = (room, currentUserId) => {
         room.hostId = room.users[0].userId;
         room.hostNickname = room.users[0].nickname;
     }
+};
+
+/**
+ * 洗牌,返回一个最大值为maxNum的随机数组
+ * @param maxNum
+ */
+exports.createShuffledArray = maxNum => {
+    var array = [];
+    _.times(maxNum, function(n){
+        array.push(++n);
+    });
+    return _.shuffle(array);
 };
