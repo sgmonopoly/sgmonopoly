@@ -13,9 +13,9 @@ class SG_City extends require('./sg_stage') {
         this.colorFollow = _colorFollow;//相同颜色区分(1~5,6是古战场)
         this.cityType = _cityType;//1普通,2小城,4大城
         this.toll = 0;//过路费(调用getToll来返回这个值)
-        this.tax1 = this._occupyPrice / 2;//基数为领地价格的一半,普通为基数,小城为基数2倍,大城为基数4倍
-        this.tax2 = this._occupyPrice;
-        this.tax3 = this._occupyPrice * 2;
+        this.tax1 = this.occupyPrice / 2;//基数为领地价格的一半,普通为基数,小城为基数2倍,大城为基数4倍
+        this.tax2 = this.occupyPrice;
+        this.tax3 = this.occupyPrice * 2;
         this.getToll(sameColorCityCount);
     }
 
