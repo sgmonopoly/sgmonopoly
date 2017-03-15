@@ -2,7 +2,7 @@
  * Created by yuanxiang on 2/27/17.
  */
 'use strict';
-const SG_Hero = require("./sg_hero");
+const SG_Hero = require("./sg_card");
 const sg_constant = require("../services/sg_constant");
 const hero_info = {};
 
@@ -285,6 +285,6 @@ hero = new SG_Hero(count, "霸王卡", sg_constant.hero_suit.bigKing, i, sg_cons
     sg_constant.hero_type.bigboss, null, "", "");
 hero_info[count++] = hero;
 
-console.log(JSON.stringify(hero_info));
+//console.log(JSON.stringify(hero_info));
 
 module.exports = hero_info;

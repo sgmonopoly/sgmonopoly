@@ -3,7 +3,7 @@
  */
 'use strict';
 const mapInfo = require("../models/map_info");
-const heroInfo = require("../models/hero_info");
+const heroInfo = require("../models/card_info");
 /**
  * 基本的地图信息
  * @param req
