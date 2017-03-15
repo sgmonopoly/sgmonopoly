@@ -151,9 +151,25 @@ paths:
       responses:
         200:
           description: n/a
-  /base/heroInfo:
+  /base/cardInfo:
     get:
-      summary: 基本的人物信息
+      summary: 基本的卡片信息
+      tags:
+        - 游戏基本信息
+      responses:
+        200:
+          description: n/a
+  /base/situationInfo:
+    get:
+      summary: 基本的紧急军情信息
+      tags:
+        - 游戏基本信息
+      responses:
+        200:
+          description: n/a
+  /base/suggestionInfo:
+    get:
+      summary: 基本的锦囊妙计信息
       tags:
         - 游戏基本信息
       responses:
