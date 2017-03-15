@@ -6,6 +6,7 @@
 const sg_constant = require("../services/sg_constant");
 const SG_User = require("../models/sg_user");
 const common = require("../services/common_roomUtils");
+const _ = require("lodash");
 /**
  * 这是所有房间的对象
  */
@@ -54,7 +55,7 @@ exports.enter = (req, res) => {
     room.users.push(new SG_User(currentUser.userId, currentUser.nickname, currentUser.avatar));
     room.currentNum = room.users.length;
 
-    console.log("allRoom:",allRoom);
+    console.log("allRoom:", allRoom);
 
     return res.status(statusCode).send("success");
 };
@@ -66,33 +67,33 @@ exports.enter = (req, res) => {
  * @returns {*}
  */
 /*
-exports.quit = (req, res) => {
+ exports.quit = (req, res) => {
 
-    const currentUser = req.session.user;
-    const roomNumber = parseInt(req.params.roomNumber);
-    console.log("退房", roomNumber, "当前用户", currentUser);
+ const currentUser = req.session.user;
+ const roomNumber = parseInt(req.params.roomNumber);
+ console.log("退房", roomNumber, "当前用户", currentUser);
 
-    if (sg_constant.roomNumbers.indexOf(roomNumber) < 0) {
-        return res.status(400).send("房间号不正确");
-    }
+ if (sg_constant.roomNumbers.indexOf(roomNumber) < 0) {
+ return res.status(400).send("房间号不正确");
+ }
 
-    const room = allRoom[roomNumber - 1];
+ const room = allRoom[roomNumber - 1];
 
-    if (room._currentNum > 0) {
-        const lostGameUserIndex = common.getUserIndex(room._users, currentUser._userId);
-        if (lostGameUserIndex >= 0) {
-            room._users.splice(lostGameUserIndex, 1);
-        }
-        room._currentNum = room._users.length;
-        //房主检测
-        common.checkAndResetRoomHost(room, currentUser._userId);
-    }
+ if (room._currentNum > 0) {
+ const lostGameUserIndex = common.getUserIndex(room._users, currentUser._userId);
+ if (lostGameUserIndex >= 0) {
+ room._users.splice(lostGameUserIndex, 1);
+ }
+ room._currentNum = room._users.length;
+ //房主检测
+ common.checkAndResetRoomHost(room, currentUser._userId);
+ }
 
-    console.log(allRoom);
+ console.log(allRoom);
 
-    return res.send("success");
-};
-*/
+ return res.send("success");
+ };
+ */
 /**
  * 显示所有房间
  * @param req
@@ -100,7 +101,8 @@ exports.quit = (req, res) => {
  * @returns {*}
  */
 exports.showAll = (req, res) => {
-    return res.send(allRoom);
+    const allRoomClone = _.cloneDeep(allRoom);
+    return res.send(filterRoomUserData(allRoomClone));
 };
 
 /**
@@ -146,4 +148,13 @@ const kickUserFromRooms = (userId) => {
         }
     }
     return ifKick;
+};
+
+const filterRoomUserData = allRoom => {
+    for (let i = 0; i < allRoom.length; i++) {
+        for (let j = 0; j < allRoom[i].users.length; j++) {
+            allRoom[i].users[j] = _.omit(allRoom[i].users[j], "money", "troop", "citys",
+                "cityCount", "cardCount", "order", "suspended", "socketId");
+        }
+    }
 };
