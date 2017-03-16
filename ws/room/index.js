@@ -4,7 +4,7 @@ const sg_constant = require("../../services/sg_constant");
 const common = require("../../services/common_roomUtils");
 const allRoom = require("../../services/share_variables").allRoom;
 
-exports.init = (socket, roomIo, roomNumber, wsUtils) => {
+const init = (socket, roomIo, roomNumber, wsUtils) => {
     /**
      * 房间对象
      */
@@ -94,6 +94,8 @@ exports.init = (socket, roomIo, roomNumber, wsUtils) => {
         }
         //房主检测
         common.checkAndResetRoomHost(room, socket.userId);
+        //提醒前端,有人退出,可能需要做一些同步操作
+        roomIo.emit("somebodyExit");
     });
     /**
      * 全局更新当前房间用户信息
@@ -155,4 +157,4 @@ exports.init = (socket, roomIo, roomNumber, wsUtils) => {
 
 };
 
-
+module.exports = init;

@@ -83,7 +83,8 @@ module.exports = {
         errorLog: "errorLog",//全局错误日志
         chat: "chat",//聊天记录
         roomUsers: "roomUsers",//房间所有用户信息
-        room: "room"//房间信息
+        room: "room",//房间信息
+        gameLog: "gameLog"//操作日志
     },
     item_count: {
         card: 54,//卡片总数量

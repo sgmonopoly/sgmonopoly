@@ -37,6 +37,13 @@ sg_constant.roomNumbers.forEach(roomNumber => {
             },
             /**
              * 广播
+             * 增加操作日志
+             */
+            gameLog: (message) => {
+                roomIo.emit(sg_constant.ws_name.gameLog, message);
+            },
+            /**
+             * 广播
              * 给所有人更新当前房间所有信息(包括用户),其他人触发时用
              */
             updateRoomToAll: (room) => {
@@ -51,8 +58,8 @@ sg_constant.roomNumbers.forEach(roomNumber => {
             }
         };
 
-        require("./room").init(socket, roomIo, roomNumber, wsUtils);//注入_socket对象
-        require("./game").init(socket, roomIo, roomNumber, wsUtils);
+        require("./room")(socket, roomIo, roomNumber, wsUtils);//注入_socket对象
+        require("./game")(socket, roomIo, roomNumber, wsUtils);
 
     });
 

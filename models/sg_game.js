@@ -6,7 +6,7 @@ class SG_Game {
         this.cardOrders = [];//卡片顺序(洗牌)
         this.situationOrders = [];//紧急军情顺序(洗牌)
         this.suggestionOrder = [];//锦囊妙计顺序(洗牌)
-        this.turnUserId = "";//本轮用户ID
+        this.currentUserIndex = 0;//目前的用户索引
     }
 }
 module.exports = SG_Game;
