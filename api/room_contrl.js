@@ -61,41 +61,7 @@ exports.enter = (req, res) => {
     return res.status(statusCode).send("success");
 };
 
-/**
- * 退出房间
- * @param req
- * @param res
- * @returns {*}
- */
-/*
- exports.quit = (req, res) => {
-
- const currentUser = req.session.user;
- const roomNumber = parseInt(req.params.roomNumber);
- console.log("退房", roomNumber, "当前用户", currentUser);
-
- if (sg_constant.roomNumbers.indexOf(roomNumber) < 0) {
- return res.status(400).send("房间号不正确");
- }
-
- const room = allRoom[roomNumber - 1];
-
- if (room._currentNum > 0) {
- const lostGameUserIndex = common.getUserIndex(room._users, currentUser._userId);
- if (lostGameUserIndex >= 0) {
- room._users.splice(lostGameUserIndex, 1);
- }
- room._currentNum = room._users.length;
- //房主检测
- common.checkAndResetRoomHost(room, currentUser._userId);
- }
-
- console.log(allRoom);
-
- return res.send("success");
- };
- */
-let roomShowData;
+let roomsShowData;
 /**
  * 显示所有房间
  * @param req
@@ -104,7 +70,7 @@ let roomShowData;
  */
 exports.showAll = (req, res) => {
     //由于用了定时任务,这里只需要直接返回即可
-    return res.send(roomShowData);
+    return res.send(roomsShowData);
 };
 
 /**
@@ -152,11 +118,15 @@ const kickUserFromRooms = (userId) => {
     return ifKick;
 };
 
+/**
+ * 过滤所有房间信息输出的属性,不需要全部显示
+ * @param allRoom
+ */
 const filterRoomUserData = allRoom => {
     for (let i = 0; i < allRoom.length; i++) {
         for (let j = 0; j < allRoom[i].users.length; j++) {
             allRoom[i].users[j] = _.omit(allRoom[i].users[j], "money", "troop", "citys",
-                "cityCount", "cardCount", "order", "suspended", "socketId");
+                "cityCount", "cardCount", "order", "suspended", "socketId", "suggestions");
         }
     }
 };
@@ -166,7 +136,7 @@ const filterRoomUserData = allRoom => {
  */
 const updateRoomUserData = () => {
     const allRoomClone = _.cloneDeep(allRoom);
-    roomShowData = filterRoomUserData(allRoomClone);
+    roomsShowData = filterRoomUserData(allRoomClone);
 };
 
 
