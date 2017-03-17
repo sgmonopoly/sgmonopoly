@@ -43,9 +43,65 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 本轮结束
      */
     socket.on('endTurn', () => {
-        wsUtils.gameLog(socket.nickname+"结束了当前回合");
+        wsUtils.gameLog(socket.nickname + "结束了当前回合");
         wsUtils.updateRoomToAll(room);
         nextTurn();
+    });
+    /**
+     * 调整数值,完全由前端控制
+     * 【
+     *    {
+     *      userId:1,//用户ID
+     *      money:-1000,//钱少了1000
+     *      troop:2000,//兵力增加2000
+     *      addCitys:[1],//拥有城市1
+     *      removeCitys:[2,3],//失去城市2和3
+     *      upgradeCitys:[{cityId:31,up:-1}],//城市31降级(大变小,小变无)
+     *      addCards:[10,20],//增加卡片
+     *      removeCards:[11],//失去卡片
+     *      addSuggestions:[10,20],//增加锦囊
+     *      removeSuggestions:[11],//失去锦囊
+     *      suspended:1//停一次
+     *    },
+     *    {
+     *      userId:2,//用户ID
+     *      suspended:-1//解除停留一次
+     *    }
+     *  ]
+     */
+    socket.on('changeData', (data) => {
+        if (!common.checkValidUser(roomUsers, socket.id)) {
+            console.log(socket.id, "当前客户端非游戏玩家!");
+            return wsUtils.errorLogAll("检测到有玩家在作弊!");
+        }
+        console.log("changeData:", data);
+        data.forEach(changeData => {
+            const user = common.getUser(roomUsers, changeData["userId"]);
+            if (user) {
+                changeDataNumber(changeData, "money", user, "money");
+                changeDataNumber(changeData, "troop", user, "troop");
+                changeDataArray(changeData, "addCitys", "removeCitys", user, "citys");
+                //TODO upgradeCitys没做
+                changeDataArray(changeData, "addCards", "removeCards", user, "cards");
+                changeDataArray(changeData, "addSuggestions", "removeSuggestions", user, "suggestions");
+                changeDataNumber(changeData, "suspended", user, "suspended");
+            }
+        });
+
+        wsUtils.updateRoomToAll(room);
+    });
+
+    /**
+     * 掷骰子,并广播骰子点数
+     * 可以前端直接传,不传的话就后端随机生成
+     */
+    socket.on('throwDice', (point = getDicePoint(currentGame.diceRange)) => {
+        wsUtils.gameLog(socket.nickname + "投掷点数:" + point);
+        io.emit('diceResult', {
+            userId: socket.userId,
+            nickname: socket.nickname,
+            point: point
+        });
     });
 
     /**
@@ -62,11 +118,11 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 为下一回合发送消息
      */
     const nextTurn = () => {
-        try{
+        try {
             const nextUser = getNextUser();
-            wsUtils.gameLog("当前回合用户:"+nextUser.nickname);
-            io.emit("nextTurn",nextUser.userId);
-        }catch (e){
+            wsUtils.gameLog("当前回合用户:" + nextUser.nickname);
+            io.emit("nextTurn", nextUser.userId);
+        } catch (e) {
             console.error(e);
             //TODO
         }
@@ -141,7 +197,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
 
     socket.on('disconnect', () => {
         //自动调用下一个回合
-        nextTurn();
+        //nextTurn();
     });
 };
 
@@ -169,4 +225,52 @@ const modifyAllUserStatus = (roomUsers, status) => {
     }
 };
 
+/**
+ * 过滤变换的数据
+ * @param changeData
+ * @param key
+ * @param user
+ * @param userkey
+ */
+const changeDataNumber = (changeData, key, user, userkey) => {
+    if (_.isNumber(changeData[key])) {
+        const adjustValue = changeData[key];
+        if (adjustValue < 0 && Math.abs(adjustValue) > user[userkey]) {
+            //如果是负数,且绝对值大于原来的数值,则将原来的值清零
+            user[userkey] = 0;
+        } else {
+            user[userkey] = user[userkey] + adjustValue;
+        }
+    }
+};
+/**
+ * 过滤变换的数据
+ * @param changeData
+ * @param addKey
+ * @param removeKey
+ * @param user
+ * @param userkey
+ */
+const changeDataArray = (changeData, addKey, removeKey, user, userkey) => {
+    if (_.isArray(changeData[addKey])) {
+        const newArray = user[userkey].concat(changeData[addKey]);
+        user[userkey] = _.uniq(newArray, true);
+    }
+    if (_.isArray(changeData[removeKey])) {
+        const newArray = _.difference(user[userkey], changeData[removeKey]);
+        user[userkey] = _.uniq(newArray, true);
+    }
+};
+/**
+ * 随机获取骰子点数
+ * @param diceRange
+ * @returns {*}
+ */
+const getDicePoint = (diceRange) => {
+    const ranIndex = Math.floor(Math.random() * diceRange.length + 1) - 1;
+    return diceRange[ranIndex];
+};
+
 module.exports = init;
+
+console.log(getDicePoint([0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]));

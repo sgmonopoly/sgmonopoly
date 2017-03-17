@@ -2,7 +2,7 @@
  * Created by yuanxiang on 3/8/17.
  */
 const _ = require("lodash");
-
+const sg_constant = require("../services/sg_constant");
 /**
  * 根据ID快速获取用户
  * @param roomUsers
@@ -53,8 +53,24 @@ exports.checkAndResetRoomHost = (room, currentUserId) => {
  */
 exports.createShuffledArray = maxNum => {
     var array = [];
-    _.times(maxNum, function(n){
+    _.times(maxNum, function (n) {
         array.push(++n);
     });
     return _.shuffle(array);
+};
+
+/**
+ * 判断用户是否为房间内的游戏用户,通过socketId来判断,避免额外连接进来的客户端
+ * @param roomUsers
+ * @param socketId
+ * @returns {Boolean}
+ */
+exports.checkValidUser = (roomUsers, socketId) => {
+    if (!sg_constant.saveCheck) return true;
+    for (let i = 0; i < roomUsers.length; i++) {
+        if (roomUsers[i].socketId == socketId) {
+            return true;
+        }
+    }
+    return false;
 };
