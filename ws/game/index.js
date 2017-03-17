@@ -267,10 +267,8 @@ const changeDataArray = (changeData, addKey, removeKey, user, userkey) => {
  * @returns {*}
  */
 const getDicePoint = (diceRange) => {
-    const ranIndex = Math.floor(Math.random() * diceRange.length + 1) - 1;
+    const ranIndex = _.random(0, diceRange.length - 1);
     return diceRange[ranIndex];
 };
 
 module.exports = init;
-
-console.log(getDicePoint([0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]));
