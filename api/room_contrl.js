@@ -7,7 +7,7 @@ const sg_constant = require("../services/sg_constant");
 const SG_User = require("../models/sg_user");
 const common = require("../services/common_roomUtils");
 const _ = require("lodash");
-const schedule = require("node-schedule");
+
 /**
  * 这是所有房间的对象
  */
@@ -133,19 +133,9 @@ const filterRoomUserData = allRoom => {
 
 /**
  * 更新所有房间信息到一个对象中
+ * 此方法会定时执行
  */
-const updateRoomUserData = () => {
+exports.updateRoomUserData = () => {
     const allRoomClone = _.cloneDeep(allRoom);
     roomsShowData = filterRoomUserData(allRoomClone);
 };
-
-
-/**
- * 定时执行 更新房间信息任务 每5秒触发
- */
-const startJob = ()=> {
-    schedule.scheduleJob('*/5 * * * * *', function () {
-        updateRoomUserData();
-    });
-};
-startJob();
