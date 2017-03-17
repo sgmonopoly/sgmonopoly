@@ -155,6 +155,13 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
         wsUtils.chat(message);
     });
 
+    /**
+     * 发送游戏日志
+     */
+    socket.on('addGameLog', (message)=> {
+        wsUtils.gameLog(message);
+    });
+
 };
 
 module.exports = init;
