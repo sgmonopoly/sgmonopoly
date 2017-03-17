@@ -3,6 +3,7 @@
  */
 'use strict';
 module.exports = {
+    saveCheck: false,//全局安全检查,生产环境为true
     roomNamePrefix: "room",//默认返回的房间对象中,可能会包含自带属性,用这个名称来过滤房间对象
     roomNumbers: [1, 2],//暂时只有2个房间,以后再加
     // 武将花色
@@ -53,7 +54,7 @@ module.exports = {
     city_type: {
         normal: 1,//普通
         small: 2,//小城
-        big: 4//大城
+        big: 3//大城
     },
     //点数对应的角色信息,方便初始化用
     point2info: {
