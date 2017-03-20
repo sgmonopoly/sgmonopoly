@@ -17,7 +17,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
     /**
      * 当前对局的游戏属性
      */
-    let currentGame;
+    let currentGameInfo;
 
     /**
      * 开始游戏
@@ -33,7 +33,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         //将所有人置为开始游戏状态
         modifyAllUserStatus(roomUsers, sg_constant.user_status.gaming);
         room.isGaming = true;
-        io.emit("startGameSuccess");
+        io.emit("startGameSuccess", currentGameInfo);
         wsUtils.gameLog("游戏开始了");
         wsUtils.updateRoomToAll(room);
         nextTurn();
@@ -81,7 +81,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
                 changeDataNumber(changeData, "money", user, "money");
                 changeDataNumber(changeData, "troop", user, "troop");
                 changeDataArray(changeData, "addCitys", "removeCitys", user, "citys");
-                //TODO upgradeCitys没做
+                //TODO upgradeCitys不在这里做,在sg_game类里面做了
                 changeDataArray(changeData, "addCards", "removeCards", user, "cards");
                 changeDataArray(changeData, "addSuggestions", "removeSuggestions", user, "suggestions");
                 changeDataNumber(changeData, "suspended", user, "suspended");
@@ -95,7 +95,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 掷骰子,并广播骰子点数
      * 可以前端直接传,不传的话就后端随机生成
      */
-    socket.on('throwDice', (point = getDicePoint(currentGame.diceRange)) => {
+    socket.on('throwDice', (point = getDicePoint(currentGameInfo.diceRange)) => {
         wsUtils.gameLog(socket.nickname + "投掷点数:" + point);
         io.emit('diceResult', {
             userId: socket.userId,
@@ -108,11 +108,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 初始化游戏
      */
     const initGame = () => {
-        currentGame = new SG_Game();
-        //洗牌,数字对应卡片数量
-        currentGame.cardOrders = common.createShuffledArray(sg_constant.item_count.card);
-        currentGame.suggestionOrder = common.createShuffledArray(sg_constant.item_count.suggestion);
-        currentGame.situationOrders = common.createShuffledArray(sg_constant.item_count.situation);
+        currentGameInfo = new SG_Game();
     };
     /**
      * 为下一回合发送消息
@@ -141,7 +137,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             //安全监测,以防万一,如果永远取不到下一个用户直接暂停报错
             throw new Error("房间无人在线!");
         }
-        let nextUser = roomUsers[currentGame.currentUserIndex];
+        let nextUser = roomUsers[currentGameInfo.currentUserIndex];
         //判断该用户是否在线
         if (nextUser && nextUser.status === sg_constant.user_status.gaming) {
             safeCount = 0;
@@ -155,11 +151,11 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 获取下一个用户索引
      */
     const changeNextUserIndex = () => {
-        if (currentGame.currentUserIndex >= roomUsers.length - 1) {
+        if (currentGameInfo.currentUserIndex >= roomUsers.length - 1) {
             //如果当前用户索引大于等于长度时,重置
-            currentGame.currentUserIndex = 0;
+            currentGameInfo.currentUserIndex = 0;
         } else {
-            currentGame.currentUserIndex = currentGame.currentUserIndex + 1;
+            currentGameInfo.currentUserIndex = currentGameInfo.currentUserIndex + 1;
         }
     };
 
@@ -168,30 +164,30 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * @returns {T|*}
      */
     const getNextCardIndex = () => {
-        if (currentGame.cardOrders.length === 0) {
-            currentGame.cardOrders = common.createShuffledArray(sg_constant.item_count.card);
+        if (currentGameInfo.cardOrders.length === 0) {
+            currentGameInfo.cardOrders = common.createShuffledArray(sg_constant.item_count.card);
         }
-        return currentGame.cardOrders.shift();
+        return currentGameInfo.cardOrders.shift();
     };
     /**
      * 获取下一张紧急军情,没有则重新洗牌
      * @returns {T|*}
      */
     const getNextSituationIndex = () => {
-        if (currentGame.situationOrders.length === 0) {
-            currentGame.situationOrders = common.createShuffledArray(sg_constant.item_count.situation);
+        if (currentGameInfo.situationOrders.length === 0) {
+            currentGameInfo.situationOrders = common.createShuffledArray(sg_constant.item_count.situation);
         }
-        return currentGame.situationOrders.shift();
+        return currentGameInfo.situationOrders.shift();
     };
     /**
      * 获取下一张锦囊妙计,没有则重新洗牌
      * @returns {T|*}
      */
     const getNextSuggestionIndex = () => {
-        if (currentGame.suggestionOrder.length === 0) {
-            currentGame.suggestionOrder = common.createShuffledArray(sg_constant.item_count.suggestion);
+        if (currentGameInfo.suggestionOrder.length === 0) {
+            currentGameInfo.suggestionOrder = common.createShuffledArray(sg_constant.item_count.suggestion);
         }
-        return currentGame.suggestionOrder.shift();
+        return currentGameInfo.suggestionOrder.shift();
     };
 
 
@@ -244,6 +240,7 @@ const changeDataNumber = (changeData, key, user, userkey) => {
     }
 };
 /**
+ * 用户的属性
  * 过滤变换的数据
  * @param changeData
  * @param addKey
@@ -252,11 +249,11 @@ const changeDataNumber = (changeData, key, user, userkey) => {
  * @param userkey
  */
 const changeDataArray = (changeData, addKey, removeKey, user, userkey) => {
-    if (_.isArray(changeData[addKey])) {
+    if (_.isArray(changeData[addKey])) {//添加
         const newArray = user[userkey].concat(changeData[addKey]);
-        user[userkey] = _.uniq(newArray, true);
+        user[userkey] = _.uniq(newArray, true);//去重排序
     }
-    if (_.isArray(changeData[removeKey])) {
+    if (_.isArray(changeData[removeKey])) {//移除
         const newArray = _.difference(user[userkey], changeData[removeKey]);
         user[userkey] = _.uniq(newArray, true);
     }

@@ -4,13 +4,17 @@
 const map_info = require("./map_info");
 const _ = require("lodash");
 const sg_constant = require("../services/sg_constant");
+const common = require("../services/common_roomUtils");
 
+/**
+ * 本局游戏的一些属性
+ */
 class SG_Game {
 
     constructor() {
-        this.cardOrders = [];//卡片顺序(洗牌)
-        this.situationOrders = [];//紧急军情顺序(洗牌)
-        this.suggestionOrder = [];//锦囊妙计顺序(洗牌)
+        this.cardOrders = common.createShuffledArray(sg_constant.item_count.card);//卡片顺序(洗牌)
+        this.situationOrders = common.createShuffledArray(sg_constant.item_count.situation);//紧急军情顺序(洗牌)
+        this.suggestionOrder = common.createShuffledArray(sg_constant.item_count.suggestion);//锦囊妙计顺序(洗牌)
         this.currentUserIndex = 0;//目前的用户索引
         this.diceRange = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6];//骰子范围0-6
         this.gameCitys = {};//本局比赛的所有城市对象
@@ -36,21 +40,21 @@ class SG_Game {
      * @param sameColorCityCount
      * @returns {number|*}
      */
-    getToll(stage, sameColorCityCount = 1) {
+    getToll(city, sameColorCityCount = 1) {
         let toll = 0;
-        if (stage.colorFollow === sg_constant.city_follow.ancient) {
+        if (city.colorFollow === sg_constant.city_follow.ancient) {
             //古战场,每多一个相同颜色,价格根据500翻倍
             toll = 500 * Math.pow(2, sameColorCityCount - 1);
         } else {
-            switch (stage.cityType) {
+            switch (city.cityType) {
                 case (sg_constant.city_type.normal) :
-                    toll = stage.tax1;
+                    toll = city.tax1;
                     break;
                 case (sg_constant.city_type.small) :
-                    toll = stage.tax2;
+                    toll = city.tax2;
                     break;
                 case (sg_constant.city_type.big) :
-                    toll = stage.tax3;
+                    toll = city.tax3;
                     break;
             }
             if (sameColorCityCount === 4) {
@@ -78,7 +82,7 @@ class SG_Game {
         this.updateCityToll(user, city);
     }
     /**
-     * 失去城市,交换城市时,必须先执行lostCity再执行occupyCity
+     * 失去城市,交换城市时,为了避免ownerId冲突,必须先执行lostCity再执行occupyCity
      * PS,这是空间换时间的做法
      * @param user
      * @param stageId
@@ -100,12 +104,10 @@ class SG_Game {
      */
     upgradeCity(user, stageId) {
         const city = this.gameCitys[stageId];
-
         if(city.cityType < sg_constant.city_type.big){//大城不需要升级
             city.cityType = city.cityType + 1;
             this.updateCityToll(user, city);
         }
-
     }
 
     /**
@@ -115,12 +117,10 @@ class SG_Game {
      */
     degradeCity(user, stageId) {
         const city = this.gameCitys[stageId];
-
         if(city.cityType > sg_constant.city_type.normal){//normal城不需要降级
             city.cityType = city.cityType - 1;
             this.updateCityToll(user, city);
         }
-
     }
 
     /**
@@ -132,7 +132,7 @@ class SG_Game {
         const colorFollow = sourceCity.colorFollow;
 
         //获取相同颜色的数量
-        let sameColorFollowCount = _.filter(user.citys, id => {
+        const sameColorFollowCount = _.filter(user.citys, id => {
             return colorFollow === this.gameCitys[id].colorFollow;
         }).length;
         //则根据该数量更新过路费
@@ -145,8 +145,5 @@ class SG_Game {
         }
     }
 }
-
-var a = new SG_Game();
-console.log(a.gameCitys);
 
 module.exports = SG_Game;
