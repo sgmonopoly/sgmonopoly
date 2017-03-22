@@ -97,13 +97,6 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
         //提醒前端,有人退出,可能需要做一些同步操作
         roomIo.emit("somebodyExit");
     });
-    /**
-     * 全局更新当前房间用户信息
-     * 前端poll这个接口,只给自己发送
-     */
-    socket.on('updateRoom', ()=> {
-        wsUtils.updateRoomToMe(room);
-    });
 
     /**
      * 举手准备

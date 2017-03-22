@@ -36,6 +36,15 @@ class SG_Game {
     }
 
     /**
+     * 根据ID返回城市对象
+     * @param stageId
+     * @returns {*}
+     */
+    getCity(stageId){
+        return this.gameCitys[stageId];
+    }
+
+    /**
      * 根据相同颜色的城池数量,返回过路费
      * @param sameColorCityCount
      * @returns {number|*}
@@ -71,11 +80,11 @@ class SG_Game {
      * @param user
      * @param stageId
      */
-    occupyCity(user, stageId) {
+    occupyCity(user, city) {
         //用户占有属性增加一个城市
-        user.citys.push(stageId);
+        user.citys.push(city.stageId);
         //更新该城市相同颜色的其他城市的过路费
-        const city = this.gameCitys[stageId];
+        //const city = this.getCity(stageId);
         //设置占领者属性
         city.ownerId = user.userId;
         city.ownerNickname = user.nickname;
@@ -87,10 +96,10 @@ class SG_Game {
      * @param user
      * @param stageId
      */
-    lostCity(user, stageId) {
+    lostCity(user, city) {
         //移除一个城市
-        user.citys = _.without(user.citys, stageId);
-        const city = this.gameCitys[stageId];
+        user.citys = _.without(user.citys, city.stageId);
+        //const city = this.getCity(stageId);
         //设置占领者属性
         city.ownerId = "";
         city.ownerNickname = "";
@@ -102,8 +111,8 @@ class SG_Game {
      * @param user
      * @param stageId
      */
-    upgradeCity(user, stageId) {
-        const city = this.gameCitys[stageId];
+    upgradeCity(user, city) {
+        //const city = this.getCity(stageId);
         if(city.cityType < sg_constant.city_type.big){//大城不需要升级
             city.cityType = city.cityType + 1;
             this.updateCityToll(user, city);
@@ -115,8 +124,8 @@ class SG_Game {
      * @param user
      * @param stageId
      */
-    degradeCity(user, stageId) {
-        const city = this.gameCitys[stageId];
+    degradeCity(user, city) {
+        //onst city = this.getCity(stageId);
         if(city.cityType > sg_constant.city_type.normal){//normal城不需要降级
             city.cityType = city.cityType - 1;
             this.updateCityToll(user, city);
@@ -133,13 +142,14 @@ class SG_Game {
 
         //获取相同颜色的数量
         const sameColorFollowCount = _.filter(user.citys, id => {
-            return colorFollow === this.gameCitys[id].colorFollow;
+            return colorFollow === this.getCity(id).colorFollow;
         }).length;
         //则根据该数量更新过路费
         if(sameColorFollowCount > 0){
             user.citys.forEach(id => {
-                if (colorFollow === this.gameCitys[id].colorFollow) {
-                    this.getToll(this.gameCitys[id], sameColorFollowCount);
+                const tempCity = this.getCity(id);
+                if (colorFollow === tempCity.colorFollow) {
+                    tempCity.toll = this.getToll(tempCity, sameColorFollowCount);
                 }
             });
         }

@@ -53,15 +53,15 @@ sg_constant.roomNumbers.forEach(roomNumber => {
              * 广播
              * 给所有人更新当前房间所有信息(包括用户),其他人触发时用
              */
-            updateRoomToAll: (room) => {
-                roomIo.emit(sg_constant.ws_name.room, room);
+            updateRoomToAll: (room, gameCitys) => {
+                roomIo.emit(sg_constant.ws_name.room, room, gameCitys);
             },
             /**
              * 局部
              * 只给自己更新当前房间所有信息(包括用户),前端POLL方式给自己用
              */
-            updateRoomToMe: (room) => {
-                socket.emit(sg_constant.ws_name.room, room);
+            updateRoomToMe: (room, gameCitys) => {
+                socket.emit(sg_constant.ws_name.room, room, gameCitys);
             }
         };
 

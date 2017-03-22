@@ -35,7 +35,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         room.isGaming = true;
         io.emit("startGameSuccess", currentGameInfo);
         wsUtils.gameLog("游戏开始了");
-        wsUtils.updateRoomToAll(room);
+        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
         nextTurn();
     });
 
@@ -44,10 +44,12 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     socket.on('endTurn', () => {
         wsUtils.gameLog(socket.nickname + "结束了当前回合");
-        wsUtils.updateRoomToAll(room);
+        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
         nextTurn();
     });
     /**
+     * deprecated
+     *
      * 调整数值,完全由前端控制
      * 【
      *    {
@@ -70,6 +72,9 @@ const init = (socket, io, roomNumber, wsUtils) => {
      *  ]
      */
     socket.on('changeData', (data) => {
+        if (!data) {
+            return wsUtils.errorLog("data参数为空");
+        }
         if (!common.checkValidUser(roomUsers, socket.id)) {
             console.log(socket.id, "当前客户端非游戏玩家!");
             return wsUtils.errorLogAll("检测到有玩家在作弊!");
@@ -88,7 +93,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             }
         });
 
-        wsUtils.updateRoomToAll(room);
+        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
     });
 
     /**
@@ -103,6 +108,159 @@ const init = (socket, io, roomNumber, wsUtils) => {
             point: point
         });
     });
+    /**
+     * 买空城
+     */
+    socket.on('buyCity', stageId => {
+        if (!stageId) {
+            return wsUtils.errorLog("stageId参数为空");
+        }
+        const city = currentGameInfo.getCity(stageId);
+        if (!city) {
+            return wsUtils.errorLog("城市找不到" + stageId);
+        }
+        if (city.ownerId) {
+            return wsUtils.errorLog(city.stageName + "不是空城");
+        }
+        const user = getUser(socket.userId);
+        if (user.money < city.occupyPrice) {
+            return wsUtils.errorLog("当前用户" + user.nickname + "买不起" + city.stageName);
+        }
+
+        user.money = user.money - city.occupyPrice;//付钱
+        currentGameInfo.occupyCity(user, city);//占领城市
+        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+    });
+
+    /**
+     * 付过路费
+     */
+    socket.on('payToll', stageId => {
+        if (!stageId) {
+            return wsUtils.errorLog("stageId参数为空");
+        }
+        const city = currentGameInfo.getCity(stageId);
+        if (!city) {
+            return wsUtils.errorLog("城市找不到" + stageId);
+        }
+        if (city.stageType != sg_constant.stage_type.city) {
+            return wsUtils.errorLog("当前地点并非城市" + stageId);
+        }
+        if (!city.ownerId) {
+            return wsUtils.errorLog(city.stageName + "是空城,不需要付费");
+        }
+        const currentUser = getUser(socket.userId);
+        if (city.ownerId === socket.userId) {
+            return wsUtils.errorLog(`${city.stageName}是${currentUser.nickname}自己的,不需要付费`);
+        }
+
+        const targetUser = getUser(city.ownerId);
+        let toll = city.toll;
+        if (currentUser.money < city.toll) {
+            toll = currentUser.money;//钱不够,则全交
+        }
+        currentUser.money = currentUser.money - toll;
+        targetUser.money = targetUser.money + toll;
+
+        wsUtils.gameLog(`${currentUser.nickname}路过${city.stageName}付过路税金${toll}给${targetUser.nickname}`);
+        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+    });
+
+    /**
+     * 购买兵力
+     */
+    socket.on('payTroop', (troop = 0) => {
+        const currentUser = getUser(socket.userId);
+        if (currentUser.money < troop) {
+            //1兵力=1两钱,所以钱不够时,不准买
+            return wsUtils.errorLog(currentUser.nickname + "金钱不足以购买兵力" + troop);
+        }
+        currentUser.money = currentUser.money - troop;
+        currentUser.troop = currentUser.troop + troop;
+
+        wsUtils.gameLog(`${currentUser.nickname}购买了兵力${troop}`);
+        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+    });
+
+    /**
+     * 购买武将
+     */
+    socket.on('payHero', (num = 1) => {
+        const currentUser = getUser(socket.userId);
+        const needMoney = num * 1000;
+        if (currentUser.money < needMoney) {
+            //1兵力=1两钱,所以钱不够时,不准买
+            return wsUtils.errorLog(currentUser.nickname + "金钱不足以购买武将");
+        }
+        if (currentGameInfo.cardOrders.length < num) {
+            return wsUtils.errorLog("国库中已经少于" + num + "张卡片了");
+        }
+
+        currentUser.money = currentUser.money - needMoney;
+        _.times(num, function () {
+            const cardId = getNextCardIndex();
+            if (!cardId) {
+                wsUtils.errorLog("国库中已经没有卡片了");
+            }
+            currentUser.cards.push(cardId);
+        });
+
+        wsUtils.gameLog(`${currentUser.nickname}购买了${num}名武将卡`);
+        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+    });
+
+    /**
+     * 改造城市,包括升级或者降级,可指定任意城市
+     * ifPay 为是否付钱,区别于锦囊妙计的非付费升级
+     */
+    socket.on('upgradeCity', (stageId, ifPay = true, level = 1) => {
+        if (!stageId) {
+            return wsUtils.errorLog("stageId参数为空");
+        }
+        const city = currentGameInfo.getCity(stageId);
+        if (!city) {
+            return wsUtils.errorLog("城市找不到" + stageId);
+        }
+        if (!city.ownerId) {
+            return wsUtils.errorLog("城市未占领,无法改造" + stageId);
+        }
+        if (city.ownerId != socket.userId) {
+            return wsUtils.errorLog(`城市的占领者并非自己,占领者${city.ownerId},自己${socket.userId}`);
+        }
+        if (city.stageType != sg_constant.stage_type.city) {
+            return wsUtils.errorLog("当前地点并非城市" + stageId);
+        }
+        if (city.colorFollow === sg_constant.city_follow.ancient) {
+            return wsUtils.errorLog("古战场不能改造" + stageId);
+        }
+        //先算出要改造多少级别的城市
+        const targetLevel = rebuildAndGetLevelMade(city, level);
+        const levelMade = targetLevel - city.cityType;//用差值来判断升级了多少
+        if (levelMade <= 0) {//城市如果没有任何变化,返回报错
+            return wsUtils.errorLog("城市无法改造" + stageId);
+        }
+        const cityUser = getUser(city.ownerId);
+        //根据改造的结果,付钱,
+        if (ifPay) {
+            const rebuildMoney = levelMade * city.buildPrice;
+            if (cityUser.money < rebuildMoney) {
+                return wsUtils.errorLog(cityUser.nickname + "金钱不足以改造城市");
+            }
+            cityUser.money = cityUser.money - rebuildMoney;
+        }
+
+        //真正开始升级
+        //升级1次,或者2次
+        _.times(levelMade, function () {
+            currentGameInfo.upgradeCity(cityUser, city);
+        });
+
+        wsUtils.gameLog(`${city.stageName}改造成了${sg_constant.city_type_cn[levelMade]}`);
+        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+    });
+
+
+    /////////////////////////////////////////////
 
     /**
      * 初始化游戏
@@ -117,7 +275,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         try {
             const nextUser = getNextUser();
             wsUtils.gameLog("当前回合用户:" + nextUser.nickname);
-            io.emit("nextTurn", nextUser.userId);
+            io.emit("nextTurn", nextUser);//这里传整个用户对象,是因为可能会有个用户信息前后端不同步的BUG
         } catch (e) {
             console.error(e);
             //TODO
@@ -160,14 +318,49 @@ const init = (socket, io, roomNumber, wsUtils) => {
     };
 
     /**
-     * 获取下一张牌,没有则重新洗牌
+     * 获取下一张牌,没有则返回false
      * @returns {T|*}
      */
     const getNextCardIndex = () => {
         if (currentGameInfo.cardOrders.length === 0) {
-            currentGameInfo.cardOrders = common.createShuffledArray(sg_constant.item_count.card);
+            return false;
         }
         return currentGameInfo.cardOrders.shift();
+    };
+
+    /**
+     * 升级或者降级城市,并且返回升级的结果
+     * @param city
+     * @param level
+     * @returns {number}
+     */
+    const rebuildAndGetLevelMade = (city, level) => {
+        //最多改造2级
+        if (level > 2) {
+            level = 2;
+        } else if (level < -2) {
+            level = -2;
+        }
+        //城市最小为普通城1,最大为大城3
+        let targetLevel = city.cityType + level;
+        if (targetLevel > 3) {
+            targetLevel = 3;
+        } else if (targetLevel < 1) {
+            targetLevel = 1;
+        }
+
+        return targetLevel;
+    };
+
+    /**
+     * 交还武将卡给国库,并重新洗牌
+     * @param cardId
+     * @returns {T|*}
+     */
+    const returnCardToHome = (cardId) => {
+        currentGameInfo.cardOrders.push(cardId);
+        let tempCards = currentGameInfo.cardOrders;
+        currentGameInfo.cardOrders = _.shuffle(tempCards);
     };
     /**
      * 获取下一张紧急军情,没有则重新洗牌
@@ -188,6 +381,14 @@ const init = (socket, io, roomNumber, wsUtils) => {
             currentGameInfo.suggestionOrder = common.createShuffledArray(sg_constant.item_count.suggestion);
         }
         return currentGameInfo.suggestionOrder.shift();
+    };
+
+    /**
+     * 获取房间内用户
+     * @param userId
+     */
+    const getUser = (userId) => {
+        return common.getUser(roomUsers, userId);
     };
 
 
@@ -267,5 +468,6 @@ const getDicePoint = (diceRange) => {
     const ranIndex = _.random(0, diceRange.length - 1);
     return diceRange[ranIndex];
 };
+
 
 module.exports = init;
