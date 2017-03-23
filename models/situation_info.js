@@ -15,7 +15,7 @@ situation_info[i++] = situation;
 situation = new SG_Situation(i, "习得武功秘籍,乾坤大挪移心法", "可随心所欲,前进或后退1-10步任意地点(后退不能退到起点和起点后)");
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "得建筑设计师相助,设计两座城池", "在任意自己的两处城池上,空城改小城或小城改大城,每座费用600两");
+situation = new SG_Situation(i, "得建筑设计师相助,设计两座城池", "在任意自己的两处城池上,空城改小城或小城改大城,每座费用为建城费用");
 situation_info[i++] = situation;
 
 situation = new SG_Situation(i, "军中瘟疫肆虐,损兵折将", "损失兵力1000(不足则全交),并随机弃置一张武将卡,如弃置的是君主卡,需缴纳国库2000两赎回");
@@ -55,6 +55,6 @@ situation = new SG_Situation(i, "截获通行证", "获得国库中或者玩家�
 situation_info[i++] = situation;
 
 
-//console.log(JSON.stringify(situation_info));
+console.log(JSON.stringify(situation_info));
 
 module.exports = situation_info;

@@ -66,6 +66,6 @@ suggestion_info[i++] = suggestion;
 suggestion = new SG_suggestion(i, "鱼目混珠", "用手里的1张武将卡,换国库的2张武将卡", false);
 suggestion_info[i++] = suggestion;
 
-//console.log(JSON.stringify(suggestion_info));
+console.log(JSON.stringify(suggestion_info));
 
 module.exports = suggestion_info;

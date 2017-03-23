@@ -253,6 +253,6 @@ stage = new SG_City(i, sg_constant.stage_type.city, "官渡", "", 1000, sg_const
     sg_constant.city_follow.ancient, 1, 1);
 map_info[i++] = stage;
 
-//console.log(JSON.stringify(map_info));
+console.log(JSON.stringify(map_info));
 
 module.exports = map_info;
