@@ -14,6 +14,7 @@ class SG_User extends require("./user_info") {
         this.suspended = 0;//0不暂停,其他数字为暂停轮数
         this.status = 1;//状态 1未准备,2已准备,3开战,4掉线
         this.socketId = "";//socketId
+        this.turn = 0;//已经经历的总轮数
     }
 }
 module.exports = SG_User;

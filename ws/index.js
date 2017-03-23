@@ -5,6 +5,7 @@ const io = require('socket.io')();
 const sg_constant = require("../services/sg_constant");
 const ios = require("socket.io-express-session");
 const session = require("../session");
+const _ = require("lodash");
 /**
  * 这是所有房间的对象
  */
@@ -53,15 +54,17 @@ sg_constant.roomNumbers.forEach(roomNumber => {
              * 广播
              * 给所有人更新当前房间所有信息(包括用户),其他人触发时用
              */
-            updateRoomToAll: (room, gameCitys) => {
-                roomIo.emit(sg_constant.ws_name.room, room, gameCitys);
+            updateRoomToAll: (room, currentGameInfo) => {
+                const currentGameInfoClone = _.omit(currentGameInfo, "cardOrders", "situationOrders", "suggestionOrder", "diceRange");
+                roomIo.emit(sg_constant.ws_name.room, room, currentGameInfoClone);
             },
             /**
              * 局部
              * 只给自己更新当前房间所有信息(包括用户),前端POLL方式给自己用
              */
-            updateRoomToMe: (room, gameCitys) => {
-                socket.emit(sg_constant.ws_name.room, room, gameCitys);
+            updateRoomToMe: (room, currentGameInfo) => {
+                const currentGameInfoClone = _.omit(currentGameInfo, "cardOrders", "situationOrders", "suggestionOrder", "diceRange");
+                socket.emit(sg_constant.ws_name.room, room, currentGameInfoClone);
             }
         };
 

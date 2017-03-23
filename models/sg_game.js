@@ -16,8 +16,9 @@ class SG_Game {
         this.situationOrders = common.createShuffledArray(sg_constant.item_count.situation);//紧急军情顺序(洗牌)
         this.suggestionOrder = common.createShuffledArray(sg_constant.item_count.suggestion);//锦囊妙计顺序(洗牌)
         this.currentUserIndex = 0;//目前的用户索引
-        this.diceRange = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6];//骰子范围0-6
+        this.diceRange = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6];//骰子范围0-6,降低0出现的概率故意少1个
         this.gameCitys = {};//本局比赛的所有城市对象
+        this.turn = 0;//当前轮次
         this.initCity();//初始化城市方法
     }
 

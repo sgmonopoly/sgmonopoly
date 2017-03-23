@@ -35,7 +35,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         room.isGaming = true;
         io.emit("startGameSuccess", currentGameInfo);
         wsUtils.gameLog("游戏开始了");
-        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+        wsUtils.updateRoomToAll(room, currentGameInfo);
         nextTurn();
     });
 
@@ -44,7 +44,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     socket.on('endTurn', () => {
         wsUtils.gameLog(socket.nickname + "结束了当前回合");
-        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+        wsUtils.updateRoomToAll(room, currentGameInfo);
         nextTurn();
     });
     /**
@@ -93,7 +93,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             }
         });
 
-        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+        wsUtils.updateRoomToAll(room, currentGameInfo);
     });
 
     /**
@@ -129,7 +129,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
 
         user.money = user.money - city.occupyPrice;//付钱
         currentGameInfo.occupyCity(user, city);//占领城市
-        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+        wsUtils.updateRoomToAll(room, currentGameInfo);
     });
 
     /**
@@ -163,7 +163,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         targetUser.money = targetUser.money + toll;
 
         wsUtils.gameLog(`${currentUser.nickname}路过${city.stageName}付过路税金${toll}给${targetUser.nickname}`);
-        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+        wsUtils.updateRoomToAll(room, currentGameInfo);
     });
 
     /**
@@ -179,7 +179,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         currentUser.troop = currentUser.troop + troop;
 
         wsUtils.gameLog(`${currentUser.nickname}购买了兵力${troop}`);
-        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+        wsUtils.updateRoomToAll(room, currentGameInfo);
     });
 
     /**
@@ -206,7 +206,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         });
 
         wsUtils.gameLog(`${currentUser.nickname}购买了${num}名武将卡`);
-        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+        wsUtils.updateRoomToAll(room, currentGameInfo);
     });
 
     /**
@@ -256,7 +256,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         });
 
         wsUtils.gameLog(`${city.stageName}改造成了${sg_constant.city_type_cn[levelMade]}`);
-        wsUtils.updateRoomToAll(room, currentGameInfo.gameCitys);
+        wsUtils.updateRoomToAll(room, currentGameInfo);
     });
 
 
@@ -274,7 +274,15 @@ const init = (socket, io, roomNumber, wsUtils) => {
     const nextTurn = () => {
         try {
             const nextUser = getNextUser();
+            nextUser.turn = nextUser.turn + 1;//总轮数+1
             wsUtils.gameLog("当前回合用户:" + nextUser.nickname);
+            /*
+             为了防止某些用户掉线,而造成这个数值的不正确
+             这里判断每个人的总轮数,取最大值作为游戏的总轮数值
+             */
+            if(currentGameInfo.turn < nextUser.turn){
+                currentGameInfo.turn = nextUser.turn;
+            }
             io.emit("nextTurn", nextUser);//这里传整个用户对象,是因为可能会有个用户信息前后端不同步的BUG
         } catch (e) {
             console.error(e);
@@ -293,6 +301,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         safeCount++;
         if (safeCount > 10) {
             //安全监测,以防万一,如果永远取不到下一个用户直接暂停报错
+            //TODO 调用游戏结束方法
             throw new Error("房间无人在线!");
         }
         let nextUser = roomUsers[currentGameInfo.currentUserIndex];
@@ -423,6 +432,7 @@ const modifyAllUserStatus = (roomUsers, status) => {
 };
 
 /**
+ * deprecated
  * 过滤变换的数据
  * @param changeData
  * @param key
@@ -441,6 +451,7 @@ const changeDataNumber = (changeData, key, user, userkey) => {
     }
 };
 /**
+ * deprecated
  * 用户的属性
  * 过滤变换的数据
  * @param changeData
