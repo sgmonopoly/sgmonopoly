@@ -1,4 +1,5 @@
 {
     "login": "./public/pages/login/login.main.js",
-    "rooms": "./public/pages/rooms/rooms.main.js"
+    "rooms": "./public/pages/rooms/rooms.main.js",
+    "poc": "./public/pages/poc/poc.main.js"
 }
