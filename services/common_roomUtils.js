@@ -52,7 +52,7 @@ exports.checkAndResetRoomHost = (room, currentUserId) => {
  * @param maxNum
  */
 exports.createShuffledArray = maxNum => {
-    var array = [];
+    let array = [];
     _.times(maxNum, function (n) {
         array.push(++n);
     });

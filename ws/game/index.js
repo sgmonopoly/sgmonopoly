@@ -30,9 +30,6 @@ const init = (socket, io, roomNumber, wsUtils) => {
         //初始化游戏
         initGame();
 
-        //将所有人置为开始游戏状态
-        modifyAllUserStatus(roomUsers, sg_constant.user_status.gaming);
-        room.isGaming = true;
         io.emit("startGameSuccess", currentGameInfo);
         wsUtils.gameLog("游戏开始了");
         wsUtils.updateRoomToAll(room, currentGameInfo);
@@ -106,6 +103,20 @@ const init = (socket, io, roomNumber, wsUtils) => {
             userId: socket.userId,
             nickname: socket.nickname,
             point: point
+        });
+    });
+    /**
+     * 掷3骰子,并广播骰子总点数
+     */
+    socket.on('throw3Dices', (point1 = getDicePoint(currentGameInfo.diceRange),
+                              point2 = getDicePoint(currentGameInfo.diceRange),
+                              point3 = getDicePoint(currentGameInfo.diceRange)) => {
+        const pointAll = point1 + point2 + point3;
+        wsUtils.gameLog(`${socket.nickname}投掷3次分别为:${point1}点、${point2}点和${point3}点,总点数${pointAll}点`);
+        io.emit('diceResult', {
+            userId: socket.userId,
+            nickname: socket.nickname,
+            point: pointAll
         });
     });
     /**
@@ -199,9 +210,6 @@ const init = (socket, io, roomNumber, wsUtils) => {
         currentUser.money = currentUser.money - needMoney;
         _.times(num, function () {
             const cardId = getNextCardIndex();
-            if (!cardId) {
-                wsUtils.errorLog("国库中已经没有卡片了");
-            }
             currentUser.cards.push(cardId);
         });
 
@@ -267,6 +275,29 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     const initGame = () => {
         currentGameInfo = new SG_Game();
+        let lord = _.shuffle(sg_constant.lord_array);
+        const selectedLords = [];
+        //初始化君主
+        roomUsers.forEach(user => {
+            //FIXME 暂时用随机分配君主(ID 1 14 27 40),将来做成可以选的
+            const lordId = lord.shift();
+            user.cards.push(lordId);
+            user.lordName = sg_constant.lord_name[lordId];
+            selectedLords.push(lordId);
+        });
+        //去掉选择掉的君主
+        currentGameInfo.cardOrders = _.difference(currentGameInfo.cardOrders, selectedLords);
+
+        roomUsers.forEach(user => {
+            //金钱和兵力早已初始化过了,这里只摸3张武将卡
+            _.times(3, function () {
+                const cardId = getNextCardIndex();
+                user.cards.push(cardId);
+            });
+            //将所有人置为开始游戏状态
+            user.status = sg_constant.user_status.gaming;
+        });
+        room.isGaming = true;
     };
     /**
      * 为下一回合发送消息
@@ -280,7 +311,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
              为了防止某些用户掉线,而造成这个数值的不正确
              这里判断每个人的总轮数,取最大值作为游戏的总轮数值
              */
-            if(currentGameInfo.turn < nextUser.turn){
+            if (currentGameInfo.turn < nextUser.turn) {
                 currentGameInfo.turn = nextUser.turn;
             }
             io.emit("nextTurn", nextUser);//这里传整个用户对象,是因为可能会有个用户信息前后端不同步的BUG
@@ -421,6 +452,7 @@ const checkAllReady = (roomUsers) => {
 };
 
 /**
+ * deprecated
  * 修改所有用户的状态
  * @param roomUsers
  * @param status
