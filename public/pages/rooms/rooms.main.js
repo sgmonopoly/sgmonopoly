@@ -1,4 +1,4 @@
-import {getRooms} from '../../restful/rooms'
+import {getRooms} from '../../api/rest/rooms'
 import $ from 'jquery'
 
 function initAnimation(){
@@ -6,7 +6,6 @@ function initAnimation(){
     setTimeout(() => {
         $('.room-block').removeClass('init-block')
     }, 800)
-
 
 }
 

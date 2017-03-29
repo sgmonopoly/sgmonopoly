@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import {pages} from '../../config/pages'
-import {userLogin} from '../../restful/user'
+import {userLogin} from '../../api/rest/user'
 import {open} from '../../common/utils/router'
 
 function onInputFocus() {
