@@ -16,6 +16,7 @@ class SG_User extends require("./user_info") {
         this.status = 1;//状态 1未准备,2已准备,3开战,4掉线
         this.socketId = "";//socketId
         this.turn = 0;//已经经历的总轮数
+        this.color = "";//颜色
     }
 }
 module.exports = SG_User;

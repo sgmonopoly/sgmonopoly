@@ -113,15 +113,15 @@ module.exports = {
         black_down: 4,//黑色
         attack_up: 5,//进攻方属性+100
         double_upgrade: 6,//升级可升级2级
-        watertight:7,//不能用锦囊和军情
-        tax_free:8//免一切过路费
+        watertight: 7,//不能用锦囊和军情
+        tax_free: 8//免一切过路费
     },
     //君主信息
     lord_array: [1, 14, 27, 40],
-    lord_name: {
-        1: "孙权",
-        14: "董卓",
-        27: "孙权",
-        40: "曹操"
+    lord_property: {
+        1: {name: "孙权", color: "green"},
+        14: {name: "董卓", color: "blue"},
+        27: {name: "刘备", color: "red"},
+        40: {name: "曹操", color: "silver"}
     }
 };

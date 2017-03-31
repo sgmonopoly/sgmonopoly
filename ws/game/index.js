@@ -275,14 +275,15 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     const initGame = () => {
         currentGameInfo = new SG_Game();
-        let lord = _.shuffle(sg_constant.lord_array);
+        let lords = _.shuffle(sg_constant.lord_array);
         const selectedLords = [];
         //初始化君主
         roomUsers.forEach(user => {
             //FIXME 暂时用随机分配君主(ID 1 14 27 40),将来做成可以选的
-            const lordId = lord.shift();
+            const lordId = lords.shift();
             user.cards.push(lordId);
-            user.lordName = sg_constant.lord_name[lordId];
+            user.lordName = sg_constant.lord_property[lordId].name;
+            user.color = sg_constant.lord_property[lordId].color;
             selectedLords.push(lordId);
         });
         //去掉选择掉的君主
