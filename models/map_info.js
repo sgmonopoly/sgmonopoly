@@ -214,7 +214,7 @@ map_info[i++] = stage;
 
 //47
 stage = new SG_City(i, sg_constant.stage_type.city, "新野", "", 1800, sg_constant.city_build_fee,
-    sg_constant.city_follow.follow4, 1, 1);
+    sg_constant.city_follow.follow5, 1, 1);
 map_info[i++] = stage;
 
 //48
@@ -251,6 +251,10 @@ map_info[i++] = stage;
 //55
 stage = new SG_City(i, sg_constant.stage_type.city, "官渡", "", 1000, sg_constant.city_build_fee,
     sg_constant.city_follow.ancient, 1, 1);
+map_info[i++] = stage;
+
+//56
+stage = new SG_Stage(i, sg_constant.stage_type.tax, "缴税");
 map_info[i++] = stage;
 
 console.log(JSON.stringify(map_info));

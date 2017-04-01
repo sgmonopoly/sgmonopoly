@@ -45,7 +45,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         nextTurn();
     });
     /**
-     * deprecated
+     * @deprecated
      *
      * 调整数值,完全由前端控制
      * 【
@@ -453,7 +453,7 @@ const checkAllReady = (roomUsers) => {
 };
 
 /**
- * deprecated
+ * @deprecated
  * 修改所有用户的状态
  * @param roomUsers
  * @param status
@@ -465,7 +465,7 @@ const modifyAllUserStatus = (roomUsers, status) => {
 };
 
 /**
- * deprecated
+ * @deprecated
  * 过滤变换的数据
  * @param changeData
  * @param key
@@ -484,7 +484,7 @@ const changeDataNumber = (changeData, key, user, userkey) => {
     }
 };
 /**
- * deprecated
+ * @deprecated
  * 用户的属性
  * 过滤变换的数据
  * @param changeData
