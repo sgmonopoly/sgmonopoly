@@ -120,15 +120,16 @@ const kickUserFromRooms = (userId) => {
 
 /**
  * 过滤所有房间信息输出的属性,不需要全部显示
- * @param allRoom
+ * @param allRooms
  */
-const filterRoomUserData = allRoom => {
-    for (let i = 0; i < allRoom.length; i++) {
-        for (let j = 0; j < allRoom[i].users.length; j++) {
-            allRoom[i].users[j] = _.omit(allRoom[i].users[j], "money", "troop", "citys",
+const filterRoomUserData = allRooms => {
+    for (let i = 0; i < allRooms.length; i++) {
+        for (let j = 0; j < allRooms[i].users.length; j++) {
+            allRooms[i].users[j] = _.omit(allRooms[i].users[j], "money", "troop", "citys",
                 "cityCount", "cardCount", "order", "suspended", "socketId", "suggestions");
         }
     }
+    return allRooms;
 };
 
 /**

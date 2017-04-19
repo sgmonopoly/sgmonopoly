@@ -8,10 +8,9 @@ const room_contrl = require("../api/room_contrl");
 /**
  * 定时执行 更新房间信息任务 每5秒触发
  */
-const startJob = ()=> {
-    schedule.scheduleJob('*/5 * * * * *', function () {
+exports.startJob = ()=> {
+    room_contrl.updateRoomUserData();
+    schedule.scheduleJob('*/5 * * * * *', () => {
         room_contrl.updateRoomUserData();
     });
 };
-
-startJob();

@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+    <script type="text/javascript">
+        function Init() {
+            var canvas = document.getElementById("dragCanvas");
+            canvas.width = 600; //定义画布大小
+            canvas.height = 400;
+            var stage = new createjs.Stage(canvas);
+            createjs.Touch.enable(stage); //允许设备触控
+            var selectBool = []; //控制状态
+            drawImgs();
+            stage.update();
+
+            function drawImgs() {
+                var oX = 0,
+                        oY = 0;
+                var fzmx, fzmy, sx, sy; //辅助变量
+                for (var i = 0; i < 4; i++) {
+                    var randomColor = Math.floor(Math.random() * 16777215).toString(16);
+                    var con = new createjs.Container();
+                    var pic;
+                    switch (i) {
+                        case 0:
+                            pic = "../../assets/sunquan.png";
+                            break;
+                        case 1:
+                            pic = "../../assets/dongzhuo.png";
+                            break;
+                        case 2:
+                            pic = "../../assets/liubei.png";
+                            break;
+                        case 3:
+                            pic = "../../assets/caocao.png";
+                            break;
+                    }
+                    var bitmap = new createjs.Bitmap(pic);
+                    selectBool[i] = false;
+                    con.x = oX;
+                    con.y = oY;
+                    oX += 125;
+                    con.addChild(bitmap);
+                    con.addEventListener("mousedown", function (event) {
+                        var Mindex = stage.getChildIndex(event.target.parent);
+                        sx = event.stageX;
+                        sy = event.stageY;
+                        fzmx = event.stageX - event.target.parent.x;
+                        fzmy = event.stageY - event.target.parent.y;
+                        if (selectBool[Mindex]) {
+                            event.target.parent.addEventListener('pressmove', pressMove, false);
+                        } else {
+                            event.target.parent.removeEventListener('pressmove', pressMove, false);
+                        }
+                        stage.update();
+                    });
+                    //                添加鼠标"松开"事件
+                    con.addEventListener("pressup", function (event) {
+                        var Pindex = stage.getChildIndex(event.target.parent);
+                        if (Math.abs(event.stageX - sx) < 3 && Math.abs(event.stageY - sy) < 3) {
+                            selectBool[Pindex] = !selectBool[Pindex];
+                            shadowUr(selectBool[Pindex], event.target.parent, randomColor);
+                        }
+                        stage.update();
+                    });
+
+                    //                切换状态方法
+                    function shadowUr(bool, con, randomColor) {
+                        if (bool) {
+                            con.shadow = new createjs.Shadow("#" + randomColor, 0, 0, 10);
+                            var fIndex = con.parent.getChildIndex(con);
+                            for (var i = 0; i < con.parent.numChildren; i++) {
+                                if (i == fIndex)
+                                    continue;
+                                con.parent.getChildAt(i).shadow = null;
+                                selectBool[i] = false;
+                            }
+                        } else
+                            con.shadow = null;
+                    }
+
+                    //                图片拖动
+                    function pressMove(event) {
+                        var self = event.target.parent;
+                        if (event.stageX - fzmx < 0)
+                            self.x = 0;
+                        else if (event.stageX - fzmx + self.getBounds().width > stage.canvas.width)
+                            self.x = stage.canvas.width - self.getBounds().width;
+                        else
+                            self.x = event.stageX - fzmx;
+                        if (event.stageY - fzmy < 0)
+                            self.y = 0;
+                        else if (event.stageY - fzmy + self.getBounds().height > stage.canvas.height)
+                            self.y = stage.canvas.height - self.getBounds().height;
+                        else
+                            self.y = event.stageY - fzmy;
+                        stage.update();
+                    }
+
+                    stage.addChild(con);
+                }
+
+            }
+        }
+    </script>
+</head>
+
+<body onload="Init();">
+<canvas id="dragCanvas" style="border:#333 1px solid"></canvas>
+</body>
+
+</html>

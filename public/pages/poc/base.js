@@ -9,25 +9,26 @@ import {game_constants} from "./constants"
 let cjs = createjs,
     canvas,
     stage,
-    container,
+    container1,
     container2,
     ww = window.innerWidth,
     wh = window.innerHeight,
+    global_scale = 0.7,//整体缩放系数
     image,
     gameStageCoodInfos = [];
 
 const init = () => {
     //设置canvas属性
     canvas = document.getElementById('game');
-    canvas.width = parseInt(ww * 0.7);
+    canvas.width = parseInt(ww * global_scale);
     canvas.height = parseInt(canvas.width / 1.625);
     console.log("canvas.width ", canvas.width);
     console.log("canvas.height ", canvas.height);
     //创建舞台
     stage = new cjs.Stage(canvas);
-    container = new cjs.Container();//绘制第1层容器
+    container1 = new cjs.Container();//绘制第1层容器
     container2 = new cjs.Container();//绘制第2层容器,用于覆盖底层
-    stage.addChild(container);
+    stage.addChild(container1);
     stage.addChild(container2);
 
 
@@ -114,9 +115,35 @@ const init = () => {
     image.src = "../../assets/bawangdalu.png";
     image.onload = handleImageLoad;
 
+
+    const image2 = new Image();
+    image2.src = "../../assets/liubei.png";
+    image2.onload = (event) => {
+        const liubei = new cjs.Bitmap(event.target);//必须图片加载完成之后 img.onload之后执行
+        liubei.x = 0;
+        liubei.y = 0;
+        liubei.alpha = 0.9;
+        console.log("图片刘备", liubei.getBounds().width, liubei.getBounds().height);
+        liubei.scaleX = 0.3 * global_scale;
+        liubei.scaleY = 0.3 * global_scale;
+        //加入场景
+        container2.addChild(liubei);
+
+        liubei.addEventListener("click", function (event) {
+            moveliubei(event.target);
+            stage.update();
+        });
+
+        stage.update();
+    };
+
     cjs.Ticker.setFPS(60);//设置游戏帧率
-    cjs.Ticker.on("tick", () => stage.update());
+    cjs.Ticker.on("tick", tick);
 };
+
+function tick(event) {
+    stage.update(event);
+}
 
 //绘制矩形 类
 function DrawRect(w, h, c) {
@@ -135,6 +162,7 @@ function DrawLine(sx, sy, ex, ey, c) {
 }
 DrawRect.prototype = new cjs.Shape();//获得原型方法
 DrawLine.prototype = new cjs.Shape();//获得原型方法
+
 //给createjs增加getbyid的功能
 cjs.DisplayObject.prototype.getChildById = (id) => {
     var kids = this.children;
@@ -159,10 +187,21 @@ const handleImageLoad = (event) => {
     console.log("图片", bitmap.getBounds().width, bitmap.getBounds().height);
 
     //加入场景
-    container.addChild(bitmap);
+    container1.addChild(bitmap);
 
     stage.update();
 };
 
+function moveliubei(obj) {
 
+    console.log("moveliubei4 ",obj);
+    let moveObj = cjs.Tween.get(obj);
+    gameStageCoodInfos.forEach(gameStageInfo => {
+        console.log("move to ",gameStageInfo.s1.x,gameStageInfo.s1.w,obj.getBounds().width*0.3 * global_scale);
+        const x = gameStageInfo.s1.x+gameStageInfo.s1.w-obj.getBounds().width*0.3 * global_scale;
+        moveObj.to({x:x,y:gameStageInfo.s1.y}, 500);
+        console.log("move over ",x);
+
+    });
+}
 export {init}

@@ -275,14 +275,15 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     const initGame = () => {
         currentGameInfo = new SG_Game();
-        let lord = _.shuffle(sg_constant.lord_array);
+        let lord = _.shuffle(sg_constant.lord_id_array);
         const selectedLords = [];
         //初始化君主
         roomUsers.forEach(user => {
             //FIXME 暂时用随机分配君主(ID 1 14 27 40),将来做成可以选的
             const lordId = lord.shift();
             user.cards.push(lordId);
-            user.lordName = sg_constant.lord_name[lordId];
+            user.lordName = sg_constant.lord_property[lordId].name;
+            user.lordAvatar = sg_constant.lord_property[lordId].avatar;
             selectedLords.push(lordId);
         });
         //去掉选择掉的君主
@@ -290,7 +291,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
 
         roomUsers.forEach(user => {
             //金钱和兵力早已初始化过了,这里只摸3张武将卡
-            _.times(3, function () {
+            _.times(3, () => {
                 const cardId = getNextCardIndex();
                 user.cards.push(cardId);
             });

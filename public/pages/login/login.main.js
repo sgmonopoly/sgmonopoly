@@ -23,9 +23,13 @@ function setErrorInfo(msg, domId) {
     $('#err-content').html(msg);
 }
 
-function isValid(name) {
+function isValid(name,password) {
     if(!name){
-        setErrorInfo('姓名不能为空！', 'name');
+        setErrorInfo('姓名不能为空！', 'loginNickname');
+        return false;
+    }
+    if(!password){
+        setErrorInfo('密码不能为空！', 'loginPassword');
         return false;
     }
     return true;
@@ -33,32 +37,36 @@ function isValid(name) {
 
 function login() {
     clearForm();
-    let name = $('#name').val();
-    if(isValid(name)){
-        userLogin(name)
+    let loginNickname = $('#loginNickname').val();
+    let loginPassword = $('#loginPassword').val();
+    if(isValid(loginNickname,loginPassword)){
+        userLogin(loginNickname,loginPassword)
             .then(() => {
-                console.log('success!')
-                open(pages.rooms)
+                console.log('success!');
+                open(pages.rooms);
             })
             .catch((err) => {
-                console.log(err)
-            })
+                console.log(err.response.data);
+                setErrorInfo(err.response.data, 'loginNickname');
+            });
     }
 }
 
 function initPage() {
 
-    $('.input-container').mouseenter(() => {
+    let obj = $('.input-container');
+
+    obj.mouseenter(() => {
         onInputFocus();
     });
 
-    $('.input-container').mouseleave(() => {
+    obj.mouseleave(() => {
         onInputBlur();
     });
 
     $('#start-game').on('click', () => {
         login();
-    })
+    });
 }
 
 initPage();

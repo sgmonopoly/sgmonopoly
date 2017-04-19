@@ -32,7 +32,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 require('../ws').listen(server);
-
+require('../services/global_jobs').startJob();
 /**
  * Normalize a port into a number, string, or false.
  */
