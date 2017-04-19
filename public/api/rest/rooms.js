@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export function getRooms() {
-    return axios.get('/room/show')
+    return axios.get('/room/show');
 }
 
 export function enterRoom(roomId) {

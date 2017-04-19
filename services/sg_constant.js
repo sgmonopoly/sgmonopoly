@@ -117,11 +117,11 @@ module.exports = {
         tax_free: 8//免一切过路费
     },
     //君主信息
-    lord_array: [1, 14, 27, 40],
+    lord_id_array: [1, 14, 27, 40],
     lord_property: {
-        1: {name: "孙权", color: "green"},
-        14: {name: "董卓", color: "blue"},
-        27: {name: "刘备", color: "red"},
-        40: {name: "曹操", color: "silver"}
+        1: {name: "孙权", avatar: "/assets/sunquan.png"},
+        14: {name: "董卓", avatar: "/assets/dongzhuo.png"},
+        27: {name: "刘备", avatar: "/assets/liubei.png"},
+        40: {name: "曹操", avatar: "/assets/caocao.png"}
     }
 };

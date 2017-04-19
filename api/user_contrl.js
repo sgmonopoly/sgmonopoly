@@ -13,6 +13,23 @@ const _ = require("lodash");
  */
 let allRoom = require("../services/share_variables").allRoom;
 
+//测试账户
+const testUser1 = new USER_Info("test1", "test1", "");
+const testUser2 = new USER_Info("test2", "test2", "");
+const testUser3 = new USER_Info("test3", "test3", "");
+const testUser4 = new USER_Info("test4", "test4", "");
+const testUser5 = new USER_Info("test5", "test5", "");
+testUser1.password = "test1";
+testUser2.password = "test2";
+testUser3.password = "test3";
+testUser4.password = "test4";
+testUser5.password = "test5";
+allUser["test1"] = testUser1;
+allUser["test2"] = testUser2;
+allUser["test3"] = testUser3;
+allUser["test4"] = testUser4;
+allUser["test5"] = testUser4;
+
 /**
  * 注册
  * @param req
@@ -48,7 +65,7 @@ exports.loginByNickname = (req, res) => {
 
     const nickname = req.body.nickname;
     const password = req.body.password;
-    console.log("login:", nickname);
+    console.log("login:", nickname,password);
 
     //先根据昵称返回用户对象
     const user = allUser[nickname];
