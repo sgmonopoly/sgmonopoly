@@ -1,7 +1,7 @@
 /**
  * Created by yuanxiang on 3/24/17.
  */
-import {init,moveliubei} from './base'
+import {init} from './base'
 
 init();
 

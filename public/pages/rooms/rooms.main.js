@@ -22,7 +22,7 @@ function init() {
             let i = 2;
             rooms.forEach(room => {
                 const str = [];
-                str.push("<div class=\"room-block background-g-" + (i++ % 2) + "\" id=\"" + room.roomNo + "\">1234");
+                str.push("<div class=\"room-block background-g-" + (i++ % 2) + "\" id=\"" + room.roomNo + "\">");
                 str.push("房间号:" + room.roomNo);
                 str.push("&nbsp;");
                 str.push("状态:");
