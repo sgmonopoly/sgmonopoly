@@ -434,6 +434,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
 
 
     socket.on('disconnect', () => {
+        //TODO
         //自动调用下一个回合
         //nextTurn();
     });

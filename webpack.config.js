@@ -1,4 +1,4 @@
-
+var webpack = require('webpack');
 module.exports = {
     entry: require('./public/pages.config.json'),
     cache: true,
@@ -34,5 +34,10 @@ module.exports = {
             }
         ],
     },
-    devtool: 'source-map'
+    devtool: 'source-map',
+    plugins: [
+        new webpack.ProvidePlugin({
+            io: 'socket.io-client'
+        })
+    ]
 };

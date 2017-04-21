@@ -45,7 +45,7 @@ function init() {
                             open(pages.game, {roomNo: room.roomNo});
                         })
                         .catch((err) => {
-                            alert(console.log(err.response.data));
+                            alert(err.response.data);
                             console.log(err.response.data);
                         });
                 });

@@ -1,11 +1,11 @@
 /**
- * Created by yuanxiang on 3/30/17.
+ * Created by yuanxiang on 4/20/17.
  */
 import 'yuki-createjs'
 import * as _ from 'lodash'
+import {game_constants} from "./game_constants"
 import {map_info} from "./mapInfo"
-import {game_constants} from "./constants"
-import {getQueryString} from '../../common/utils/router'
+import {DrawRect} from "./common"
 
 let cjs = createjs,
     canvas,
@@ -14,15 +14,16 @@ let cjs = createjs,
     container2,
     ww = window.innerWidth,
     wh = window.innerHeight,
-    global_scale = 0.7,//整体缩放系数
     image,
     gameStageCoodInfos = [];
 
-const init = () => {
+const initChessBoard = () => {
     //设置canvas属性
     canvas = document.getElementById('game');
-    canvas.width = parseInt(ww * global_scale);
+    canvas.width = parseInt(ww * game_constants.global_scale);//这里要乘以一个整体缩放系数
     canvas.height = parseInt(canvas.width / 1.625);
+    console.log("ww ", ww);
+    console.log("wh ", wh);
     console.log("canvas.width ", canvas.width);
     console.log("canvas.height ", canvas.height);
     //创建舞台
@@ -32,6 +33,7 @@ const init = () => {
     stage.addChild(container1);
     stage.addChild(container2);
 
+    addBackground();//加背景
 
     const horizontalCount = 7;//水平放7个
     const verticalCount = 8;//垂直放8个
@@ -40,10 +42,8 @@ const init = () => {
     const boardLength = parseInt(minBoard / verticalCount) - marginSpace * 2;
     console.log("boardLength ", boardLength);
 
-
     const w = boardLength * 2,
         h = boardLength;
-
 
     const allGameStageWidth = horizontalCount * w + (horizontalCount - 1) * 2 * marginSpace;
     const allMarginLeft = (canvas.width - allGameStageWidth ) / 2 - marginSpace;//为了居中,算出左边间隙
@@ -112,75 +112,20 @@ const init = () => {
         container2.addChild(text);
     });
 
-    image = new Image();
-    image.src = "../../assets/bawangdalu.png";
-    image.onload = handleImageLoad;
-
-
-    const image2 = new Image();
-    image2.src = "../../assets/liubei.png";
-    image2.onload = (event) => {
-        const liubei = new cjs.Bitmap(event.target);//必须图片加载完成之后 img.onload之后执行
-        liubei.x = 0;
-        liubei.y = 0;
-        liubei.alpha = 0.9;
-        console.log("图片刘备", liubei.getBounds().width, liubei.getBounds().height);
-        liubei.scaleX = 0.3 * global_scale;
-        liubei.scaleY = 0.3 * global_scale;
-        //加入场景
-        container2.addChild(liubei);
-
-        liubei.addEventListener("click", function (event) {
-            moveliubei(event.target);
-            stage.update();
-        });
-
-        stage.update();
-    };
-
     cjs.Ticker.setFPS(60);//设置游戏帧率
     cjs.Ticker.on("tick", tick);
 
-
-    //连ws
-    //room_ws.connect()
-    console.log(222,getQueryString("roomNo"));
-
 };
 
-function tick(event) {
+const tick = (event) => {
     stage.update(event);
-}
-
-//绘制矩形 类
-function DrawRect(w, h, c) {
-    cjs.Shape.call(this);//继承Shape类
-    this.graphics.setStrokeStyle(1).beginStroke("black");
-    this.graphics.beginFill(c).drawRect(0, 0, w, h);
-    this.setBounds(0, 0, w, h);//设置矩形的边界属性，这样可以获得width和height属性
-}
-//绘制线 类
-function DrawLine(sx, sy, ex, ey, c) {
-    cjs.Shape.call(this);//继承Shape类
-    this.graphics.setStrokeStyle(1).beginStroke(c);
-    this.graphics.moveTo(sx, sy);
-    this.graphics.lineTo(ex, ey);
-    this.graphics.endStroke();
-}
-DrawRect.prototype = new cjs.Shape();//获得原型方法
-DrawLine.prototype = new cjs.Shape();//获得原型方法
-
-//给createjs增加getbyid的功能
-cjs.DisplayObject.prototype.getChildById = (id) => {
-    var kids = this.children;
-    for (var i = 0, l = kids.length; i < l; i++) {
-        if (kids[i].id == id) {
-            return kids[i];
-        }
-    }
-    return null;
 };
 
+const addBackground = () => {
+    image = new Image();
+    image.src = "../../../assets/bawangdalu.png";
+    image.onload = handleImageLoad;
+};
 
 const handleImageLoad = (event) => {
     var bitmap = new cjs.Bitmap(event.target);//必须图片加载完成之后 img.onload之后执行
@@ -199,16 +144,4 @@ const handleImageLoad = (event) => {
     stage.update();
 };
 
-function moveliubei(obj) {
-
-    console.log("moveliubei4 ",obj);
-    let moveObj = cjs.Tween.get(obj);
-    gameStageCoodInfos.forEach(gameStageInfo => {
-        console.log("move to ",gameStageInfo.s1.x,gameStageInfo.s1.w,obj.getBounds().width*0.3 * global_scale);
-        const x = gameStageInfo.s1.x+gameStageInfo.s1.w-obj.getBounds().width*0.3 * global_scale;
-        moveObj.to({x:x,y:gameStageInfo.s1.y}, 500);
-        console.log("move over ",x);
-
-    });
-}
-export {init}
+export {initChessBoard,stage}

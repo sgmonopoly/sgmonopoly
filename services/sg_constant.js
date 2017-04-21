@@ -99,7 +99,8 @@ module.exports = {
         chat: "chat",//聊天记录
         roomUsers: "roomUsers",//房间所有用户信息
         room: "room",//房间信息
-        gameLog: "gameLog"//操作日志
+        gameLog: "gameLog",//操作日志
+        handshake: "handshake",//连接成功信息
     },
     item_count: {
         card: 54,//卡片总数量

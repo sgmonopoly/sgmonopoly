@@ -42,9 +42,9 @@ function login() {
     if(isValid(loginNickname,loginPassword)){
         userLogin(loginNickname,loginPassword)
             .then((result) => {
-                console.log('success!');
+                console.log('success!',result.data.userId);
                 saveUserInfo(result.data.userId);
-                //open(pages.rooms);
+                open(pages.rooms);
             })
             .catch((err) => {
                 console.log(err.response.data);

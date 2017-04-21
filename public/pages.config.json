@@ -1,5 +1,5 @@
 {
     "login": "./public/pages/login/login.main.js",
     "rooms": "./public/pages/rooms/rooms.main.js",
-    "poc": "./public/pages/poc/poc.main.js"
+    "game": "./public/pages/game/game.main.js"
 }

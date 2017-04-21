@@ -39,6 +39,8 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
         }
 
         wsUtils.updateRoomToAll(room);
+
+        console.log('chatMessage:::', chatMessage);
         //给聊天记录发送消息
         wsUtils.chat(chatMessage);
 

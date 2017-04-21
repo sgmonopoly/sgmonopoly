@@ -1,10 +1,8 @@
 /**
  * Created by yuanxiang on 4/1/17.
  */
-
 export const game_constants = {
     global_scale : 0.7,//整体缩放系数
-
     /*
      地图上的序号对应坐标
      原来的想法,地图上是有个顺序的,实现麻烦,所以先去掉了
