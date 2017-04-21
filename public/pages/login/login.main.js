@@ -41,15 +41,25 @@ function login() {
     let loginPassword = $('#loginPassword').val();
     if(isValid(loginNickname,loginPassword)){
         userLogin(loginNickname,loginPassword)
-            .then(() => {
+            .then((result) => {
                 console.log('success!');
-                open(pages.rooms);
+                saveUserInfo(result.data.userId);
+                //open(pages.rooms);
             })
             .catch((err) => {
                 console.log(err.response.data);
                 setErrorInfo(err.response.data, 'loginNickname');
             });
     }
+}
+/**
+ * 保存用户id到本地,用来传参
+ * @param userId
+ */
+function saveUserInfo(userId){
+    let ls = window.localStorage;
+    ls.removeItem("sgm_userId");
+    ls.setItem("sgm_userId",userId);
 }
 
 function initPage() {
