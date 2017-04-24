@@ -1,5 +1,6 @@
 /**
  * Created by yuanxiang on 4/20/17.
+ * 这个用来操作棋盘canvas
  */
 import 'yuki-createjs'
 import * as _ from 'lodash'

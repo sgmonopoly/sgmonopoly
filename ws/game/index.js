@@ -17,7 +17,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
     /**
      * 当前对局的游戏属性
      */
-    let currentGameInfo;
+    let currentGameInfo = room.gameInfo;
 
     /**
      * 开始游戏
@@ -97,7 +97,11 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 掷骰子,并广播骰子点数
      * 可以前端直接传,不传的话就后端随机生成
      */
-    socket.on('throwDice', (point = getDicePoint(currentGameInfo.diceRange)) => {
+    socket.on('throwDice', point => {
+        console.log("throwDice",point);
+        console.log(currentGameInfo);
+        if(!point) point = getDicePoint(currentGameInfo.diceRange);
+
         wsUtils.gameLog(socket.nickname + "投掷点数:" + point);
         io.emit('diceResult', {
             userId: socket.userId,
@@ -328,6 +332,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     let safeCount = 0;
     const getNextUser = () => {
+        console.log("getNextUser");
         //先获取下一个用户索引
         changeNextUserIndex();
         safeCount++;
@@ -340,6 +345,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         //判断该用户是否在线
         if (nextUser && nextUser.status === sg_constant.user_status.gaming) {
             safeCount = 0;
+            console.log("nextUser",nextUser);
             return nextUser;
         } else {
             //不在线则再调一次
@@ -350,6 +356,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 获取下一个用户索引
      */
     const changeNextUserIndex = () => {
+        console.log("changeNextUserIndex",currentGameInfo);
         if (currentGameInfo.currentUserIndex >= roomUsers.length - 1) {
             //如果当前用户索引大于等于长度时,重置
             currentGameInfo.currentUserIndex = 0;

@@ -12,6 +12,7 @@ class GAME_Room {
         this.maxNum = _maxNum;
         this.users = _users;
         this.isGaming = _isGaming;
+        this.gameInfo = {};
     }
 }
 module.exports = GAME_Room;

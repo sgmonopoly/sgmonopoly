@@ -27,7 +27,7 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
         let chatMessage = "欢迎" + currentUser.nickname + "进入房间";
         //如果是正在游戏的房间的话,先判断是否为掉线重进的玩家
         if (room.isGaming) {
-            for (let index = 0; index < roomUsers.length; i++) {
+            for (let index = 0; index < roomUsers.length; index++) {
                 if (roomUsers[index] && roomUsers[index].userId === userId
                     && roomUsers[index].status === sg_constant.user_status.lost) {
                     //必须是掉线状态的玩家,然后恢复他的状态
@@ -39,8 +39,6 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
         }
 
         wsUtils.updateRoomToAll(room);
-
-        console.log('chatMessage:::', chatMessage);
         //给聊天记录发送消息
         wsUtils.chat(chatMessage);
 
@@ -54,6 +52,7 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
         if (lostGameUserIndex >= 0) {
             //直接剔除该用户
             roomUsers.splice(lostGameUserIndex, 1);
+            //console.log("quitRoom",room);
             wsUtils.updateRoomToAll(room);
             //给聊天记录发送消息
             if(!isKick){
@@ -61,7 +60,7 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
             }else{
                 wsUtils.chat(socket.nickname + "被请出了房间");
             }
-
+            socket.disconnect();
         }
     });
 
@@ -78,13 +77,11 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
             if (room.isGaming) {
                 //正在游戏的话,设置该用户为掉线
                 roomUsers[lostGameUserIndex].status = sg_constant.user_status.lost;
-                wsUtils.updateRoomToAll(room);
                 //给聊天记录发送消息
                 wsUtils.chat(socket.nickname + "掉线");
             } else {
                 //没有正在游戏的话,直接剔除该用户
                 roomUsers.splice(lostGameUserIndex, 1);
-                wsUtils.updateRoomToAll(room);
                 //给聊天记录发送消息
                 wsUtils.chat(socket.nickname + "已经退出房间");
             }
@@ -96,6 +93,7 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
         }
         //房主检测
         common.checkAndResetRoomHost(room, socket.userId);
+        wsUtils.updateRoomToAll(room);
         //提醒前端,有人退出,可能需要做一些同步操作
         roomIo.emit("somebodyExit");
     });
