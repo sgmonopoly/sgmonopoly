@@ -5,16 +5,33 @@
     <title>sgmonopoly</title>
 </head>
 <body>
-<div id="gameInfo">游戏信息</div>
-<canvas id="game">not support</canvas>
-<div id="user1">用户1:</div>
-<div id="user2">用户2:</div>
-<div id="user3">用户3:</div>
-<div id="user4">用户4:</div>
-<textarea id="gameLog" style="width: 500px" readonly rows="5">游戏日志:</textarea>
-<textarea id="errorLog" style="width: 500px" readonly rows="5">错误日志:</textarea>
-<textarea id="chatLog" style="width: 500px" readonly rows="5">聊天日志:</textarea>
-<input type="text" id="chatMessage"/><button>发送</button>
+游戏信息:<br/>
+<div id="gameInfo"></div><br/>
+<canvas id="game">not support</canvas><br/>
+<button id="quitRoom">退出</button>
+<button id="toReady">准备好了</button>
+<button id="toUnready">取消准备</button>
+<button id="startGame">开始游戏</button>
+<button id="endTurn">回合结束</button><br/>
+骰子点数<input type="number" id="dicePoint"/><button id="throwDice">掷骰子</button>
+<br/>
+房间信息:<br/>
+<div id="roomInfo"></div><br/>
+用户1:<br/>
+<div id="user1"></div><br/>
+用户2:<br/>
+<div id="user2"></div><br/>
+用户3:<br/>
+<div id="user3"></div><br/>
+用户4:<br/>
+<div id="user4"></div><br/>
+游戏日志:<br/>
+<textarea id="gameLog" style="width: 500px" readonly rows="5"></textarea><br/>
+错误日志:<br/>
+<textarea id="errorLog" style="width: 500px" readonly rows="5"></textarea><br/>
+聊天日志:<br/>
+<textarea id="chatLog" style="width: 500px" readonly rows="5"></textarea><br/>
+<input type="text" id="chatMessage"/><button id="sendMessage">发送</button><br/>
 <script src="../../dist/game.bundle.js"></script>
 </body>
 </html>

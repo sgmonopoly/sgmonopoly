@@ -36,11 +36,14 @@ exports.getUserIndex = (roomUsers, userId) => {
  */
 exports.checkAndResetRoomHost = (room, currentUserId) => {
 
+    console.log("checkAndResetRoomHost");
+    console.log(room);
+    console.log(currentUserId);
     if (room.currentNum === 0) {
         //如果房间没人取消房主
         room.hostId = '';
         room.hostNickname = '';
-    } else if (room.currentNum > 0 && currentUserId === room.hostId) {
+    } else if (room.currentNum > 0 && currentUserId == room.hostId) {
         //检测当前用户是否为原房主,是的话,则房间易主
         room.hostId = room.users[0].userId;
         room.hostNickname = room.users[0].nickname;
