@@ -17,7 +17,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
     /**
      * 当前对局的游戏属性
      */
-    let currentGameInfo = room.gameInfo;
+    let currentGameInfo;
 
     /**
      * 开始游戏
@@ -97,10 +97,9 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 掷骰子,并广播骰子点数
      * 可以前端直接传,不传的话就后端随机生成
      */
-    socket.on('throwDice', point => {
-        console.log("throwDice",point);
-        console.log(currentGameInfo);
+    socket.on('throwDice', (point) => {
         if(!point) point = getDicePoint(currentGameInfo.diceRange);
+        console.log("throwDice",point);
 
         wsUtils.gameLog(socket.nickname + "投掷点数:" + point);
         io.emit('diceResult', {
@@ -112,9 +111,10 @@ const init = (socket, io, roomNumber, wsUtils) => {
     /**
      * 掷3骰子,并广播骰子总点数
      */
-    socket.on('throw3Dices', (point1 = getDicePoint(currentGameInfo.diceRange),
-                              point2 = getDicePoint(currentGameInfo.diceRange),
-                              point3 = getDicePoint(currentGameInfo.diceRange)) => {
+    socket.on('throw3Dices', (point1,point2,point3) => {
+        if(!point1) point1 = getDicePoint(currentGameInfo.diceRange);
+        if(!point2) point2 = getDicePoint(currentGameInfo.diceRange);
+        if(!point3) point3 = getDicePoint(currentGameInfo.diceRange);
         const pointAll = point1 + point2 + point3;
         wsUtils.gameLog(`${socket.nickname}投掷3次分别为:${point1}点、${point2}点和${point3}点,总点数${pointAll}点`);
         io.emit('diceResult', {
@@ -279,6 +279,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     const initGame = () => {
         currentGameInfo = new SG_Game();
+        room.gameInfo = currentGameInfo;
         let lord = _.shuffle(sg_constant.lord_id_array);
         const selectedLords = [];
         //初始化君主
@@ -339,6 +340,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         if (safeCount > 10) {
             //安全监测,以防万一,如果永远取不到下一个用户直接暂停报错
             //TODO 调用游戏结束方法
+            endGame();
             throw new Error("房间无人在线!");
         }
         let nextUser = roomUsers[currentGameInfo.currentUserIndex];
@@ -437,6 +439,19 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     const getUser = (userId) => {
         return common.getUser(roomUsers, userId);
+    };
+    /**
+     * 结束游戏
+     */
+    const endGame = () => {
+        console.log(`房间${room.roomNo}游戏结束`);
+        currentGameInfo = {};
+        room.users.length = 0;
+        room.hostId = room.hostNickname = "";
+        room.currentNum = 0;
+        room.isGaming = false;
+
+        io.emit("gameover");
     };
 
 

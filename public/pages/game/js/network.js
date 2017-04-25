@@ -61,6 +61,13 @@ const initNetwork = (roomId) => {
     });
 
     /**
+     * 游戏结束
+     */
+    socket.on("gameover", () => {
+        alert("游戏结束");
+    });
+
+    /**
      * 下一回合时
      */
     socket.on("nextTurn", currentTurnUser => {
