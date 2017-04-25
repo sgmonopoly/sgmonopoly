@@ -15,6 +15,9 @@ const dom_user3 = $("#user3");
 const dom_user4 = $("#user4");
 const dom_roomInfo = $("#roomInfo");
 const dom_gameInfo = $("#gameInfo");
+const dom_chatMessage = $("#chatMessage");
+const dom_dicePoint = $("#dicePoint");
+
 const dom_btn_quitRoom = $("#quitRoom");
 const dom_btn_sendMessage = $("#sendMessage");
 const dom_btn_toReady = $("#toReady");
@@ -22,7 +25,7 @@ const dom_btn_toUnready = $("#toUnready");
 const dom_btn_startGame = $("#startGame");
 const dom_btn_endTurn = $("#endTurn");
 const dom_btn_throwDice = $("#throwDice");
-const dom_dicePoint = $("#dicePoint");
+
 
 (function () {
     /**
@@ -34,8 +37,9 @@ const dom_dicePoint = $("#dicePoint");
     /**
      * 绑定发送聊天事件
      */
-    dom_btn_sendMessage.on('click', message => {
-        room_ws.addChatMessage(message);
+    dom_btn_sendMessage.on('click', () => {
+        const message = dom_chatMessage.val();
+        if(message) room_ws.addChatMessage(message);
     });
     /**
      * 绑定准备好了事件
@@ -70,7 +74,7 @@ const dom_dicePoint = $("#dicePoint");
     dom_btn_throwDice.on('click', () => {
         const point = dom_dicePoint.val();
         console.log("掷骰子",point);
-        game_ws.throwDice();
+        game_ws.throwDice(point);
     });
 })();
 
@@ -127,6 +131,8 @@ const clearUserInfo = () => {
  */
 export const addChatLog = message => {
     dom_chatLog.append(message);
+    //滚动条始终在下面
+    dom_chatLog[0].scrollTop = dom_chatLog[0].scrollHeight;
     dom_chatLog.append("\n");
 };
 /**
@@ -134,6 +140,8 @@ export const addChatLog = message => {
  */
 export const addGameLog = message => {
     dom_gameLog.append(message);
+    //滚动条始终在下面
+    dom_gameLog[0].scrollTop = dom_gameLog[0].scrollHeight;
     dom_gameLog.append("\n");
 };
 /**
@@ -141,6 +149,8 @@ export const addGameLog = message => {
  */
 export const addErrorLog = message => {
     dom_errorLog.append(message);
+    //滚动条始终在下面
+    dom_errorLog[0].scrollTop = dom_errorLog[0].scrollHeight;
     dom_errorLog.append("\n");
 };
 /**
