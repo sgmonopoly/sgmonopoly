@@ -56,17 +56,11 @@ sg_constant.roomNumbers.forEach(roomNumber => {
              * 广播
              * 给所有人更新当前房间所有信息(包括用户),其他人触发时用
              */
-            updateRoomToAll: (room, currentGameInfo) => {
+            updateRoomToAll: (room) => {
+                const currentGameInfo = room.gameInfo;
                 const currentGameInfoClone = _.omit(currentGameInfo, "cardOrders", "situationOrders", "suggestionOrder", "diceRange");
-                roomIo.emit(sg_constant.ws_name.room, room, currentGameInfoClone);
-            },
-            /**
-             * 局部
-             * 只给自己更新当前房间所有信息(包括用户),前端POLL方式给自己用
-             */
-            updateRoomToMe: (room, currentGameInfo) => {
-                const currentGameInfoClone = _.omit(currentGameInfo, "cardOrders", "situationOrders", "suggestionOrder", "diceRange");
-                socket.emit(sg_constant.ws_name.room, room, currentGameInfoClone);
+                const currentRoomInfo = _.omit(room,"gameInfo");
+                roomIo.emit(sg_constant.ws_name.room, currentRoomInfo, currentGameInfoClone);
             }
         };
 

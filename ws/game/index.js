@@ -32,7 +32,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
 
         io.emit("startGameSuccess", currentGameInfo);
         wsUtils.gameLog("游戏开始了");
-        wsUtils.updateRoomToAll(room, currentGameInfo);
+        wsUtils.updateRoomToAll(room);
         nextTurn();
     });
 
@@ -41,7 +41,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     socket.on('endTurn', () => {
         wsUtils.gameLog(socket.nickname + "结束了当前回合");
-        wsUtils.updateRoomToAll(room, currentGameInfo);
+        wsUtils.updateRoomToAll(room);
         nextTurn();
     });
     /**
@@ -90,7 +90,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             }
         });
 
-        wsUtils.updateRoomToAll(room, currentGameInfo);
+        wsUtils.updateRoomToAll(room);
     });
 
     /**
@@ -144,7 +144,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
 
         user.money = user.money - city.occupyPrice;//付钱
         currentGameInfo.occupyCity(user, city);//占领城市
-        wsUtils.updateRoomToAll(room, currentGameInfo);
+        wsUtils.updateRoomToAll(room);
     });
 
     /**
@@ -178,7 +178,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         targetUser.money = targetUser.money + toll;
 
         wsUtils.gameLog(`${currentUser.nickname}路过${city.stageName}付过路税金${toll}给${targetUser.nickname}`);
-        wsUtils.updateRoomToAll(room, currentGameInfo);
+        wsUtils.updateRoomToAll(room);
     });
 
     /**
@@ -194,7 +194,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         currentUser.troop = currentUser.troop + troop;
 
         wsUtils.gameLog(`${currentUser.nickname}购买了兵力${troop}`);
-        wsUtils.updateRoomToAll(room, currentGameInfo);
+        wsUtils.updateRoomToAll(room);
     });
 
     /**
@@ -218,7 +218,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         });
 
         wsUtils.gameLog(`${currentUser.nickname}购买了${num}名武将卡`);
-        wsUtils.updateRoomToAll(room, currentGameInfo);
+        wsUtils.updateRoomToAll(room);
     });
 
     /**
@@ -268,7 +268,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         });
 
         wsUtils.gameLog(`${city.stageName}改造成了${sg_constant.city_type_cn[levelMade]}`);
-        wsUtils.updateRoomToAll(room, currentGameInfo);
+        wsUtils.updateRoomToAll(room);
     });
 
 
@@ -279,7 +279,9 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     const initGame = () => {
         currentGameInfo = new SG_Game();
-        room.gameInfo = currentGameInfo;
+
+        room.gameInfo = currentGameInfo;//将游戏属性设置到房间属性中
+
         let lord = _.shuffle(sg_constant.lord_id_array);
         const selectedLords = [];
         //初始化君主
