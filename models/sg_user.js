@@ -18,6 +18,7 @@ class SG_User extends require("./user_info") {
         this.socketId = "";//socketId
         this.turn = 0;//已经经历的总轮数
         this.color = "";//颜色
+        this.offset = 0;//头像偏移量
     }
 }
 module.exports = SG_User;

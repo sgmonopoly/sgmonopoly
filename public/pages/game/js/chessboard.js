@@ -1,6 +1,6 @@
 /**
  * Created by yuanxiang on 4/20/17.
- * 这个用来操作棋盘canvas
+ * 这个用来初始化棋盘canvas
  */
 import 'yuki-createjs'
 import * as _ from 'lodash'
@@ -145,4 +145,4 @@ const handleImageLoad = (event) => {
     stage.update();
 };
 
-export {initChessBoard,stage}
+export {initChessBoard,stage,cjs,container2,gameStageCoodInfos}

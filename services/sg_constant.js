@@ -124,5 +124,6 @@ module.exports = {
         14: {name: "董卓", avatar: "/assets/dongzhuo.png"},
         27: {name: "刘备", avatar: "/assets/liubei.png"},
         40: {name: "曹操", avatar: "/assets/caocao.png"}
-    }
+    },
+    avatar_offset: 20//头像偏移量
 };

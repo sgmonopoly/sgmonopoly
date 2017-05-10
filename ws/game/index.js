@@ -30,7 +30,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         //初始化游戏
         initGame();
 
-        io.emit("startGameSuccess", currentGameInfo);
+        io.emit("startGameSuccess", roomUsers);
         wsUtils.gameLog("游戏开始了");
         wsUtils.updateRoomToAll(room);
         nextTurn();
@@ -284,6 +284,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
 
         let lord = _.shuffle(sg_constant.lord_id_array);
         const selectedLords = [];
+        let userIndex = 0;
         //初始化君主
         roomUsers.forEach(user => {
             //FIXME 暂时用随机分配君主(ID 1 14 27 40),将来做成可以选的
@@ -291,6 +292,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             user.cards.push(lordId);
             user.lordName = sg_constant.lord_property[lordId].name;
             user.lordAvatar = sg_constant.lord_property[lordId].avatar;
+            user.offset = userIndex++ * sg_constant.avatar_offset;//偏移量暂时设置为20
             selectedLords.push(lordId);
         });
         //去掉选择掉的君主

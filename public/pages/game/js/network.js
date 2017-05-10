@@ -4,7 +4,7 @@
  */
 import {socket, room_ws, game_ws} from '../../../api/ws/emit'
 import * as domHanlder from './domHanlder'
-
+import * as canvasHandler from './canvasHandler'
 
 const myUserId = window.localStorage.getItem("sgm_userId");
 if(!myUserId){
@@ -55,9 +55,12 @@ const initNetwork = (roomId) => {
 
     /**
      * 成功开始游戏时
+     * 设置棋子
      */
-    socket.on("startGameSuccess", gameInfo => {
-        domHanlder.updateGameInfo(gameInfo);
+    socket.on("startGameSuccess", roomUsers => {
+        roomUsers.forEach(user => {
+            canvasHandler.pieceReady(user.lordAvatar, user.offset);
+        });
     });
 
     /**
@@ -80,6 +83,7 @@ const initNetwork = (roomId) => {
     socket.on("diceResult", result => {
         const point = result.point;
         console.log("掷骰子点数:",point);
+        //TODO 根据点数走路
     });
 
 };
