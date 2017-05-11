@@ -106,7 +106,7 @@ const initChessBoard = () => {
         text.x = s2.x + 5;
         text.y = s2.y + 5;
         text.name = gameStage.stageId + "_" + "text";
-        console.log("test: ", gameStage);
+        //console.log("test: ", gameStage);
 
         container2.addChild(s1);
         container2.addChild(s2);
@@ -118,7 +118,7 @@ const initChessBoard = () => {
 
 };
 
-const tick = (event) => {
+const tick = event => {
     stage.update(event);
 };
 
@@ -128,7 +128,7 @@ const addBackground = () => {
     image.onload = handleImageLoad;
 };
 
-const handleImageLoad = (event) => {
+const handleImageLoad = event => {
     var bitmap = new cjs.Bitmap(event.target);//必须图片加载完成之后 img.onload之后执行
 
     bitmap.x = 0;
@@ -144,5 +144,32 @@ const handleImageLoad = (event) => {
 
     stage.update();
 };
+/**
+ * 根据ID返回stage节点对象
+ * @param stageId
+ * @returns {*}
+ */
+const getStage = stageId => {
+    for (var i = 0, l = gameStageCoodInfos.length; i < l; i++) {
+        if (gameStageCoodInfos[i].i === stageId) {
+            return gameStageCoodInfos[i];
+        }
+    }
+};
 
-export {initChessBoard,stage,cjs,container2,gameStageCoodInfos}
+/**
+ * 为createjs增加getById的方法
+ * @param id
+ * @returns {*}
+ */
+cjs.DisplayObject.prototype.getChildById = (id) => {
+    var kids = this.children;
+    for (var i = 0, l = kids.length; i < l; i++) {
+        if (kids[i].id == id) {
+            return kids[i];
+        }
+    }
+    return null;
+};
+
+export {initChessBoard,stage,cjs,container2,getStage}

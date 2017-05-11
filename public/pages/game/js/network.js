@@ -19,6 +19,9 @@ const initNetwork = (roomId) => {
 
     console.log("roomId:", roomId);
     room_ws.connect(roomId);
+    /**
+     * WS连接握手通知
+     */
     socket.on("handshake", message => {
         console.log("handshake message:", message);
         room_ws.enterRoom(myUserId);
@@ -30,6 +33,7 @@ const initNetwork = (roomId) => {
     socket.on("room", (roomInfo,gameInfo) => {
         domHanlder.updateRoomInfo(roomInfo);
         domHanlder.updateGameInfo(gameInfo);
+        canvasHandler.updatePiecePosition(roomInfo.users);
     });
 
     /**
@@ -55,13 +59,12 @@ const initNetwork = (roomId) => {
 
     /**
      * 成功开始游戏时
-     * 设置棋子
      */
+    /*
     socket.on("startGameSuccess", roomUsers => {
-        roomUsers.forEach(user => {
-            canvasHandler.pieceReady(user.lordAvatar, user.offset);
-        });
+
     });
+    */
 
     /**
      * 游戏结束
@@ -78,12 +81,16 @@ const initNetwork = (roomId) => {
     });
 
     /**
-     * 掷骰子结果
+     * 掷骰子结果,之后走路
      */
-    socket.on("diceResult", result => {
+    socket.on("diceResultForWalk", result => {
         const point = result.point;
-        console.log("掷骰子点数:",point);
-        //TODO 根据点数走路
+        const userId = result.userId;
+        const midway = result.midway;
+        console.log("掷骰子点数:",point,"途径",midway);
+        //根据点数走路
+        canvasHandler.movePiece(userId, midway);
+
     });
 
 };

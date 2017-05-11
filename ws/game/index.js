@@ -30,7 +30,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         //初始化游戏
         initGame();
 
-        io.emit("startGameSuccess", roomUsers);
+        //io.emit("startGameSuccess", roomUsers);
         wsUtils.gameLog("游戏开始了");
         wsUtils.updateRoomToAll(room);
         nextTurn();
@@ -94,19 +94,29 @@ const init = (socket, io, roomNumber, wsUtils) => {
     });
 
     /**
-     * 掷骰子,并广播骰子点数
+     * 掷骰子走路,并广播骰子点数
      * 可以前端直接传,不传的话就后端随机生成
      */
-    socket.on('throwDice', (point) => {
+    socket.on('throwDiceForWalk', (point) => {
         if(!point) point = getDicePoint(currentGameInfo.diceRange);
         console.log("throwDice",point);
+        console.log("roomUsers",roomUsers);
 
         wsUtils.gameLog(socket.nickname + "投掷点数:" + point);
-        io.emit('diceResult', {
+
+        const currentUser = getUser(socket.userId);
+        //返回途径的所有节点
+        const midway = getMidway(currentUser.currentPosition, point);
+
+        currentUser.currentPosition = midway[midway.length - 1];
+
+        io.emit('diceResultForWalk', {
             userId: socket.userId,
             nickname: socket.nickname,
-            point: point
+            point: point,
+            midway: midway
         });
+
     });
     /**
      * 掷3骰子,并广播骰子总点数
@@ -540,5 +550,25 @@ const getDicePoint = (diceRange) => {
     return diceRange[ranIndex];
 };
 
+/**
+ * 根据走路的点数,返回包含起始位置的途径位置数据
+ * @param origin
+ * @param point
+ * @returns {*}
+ */
+const getMidway = (origin, point) => {
+    const midway = [];
+    midway.push(origin);
+    _.times(point, i => {
+        const target = i + 1;
+        //超过最后一处,则返回起点
+        if(origin + target > sg_constant.stageCount){
+            midway.push(origin + target - sg_constant.stageCount);
+        }else{
+            midway.push(origin + target);
+        }
+    });
+    return midway;
+};
 
 module.exports = init;

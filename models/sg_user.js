@@ -19,6 +19,7 @@ class SG_User extends require("./user_info") {
         this.turn = 0;//已经经历的总轮数
         this.color = "";//颜色
         this.offset = 0;//头像偏移量
+        this.currentPosition = 1;//当前位置(默认初始化时在第一个地方)
     }
 }
 module.exports = SG_User;

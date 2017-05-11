@@ -6,6 +6,7 @@ module.exports = {
     saveCheck: false,//全局安全检查,生产环境为true
     roomNamePrefix: "room",//默认返回的房间对象中,可能会包含自带属性,用这个名称来过滤房间对象
     roomNumbers: [1, 2],//暂时只有2个房间,以后再加
+    stageCount: 56,//棋盘一共56个格子
     // 武将花色
     hero_suit: {
         heart: 1,//红桃
