@@ -45,7 +45,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         nextTurn();
     });
     /**
-     * @deprecated
+     * @deprecated 由于会有数值计算的事务问题,这个方法暂时不用
      *
      * 调整数值,完全由前端控制
      * 【

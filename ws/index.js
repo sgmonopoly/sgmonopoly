@@ -6,10 +6,6 @@ const sg_constant = require("../services/sg_constant");
 const ios = require("socket.io-express-session");
 const session = require("../session");
 const _ = require("lodash");
-/**
- * 这是所有房间的对象
- */
-let allRoom = require("../services/share_variables").allRoom;
 
 sg_constant.roomNumbers.forEach(roomNumber => {
     const roomIo = io.of("/room/" + roomNumber);
