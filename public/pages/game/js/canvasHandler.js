@@ -20,7 +20,7 @@ const pieceReady = (lordAvatar, offset) => {
     const firstStage = gameStageCoodInfos[0];
     image.onload = (event) => {
         const lord = new cjs.Bitmap(event.target);//必须图片加载完成之后 img.onload之后执行
-        const x = firstStage.s1.x+firstStage.s1.w-event.target.getBounds().width*0.3 * game_constants.global_scale - offset;
+        const x = firstStage.s1.x+firstStage.s1.w-lord.getBounds().width*0.3 * game_constants.global_scale - offset;
         lord.x = x;
         lord.y = firstStage.s1.y;
         lord.alpha = 0.9;
