@@ -36,7 +36,7 @@ const game_ws = {
     endTurn: () => {
         socket.emit("endTurn");
     },
-    throwDice: (point) => {//point为空则随机
+    throwDiceForWalk: (point) => {//point为空则随机
         socket.emit("throwDiceForWalk", point);
     },
     throw3Dices: (point1,point2,point3) => {

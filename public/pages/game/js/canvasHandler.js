@@ -10,6 +10,7 @@ import {stage, cjs, container2, getStage} from './chessboard'
 
 /**
  * 准备棋子的图片和位置
+ * @param userId
  * @param lordAvatar 头像地址
  * @param offset 偏移量
  * @param currentPosition 用户当前位置
@@ -61,9 +62,10 @@ const updatePiecePosition = roomUsers => {
 /**
  * 移动棋子
  * @param userId
- * @param midway
+ * @param midway 途径的节点
+ * @param offset 头像偏移量
  */
-const movePiece = (userId, midway) => {
+const movePiece = (userId, midway, offset) => {
     const lord = container2.getChildByName(userId);
     console.log("move lord:",lord);
     let moveLord = cjs.Tween.get(lord);
@@ -71,8 +73,9 @@ const movePiece = (userId, midway) => {
     midway.shift();
     midway.forEach(position => {
         const currentStage = getStage(position);
-        const x = currentStage.s1.x + currentStage.s1.w - lord.getBounds().width * 0.3 * game_constants.global_scale;
-        moveLord.to({x: x, y: currentStage.s1.y}, 300);
+        const dest_x = currentStage.s1.x + currentStage.s1.w - lord.getBounds().width * 0.3 * game_constants.global_scale - offset;
+        const dest_y = currentStage.s1.y;
+        moveLord.to({x: dest_x, y: dest_y}, 300);
     });
 };
 

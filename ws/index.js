@@ -53,10 +53,10 @@ sg_constant.roomNumbers.forEach(roomNumber => {
              * 给所有人更新当前房间所有信息(包括用户),其他人触发时用
              */
             updateRoomToAll: (room) => {
-                const currentGameInfo = room.gameInfo;
-                const currentGameInfoClone = _.omit(currentGameInfo, "cardOrders", "situationOrders", "suggestionOrder", "diceRange");
-                const currentRoomInfo = _.omit(room,"gameInfo");
-                roomIo.emit(sg_constant.ws_name.room, currentRoomInfo, currentGameInfoClone);
+                const roomClone = _.cloneDeep(room);
+                const currentGameInfo = _.omit(roomClone.gameInfo, "cardOrders", "situationOrders", "suggestionOrder", "diceRange");
+                const currentRoomInfo = _.omit(roomClone,"gameInfo");
+                roomIo.emit(sg_constant.ws_name.room, currentRoomInfo, currentGameInfo);
             }
         };
 

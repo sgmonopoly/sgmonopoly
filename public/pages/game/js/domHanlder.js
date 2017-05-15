@@ -67,6 +67,7 @@ const dom_btn_throwDice = $("#throwDice");
      */
     dom_btn_endTurn.on('click', () => {
         game_ws.endTurn();
+        dom_btn_endTurn.hide();
     });
     /**
      * 绑定掷骰子事件
@@ -74,7 +75,7 @@ const dom_btn_throwDice = $("#throwDice");
     dom_btn_throwDice.on('click', () => {
         const point = dom_dicePoint.val();
         console.log("掷骰子",point);
-        game_ws.throwDice(point);
+        game_ws.throwDiceForWalk(point);
     });
 })();
 
@@ -91,7 +92,7 @@ export const updateRoomInfo = roomInfo => {
             const currentUserObj = getUserByIndex(i);
             currentUserObj.text(JSON.stringify(roomInfo.users[i - 1]));
         }
-        const roomInfoOther = _.omit(roomInfo,"users");
+        const roomInfoOther = _.omit(_.cloneDeep(roomInfo),"users");
         dom_roomInfo.text(JSON.stringify(roomInfoOther));
     }
 
@@ -159,13 +160,26 @@ export const addErrorLog = message => {
  * @param myUserId
  */
 export const handleNextTurn = (currentTurnUser, myUserId) => {
-    if(currentTurnUser.userId == myUserId){
-        //如果是自己,则显示回合结束,和掷骰子
-        dom_btn_endTurn.show(1000);
+    if(currentTurnUser.userId === myUserId){
+        //如果是自己,则显示掷骰子
+        //dom_btn_endTurn.show(1000);
         dom_btn_throwDice.show(1000);
     }else{
         //不是则隐藏
-        dom_btn_endTurn.hide();
+        //dom_btn_endTurn.hide();
         dom_btn_throwDice.hide();
     }
+};
+/**
+ * 显示回合结束按钮
+ * @param currentTurnUserId
+ * @param myUserId
+ */
+export const showEndTurnBtn = (currentTurnUserId, myUserId) => {
+    if(currentTurnUserId === myUserId){
+        dom_btn_endTurn.show(1000);
+    }else{
+        dom_btn_endTurn.hide();
+    }
+
 };

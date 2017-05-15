@@ -42,6 +42,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
     socket.on('endTurn', () => {
         wsUtils.gameLog(socket.nickname + "结束了当前回合");
         wsUtils.updateRoomToAll(room);
+        currentGameInfo = room.gameInfo;//解决游戏信息无故消失的BUG
         nextTurn();
     });
     /**
@@ -100,7 +101,6 @@ const init = (socket, io, roomNumber, wsUtils) => {
     socket.on('throwDiceForWalk', (point) => {
         if(!point) point = getDicePoint(currentGameInfo.diceRange);
         console.log("throwDice",point);
-        console.log("roomUsers",roomUsers);
 
         wsUtils.gameLog(socket.nickname + "投掷点数:" + point);
 
@@ -114,7 +114,8 @@ const init = (socket, io, roomNumber, wsUtils) => {
             userId: socket.userId,
             nickname: socket.nickname,
             point: point,
-            midway: midway
+            midway: midway,
+            offset: currentUser.offset
         });
 
     });
@@ -334,6 +335,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             if (currentGameInfo.turn < nextUser.turn) {
                 currentGameInfo.turn = nextUser.turn;
             }
+
             io.emit("nextTurn", nextUser);//这里传整个用户对象,是因为可能会有个用户信息前后端不同步的BUG
         } catch (e) {
             console.error(e);
@@ -361,7 +363,6 @@ const init = (socket, io, roomNumber, wsUtils) => {
         //判断该用户是否在线
         if (nextUser && nextUser.status === sg_constant.user_status.gaming) {
             safeCount = 0;
-            console.log("nextUser",nextUser);
             return nextUser;
         } else {
             //不在线则再调一次
@@ -372,7 +373,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 获取下一个用户索引
      */
     const changeNextUserIndex = () => {
-        console.log("changeNextUserIndex",currentGameInfo);
+        //console.log("changeNextUserIndex",currentGameInfo);
         if (currentGameInfo.currentUserIndex >= roomUsers.length - 1) {
             //如果当前用户索引大于等于长度时,重置
             currentGameInfo.currentUserIndex = 0;

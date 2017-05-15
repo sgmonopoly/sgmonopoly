@@ -87,10 +87,11 @@ const initNetwork = (roomId) => {
         const point = result.point;
         const userId = result.userId;
         const midway = result.midway;
+        const offset = result.offset;
         console.log("掷骰子点数:",point,"途径",midway);
         //根据点数走路
-        canvasHandler.movePiece(userId, midway);
-
+        canvasHandler.movePiece(userId, midway, offset);
+        domHanlder.showEndTurnBtn(userId,myUserId);
     });
 
 };
