@@ -13,6 +13,9 @@
         "nickname": "test1",
         "password": "test1"
     }, (result) => {
+        let ls = window.localStorage;
+        ls.removeItem("sgm_userId");
+        ls.setItem("sgm_userId",result.userId);
         $.get("/room/enter/1",function(data,status){
             console.log("user1登入成功")
         });
