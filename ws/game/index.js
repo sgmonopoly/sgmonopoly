@@ -115,17 +115,21 @@ const init = (socket, io, roomNumber, wsUtils) => {
             nickname: socket.nickname,
             point: point,
             midway: midway,
-            offset: currentUser.offset
+            offset: currentUser.offset,
+            userInfo: {
+                userId: currentUser.userId,
+                money: currentUser.money
+            }//20170614 返回用户对象给targetPositionFeedback用
         });
 
     });
     /**
      * 掷3骰子,并广播骰子总点数
      */
-    socket.on('throw3Dices', (point1,point2,point3) => {
-        if(!point1) point1 = getDicePoint(currentGameInfo.diceRange);
-        if(!point2) point2 = getDicePoint(currentGameInfo.diceRange);
-        if(!point3) point3 = getDicePoint(currentGameInfo.diceRange);
+    socket.on('throw3Dices', (point1, point2, point3) => {
+        if (!point1) point1 = getDicePoint(currentGameInfo.diceRange);
+        if (!point2) point2 = getDicePoint(currentGameInfo.diceRange);
+        if (!point3) point3 = getDicePoint(currentGameInfo.diceRange);
         const pointAll = point1 + point2 + point3;
         wsUtils.gameLog(`${socket.nickname}投掷3次分别为:${point1}点、${point2}点和${point3}点,总点数${pointAll}点`);
         io.emit('diceResult', {
@@ -197,6 +201,9 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     socket.on('payTroop', (troop = 0) => {
         const currentUser = getUser(socket.userId);
+        if(!_.isNumber(troop)){
+            troop = parseInt(troop);
+        }
         if (currentUser.money < troop) {
             //1兵力=1两钱,所以钱不够时,不准买
             return wsUtils.alertLog(currentUser.nickname + "金钱不足以购买兵力" + troop);
@@ -281,7 +288,6 @@ const init = (socket, io, roomNumber, wsUtils) => {
         wsUtils.gameLog(`${city.stageName}改造成了${sg_constant.city_type_cn[levelMade]}`);
         wsUtils.updateRoomToAll(room);
     });
-
 
     /////////////////////////////////////////////
 

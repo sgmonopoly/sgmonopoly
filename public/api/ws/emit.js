@@ -48,16 +48,15 @@ const game_ws = {
     payToll: (stageId) => {
         socket.emit("payToll",stageId);
     },
-    payTroop: (troop) => {//point为空则随机
-        socket.emit("payTroop", troop);
+    payTroop: (troop) => {
+        socket.emit("payTroop", parseInt(troop));
     },
     payHero: (num = 1) => {//num为空=1
-        socket.emit("payHero",num);
+        socket.emit("payHero",parseInt(num));
     },
     upgradeCity: (stageId, ifPay = true, level = 1) => {
         socket.emit("upgradeCity",stageId, ifPay, level);
     }
-
 };
 
 export {socket,room_ws,game_ws}

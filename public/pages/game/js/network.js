@@ -5,15 +5,13 @@
 import {socket, room_ws, game_ws} from '../../../api/ws/emit'
 import * as domHanlder from './domHanlder'
 import * as canvasHandler from './canvasHandler'
-
-const myUserId = window.localStorage.getItem("sgm_userId");
-if (!myUserId) {
-    alert("获取不到用户ID,请重新登入");
-}
+import * as gameService from './gameService'
+import myUserId from './localData'
 
 /**
  * 连ws并接收ws任务
  * @param roomId
+ * //FIXME 重复刷新页面,会报错
  */
 const initNetwork = (roomId) => {
 
@@ -84,7 +82,7 @@ const initNetwork = (roomId) => {
      * 下一回合时
      */
     socket.on("nextTurn", currentTurnUser => {
-        domHanlder.handleNextTurn(currentTurnUser, myUserId);
+        domHanlder.handleNextTurn(currentTurnUser);
     });
 
     /**
@@ -95,10 +93,17 @@ const initNetwork = (roomId) => {
         const userId = result.userId;
         const midway = result.midway;
         const offset = result.offset;
-        console.log("掷骰子点数:",point,"途径",midway);
+        console.log("掷骰子点数:", point, "途径", midway);
         //根据点数走路
         canvasHandler.movePiece(userId, midway, offset);
-        domHanlder.showEndTurnBtn(userId,myUserId);
+
+        gameService.targetPositionFeedback(midway.pop(), result.userInfo);
+    });
+    /**
+     * 后端控制前端,什么时候显示回合结束按钮
+     */
+    socket.on("showEndTurnBtn", () => {
+        domHanlder.showEndTurnBtn();
     });
 
 };

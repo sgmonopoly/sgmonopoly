@@ -5,6 +5,7 @@
 import $ from 'jquery'
 import * as _ from 'lodash'
 import {socket, room_ws, game_ws} from '../../../api/ws/emit'
+import myUserId from './localData'
 
 const dom_chatLog = $("#chatLog");
 const dom_errorLog = $("#errorLog");
@@ -24,7 +25,13 @@ const dom_btn_toReady = $("#toReady");
 const dom_btn_toUnready = $("#toUnready");
 const dom_btn_startGame = $("#startGame");
 const dom_btn_endTurn = $("#endTurn");
+const dom_btn_endTurn2 = $("#endTurn2");
 const dom_btn_throwDice = $("#throwDice");
+
+const dom_buyTroop_show = $("#buyTroop_show");
+const dom_buyTroop_value = $("#buyTroop_value");
+const dom_btn_buyTroop_confirm = $("#buyTroop_confirm");
+const dom_btn_buyTroop_cancel = $("#buyTroop_cancel");
 
 
 (function () {
@@ -70,6 +77,12 @@ const dom_btn_throwDice = $("#throwDice");
         dom_btn_endTurn.hide();
     });
     /**
+     * 绑定回合结束事件2,临时的
+     */
+    dom_btn_endTurn2.on('click', () => {
+        game_ws.endTurn();
+    });
+    /**
      * 绑定掷骰子事件
      */
     dom_btn_throwDice.on('click', () => {
@@ -77,6 +90,16 @@ const dom_btn_throwDice = $("#throwDice");
         console.log("掷骰子",point);
         game_ws.throwDiceForWalk(point);
     });
+
+    //默认隐藏购买兵力界面
+    dom_buyTroop_show.hide();
+    dom_btn_buyTroop_confirm.on('click', () => {
+        game_ws.payTroop(dom_buyTroop_value.val());
+    });
+    dom_btn_buyTroop_cancel.on('click', () => {
+        dom_buyTroop_show.hide();
+    });
+
 })();
 
 /**
@@ -159,7 +182,7 @@ export const addErrorLog = message => {
  * @param currentTurnUser
  * @param myUserId
  */
-export const handleNextTurn = (currentTurnUser, myUserId) => {
+export const handleNextTurn = (currentTurnUser) => {
     if(currentTurnUser.userId === myUserId){
         //如果是自己,则显示掷骰子
         //dom_btn_endTurn.show(1000);
@@ -175,11 +198,20 @@ export const handleNextTurn = (currentTurnUser, myUserId) => {
  * @param currentTurnUserId
  * @param myUserId
  */
-export const showEndTurnBtn = (currentTurnUserId, myUserId) => {
+export const showEndTurnBtn = () => {
+    dom_btn_endTurn.show(1000);
+};
+
+/**
+ * 显示购买兵力
+ * @param currentTurnUserId
+ * @param myUserId
+ */
+export const showBuyTroop = (currentTurnUserId) => {
     if(currentTurnUserId === myUserId){
-        dom_btn_endTurn.show(1000);
+        dom_buyTroop_show.show(1000);
     }else{
-        dom_btn_endTurn.hide();
+        dom_buyTroop_show.hide();
     }
 
 };
