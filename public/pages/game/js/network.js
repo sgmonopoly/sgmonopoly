@@ -7,12 +7,12 @@ import * as domHanlder from './domHanlder'
 import * as canvasHandler from './canvasHandler'
 
 const myUserId = window.localStorage.getItem("sgm_userId");
-if(!myUserId){
+if (!myUserId) {
     alert("获取不到用户ID,请重新登入");
 }
 
 /**
- * 连ws
+ * 连ws并接收ws任务
  * @param roomId
  */
 const initNetwork = (roomId) => {
@@ -30,7 +30,7 @@ const initNetwork = (roomId) => {
     /**
      * 更新房间信息
      */
-    socket.on("room", (roomInfo,gameInfo) => {
+    socket.on("room", (roomInfo, gameInfo) => {
         domHanlder.updateRoomInfo(roomInfo);
         domHanlder.updateGameInfo(gameInfo);
         canvasHandler.updatePiecePosition(roomInfo.users);
@@ -58,13 +58,20 @@ const initNetwork = (roomId) => {
     });
 
     /**
+     * 接收警告日志
+     */
+    socket.on("alertLog", message => {
+        alert(message);
+    });
+
+    /**
      * 成功开始游戏时
      */
     /*
-    socket.on("startGameSuccess", roomUsers => {
+     socket.on("startGameSuccess", roomUsers => {
 
-    });
-    */
+     });
+     */
 
     /**
      * 游戏结束
@@ -77,7 +84,7 @@ const initNetwork = (roomId) => {
      * 下一回合时
      */
     socket.on("nextTurn", currentTurnUser => {
-        domHanlder.handleNextTurn(currentTurnUser,myUserId);
+        domHanlder.handleNextTurn(currentTurnUser, myUserId);
     });
 
     /**

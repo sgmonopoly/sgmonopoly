@@ -25,7 +25,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
     socket.on('startGame', () => {
         //检查当前房间所有人是否都准备好了
         if (!checkAllReady(roomUsers)) {
-            return wsUtils.errorLog("有人未准备!");
+            return wsUtils.alertLog("有人未准备!");
         }
         //初始化游戏
         initGame();
@@ -99,8 +99,8 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 可以前端直接传,不传的话就后端随机生成
      */
     socket.on('throwDiceForWalk', (point) => {
-        if(!point) point = getDicePoint(currentGameInfo.diceRange);
-        console.log("throwDice",point);
+        if (!point) point = getDicePoint(currentGameInfo.diceRange);
+        console.log("throwDice", point);
 
         wsUtils.gameLog(socket.nickname + "投掷点数:" + point);
 
@@ -146,11 +146,11 @@ const init = (socket, io, roomNumber, wsUtils) => {
             return wsUtils.errorLog("城市找不到" + stageId);
         }
         if (city.ownerId) {
-            return wsUtils.errorLog(city.stageName + "不是空城");
+            return wsUtils.alertLog(city.stageName + "不是空城");
         }
         const user = getUser(socket.userId);
         if (user.money < city.occupyPrice) {
-            return wsUtils.errorLog("当前用户" + user.nickname + "买不起" + city.stageName);
+            return wsUtils.alertLog("当前用户" + user.nickname + "买不起" + city.stageName);
         }
 
         user.money = user.money - city.occupyPrice;//付钱
@@ -170,14 +170,14 @@ const init = (socket, io, roomNumber, wsUtils) => {
             return wsUtils.errorLog("城市找不到" + stageId);
         }
         if (city.stageType != sg_constant.stage_type.city) {
-            return wsUtils.errorLog("当前地点并非城市" + stageId);
+            return wsUtils.alertLog("当前地点并非城市" + stageId);
         }
         if (!city.ownerId) {
-            return wsUtils.errorLog(city.stageName + "是空城,不需要付费");
+            return wsUtils.gameLog(city.stageName + "是空城,不需要付费");
         }
         const currentUser = getUser(socket.userId);
         if (city.ownerId === socket.userId) {
-            return wsUtils.errorLog(`${city.stageName}是${currentUser.nickname}自己的,不需要付费`);
+            return wsUtils.gameLog(`${city.stageName}是${currentUser.nickname}自己的,不需要付费`);
         }
 
         const targetUser = getUser(city.ownerId);
@@ -199,7 +199,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         const currentUser = getUser(socket.userId);
         if (currentUser.money < troop) {
             //1兵力=1两钱,所以钱不够时,不准买
-            return wsUtils.errorLog(currentUser.nickname + "金钱不足以购买兵力" + troop);
+            return wsUtils.alertLog(currentUser.nickname + "金钱不足以购买兵力" + troop);
         }
         currentUser.money = currentUser.money - troop;
         currentUser.troop = currentUser.troop + troop;
@@ -216,10 +216,10 @@ const init = (socket, io, roomNumber, wsUtils) => {
         const needMoney = num * 1000;
         if (currentUser.money < needMoney) {
             //1兵力=1两钱,所以钱不够时,不准买
-            return wsUtils.errorLog(currentUser.nickname + "金钱不足以购买武将");
+            return wsUtils.alertLog(currentUser.nickname + "金钱不足以购买武将");
         }
         if (currentGameInfo.cardOrders.length < num) {
-            return wsUtils.errorLog("国库中已经少于" + num + "张卡片了");
+            return wsUtils.alertLog("国库中已经少于" + num + "张卡片了");
         }
 
         currentUser.money = currentUser.money - needMoney;
@@ -245,29 +245,29 @@ const init = (socket, io, roomNumber, wsUtils) => {
             return wsUtils.errorLog("城市找不到" + stageId);
         }
         if (!city.ownerId) {
-            return wsUtils.errorLog("城市未占领,无法改造" + stageId);
+            return wsUtils.alertLog("城市未占领,无法改造" + stageId);
         }
         if (city.ownerId != socket.userId) {
-            return wsUtils.errorLog(`城市的占领者并非自己,占领者${city.ownerId},自己${socket.userId}`);
+            return wsUtils.alertLog(`城市的占领者并非自己,占领者${city.ownerId},自己${socket.userId}`);
         }
         if (city.stageType != sg_constant.stage_type.city) {
-            return wsUtils.errorLog("当前地点并非城市" + stageId);
+            return wsUtils.alertLog("当前地点并非城市" + stageId);
         }
         if (city.colorFollow === sg_constant.city_follow.ancient) {
-            return wsUtils.errorLog("古战场不能改造" + stageId);
+            return wsUtils.alertLog("古战场不能改造" + stageId);
         }
         //先算出要改造多少级别的城市
         const targetLevel = rebuildAndGetLevelMade(city, level);
         const levelMade = targetLevel - city.cityType;//用差值来判断升级了多少
         if (levelMade <= 0) {//城市如果没有任何变化,返回报错
-            return wsUtils.errorLog("城市无法改造" + stageId);
+            return wsUtils.alertLog("城市无法改造" + stageId);
         }
         const cityUser = getUser(city.ownerId);
         //根据改造的结果,付钱,
         if (ifPay) {
             const rebuildMoney = levelMade * city.buildPrice;
             if (cityUser.money < rebuildMoney) {
-                return wsUtils.errorLog(cityUser.nickname + "金钱不足以改造城市");
+                return wsUtils.alertLog(cityUser.nickname + "金钱不足以改造城市");
             }
             cityUser.money = cityUser.money - rebuildMoney;
         }
@@ -563,9 +563,9 @@ const getMidway = (origin, point) => {
     _.times(point, i => {
         const target = i + 1;
         //超过最后一处,则返回起点
-        if(origin + target > sg_constant.stageCount){
+        if (origin + target > sg_constant.stageCount) {
             midway.push(origin + target - sg_constant.stageCount);
-        }else{
+        } else {
             midway.push(origin + target);
         }
     });

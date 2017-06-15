@@ -35,6 +35,13 @@ sg_constant.roomNumbers.forEach(roomNumber => {
                 roomIo.emit(sg_constant.ws_name.errorLog, message);
             },
             /**
+             * 局部
+             * 全局警告日志
+             */
+            alertLog: (message) => {
+                socket.emit(sg_constant.ws_name.alertLog, message);
+            },
+            /**
              * 广播
              * 增加聊天记录
              */
