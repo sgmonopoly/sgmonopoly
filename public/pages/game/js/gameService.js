@@ -18,9 +18,9 @@ const targetPositionFeedback = (position, userInfo) => {
             break;
         case 2://征兵
             domHanlder.showBuyTroop(userInfo.userId);
-            domHanlder.showEndTurnBtn();
             break;
         case 3://招将
+            domHanlder.showBuyHero(userInfo.userId);
             break;
         case 4://游乐园
             break;
@@ -42,6 +42,41 @@ const targetPositionFeedback = (position, userInfo) => {
             break;
     }
 };
-
+/**
+ * 后端通知前端任务结束时,调用的回调
+ * @param stageType
+ */
+const eventOverCallback = (stageType) => {
+    console.log('eventOverCallback', stageType);
+    switch (stageType) {
+        case 1://城池
+            //TODO 以后做
+            break;
+        case 2://征兵
+            domHanlder.hideBuyTroop();
+            break;
+        case 3://招将
+            domHanlder.hideBuyHero();
+            break;
+        case 4://游乐园
+            break;
+        case 5://按摩院
+            break;
+        case 6://缴税
+            break;
+        case 7://茅庐
+            break;
+        case 8://金银岛
+            break;
+        case 9://赌馆
+            break;
+        case 10://紧急军情
+            break;
+        case 11://锦囊妙计
+            break;
+        case 12://起点
+            break;
+    }
+};
 
 export {targetPositionFeedback}

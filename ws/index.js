@@ -68,8 +68,8 @@ sg_constant.roomNumbers.forEach(roomNumber => {
             /**
              * 通知前端可以显示回合结束了
              */
-            showEndTurnBtn: () => {
-                socket.emit('showEndTurnBtn');
+            eventOver: (stageType) => {
+                socket.emit('eventOver', stageType);
             }
         };
 

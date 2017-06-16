@@ -100,10 +100,10 @@ const initNetwork = (roomId) => {
         gameService.targetPositionFeedback(midway.pop(), result.userInfo);
     });
     /**
-     * 后端控制前端,什么时候显示回合结束按钮
+     * 后端通知前端任务已完成
      */
-    socket.on("showEndTurnBtn", () => {
-        domHanlder.showEndTurnBtn();
+    socket.on("eventOver", (stageType) => {
+        //domHanlder.showEndTurnBtn();
     });
 
 };

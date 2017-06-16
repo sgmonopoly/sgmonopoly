@@ -28,11 +28,16 @@ const dom_btn_endTurn = $("#endTurn");
 const dom_btn_endTurn2 = $("#endTurn2");
 const dom_btn_throwDice = $("#throwDice");
 
+//购买兵力
 const dom_buyTroop_show = $("#buyTroop_show");
 const dom_buyTroop_value = $("#buyTroop_value");
 const dom_btn_buyTroop_confirm = $("#buyTroop_confirm");
 const dom_btn_buyTroop_cancel = $("#buyTroop_cancel");
-
+//购买武将
+const dom_buyHero_show = $("#buyHero_show");
+const dom_buyHero_value = $("#buyHero_value");
+const dom_btn_buyHero_confirm = $("#buyHero_confirm");
+const dom_btn_buyHero_cancel = $("#buyHero_cancel");
 
 (function () {
     /**
@@ -95,9 +100,22 @@ const dom_btn_buyTroop_cancel = $("#buyTroop_cancel");
     dom_buyTroop_show.hide();
     dom_btn_buyTroop_confirm.on('click', () => {
         game_ws.payTroop(dom_buyTroop_value.val());
+        showEndTurnBtn();
     });
     dom_btn_buyTroop_cancel.on('click', () => {
         dom_buyTroop_show.hide();
+        showEndTurnBtn();
+    });
+
+    //默认隐藏购买武将界面
+    dom_buyHero_show.hide();
+    dom_btn_buyHero_confirm.on('click', () => {
+        game_ws.payHero(dom_buyHero_value.val());
+        showEndTurnBtn();
+    });
+    dom_btn_buyHero_cancel.on('click', () => {
+        dom_buyHero_show.hide();
+        showEndTurnBtn();
     });
 
 })();
@@ -213,5 +231,34 @@ export const showBuyTroop = (currentTurnUserId) => {
     }else{
         dom_buyTroop_show.hide();
     }
+};
 
+/**
+ * 隐藏购买兵力
+ * @param currentTurnUserId
+ * @param myUserId
+ */
+export const hideBuyTroop = () => {
+    dom_buyTroop_show.hide();
+};
+
+/**
+ * 显示招将
+ * @param currentTurnUserId
+ * @param myUserId
+ */
+export const showBuyHero = (currentTurnUserId) => {
+    if(currentTurnUserId === myUserId){
+        dom_buyHero_show.show(1000);
+    }else{
+        dom_buyHero_show.hide();
+    }
+};
+/**
+ * 隐藏招将
+ * @param currentTurnUserId
+ * @param myUserId
+ */
+export const hideBuyHero = () => {
+    dom_buyHero_show.hide();
 };

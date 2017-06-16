@@ -200,10 +200,10 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 购买兵力
      */
     socket.on('payTroop', (troop = 0) => {
-        const currentUser = getUser(socket.userId);
         if(!_.isNumber(troop)){
             troop = parseInt(troop);
         }
+        const currentUser = getUser(socket.userId);
         if (currentUser.money < troop) {
             //1兵力=1两钱,所以钱不够时,不准买
             return wsUtils.alertLog(currentUser.nickname + "金钱不足以购买兵力" + troop);
@@ -213,16 +213,19 @@ const init = (socket, io, roomNumber, wsUtils) => {
 
         wsUtils.gameLog(`${currentUser.nickname}购买了兵力${troop}`);
         wsUtils.updateRoomToAll(room);
+        wsUtils.eventOver(sg_constant.stage_type.conscription);
     });
 
     /**
      * 购买武将
      */
     socket.on('payHero', (num = 1) => {
+        if(!_.isNumber(num)){
+            num = parseInt(num);
+        }
         const currentUser = getUser(socket.userId);
         const needMoney = num * 1000;
         if (currentUser.money < needMoney) {
-            //1兵力=1两钱,所以钱不够时,不准买
             return wsUtils.alertLog(currentUser.nickname + "金钱不足以购买武将");
         }
         if (currentGameInfo.cardOrders.length < num) {
@@ -237,6 +240,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
 
         wsUtils.gameLog(`${currentUser.nickname}购买了${num}名武将卡`);
         wsUtils.updateRoomToAll(room);
+        wsUtils.eventOver(sg_constant.stage_type.draft);
     });
 
     /**

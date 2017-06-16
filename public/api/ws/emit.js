@@ -49,10 +49,10 @@ const game_ws = {
         socket.emit("payToll",stageId);
     },
     payTroop: (troop) => {
-        socket.emit("payTroop", parseInt(troop));
+        socket.emit("payTroop", troop);
     },
     payHero: (num = 1) => {//num为空=1
-        socket.emit("payHero",parseInt(num));
+        socket.emit("payHero", num);
     },
     upgradeCity: (stageId, ifPay = true, level = 1) => {
         socket.emit("upgradeCity",stageId, ifPay, level);
