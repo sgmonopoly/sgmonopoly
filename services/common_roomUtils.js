@@ -9,8 +9,6 @@ const sg_constant = require("../services/sg_constant");
  * @param userId
  */
 exports.getUser = (roomUsers, userId) => {
-    console.log("getUser1",roomUsers);
-    console.log("getUser2", userId);
     for (let i = 0; i < roomUsers.length; i++) {
         if (roomUsers[i].userId == userId) {
             return roomUsers[i];

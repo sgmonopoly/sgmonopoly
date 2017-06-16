@@ -103,7 +103,7 @@ const initNetwork = (roomId) => {
      * 后端通知前端任务已完成
      */
     socket.on("eventOver", (stageType) => {
-        //domHanlder.showEndTurnBtn();
+        gameService.eventOverCallback(stageType);
     });
 
 };

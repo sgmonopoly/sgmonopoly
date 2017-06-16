@@ -28,8 +28,10 @@ const targetPositionFeedback = (position, userInfo) => {
             domHanlder.showBuyHero();
             break;
         case 4://游乐园
+            game_ws.inPark();
             break;
         case 5://按摩院
+            game_ws.inMassage();
             break;
         case 6://缴税
             break;
@@ -59,6 +61,7 @@ const eventOverCallback = (stageType) => {
             break;
         case 2://征兵
             domHanlder.hideBuyTroop();
+
             break;
         case 3://招将
             domHanlder.hideBuyHero();
@@ -82,6 +85,7 @@ const eventOverCallback = (stageType) => {
         case 12://起点
             break;
     }
+    domHanlder.showEndTurnBtn();
 };
 
 export {targetPositionFeedback}

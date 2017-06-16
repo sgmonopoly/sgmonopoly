@@ -200,7 +200,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 购买兵力
      */
     socket.on('payTroop', (troop = 0) => {
-        if(!_.isNumber(troop)){
+        if (!_.isNumber(troop)) {
             troop = parseInt(troop);
         }
         const currentUser = getUser(socket.userId);
@@ -220,7 +220,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 购买武将
      */
     socket.on('payHero', (num = 1) => {
-        if(!_.isNumber(num)){
+        if (!_.isNumber(num)) {
             num = parseInt(num);
         }
         const currentUser = getUser(socket.userId);
@@ -241,6 +241,44 @@ const init = (socket, io, roomNumber, wsUtils) => {
         wsUtils.gameLog(`${currentUser.nickname}购买了${num}名武将卡`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.draft);
+    });
+
+    /**
+     * 游乐园停一次,交500
+     */
+    socket.on('inPark', () => {
+        const currentUser = getUser(socket.userId);
+        currentUser.suspended = currentUser.suspended + 1;
+        let payMoney = 500;
+        if (currentUser.money < payMoney) {
+            payMoney = currentUser.money;
+            currentUser.money = 0;
+        } else {
+            currentUser.money = currentUser.money - payMoney;
+        }
+
+        wsUtils.gameLog(`${currentUser.nickname}进入游乐园交游玩费${payMoney}两, 并暂停一轮`);
+        wsUtils.updateRoomToAll(room);
+        wsUtils.eventOver(sg_constant.stage_type.park);
+    });
+
+    /**
+     * 按摩院停一次,交800
+     */
+    socket.on('inMassage', () => {
+        const currentUser = getUser(socket.userId);
+        currentUser.suspended = currentUser.suspended + 1;
+        let payMoney = 800;
+        if (currentUser.money < payMoney) {
+            payMoney = currentUser.money;
+            currentUser.money = 0;
+        } else {
+            currentUser.money = currentUser.money - payMoney;
+        }
+
+        wsUtils.gameLog(`${currentUser.nickname}进入按摩院交费${payMoney}两, 并暂停一轮`);
+        wsUtils.updateRoomToAll(room);
+        wsUtils.eventOver(sg_constant.stage_type.massage);
     });
 
     /**
@@ -337,13 +375,20 @@ const init = (socket, io, roomNumber, wsUtils) => {
         try {
             const nextUser = getNextUser();
             nextUser.turn = nextUser.turn + 1;//总轮数+1
-            wsUtils.gameLog("当前回合用户:" + nextUser.nickname);
+            wsUtils.gameLog("当前回合用户:" + nextUser);
             /*
              为了防止某些用户掉线,而造成这个数值的不正确
              这里判断每个人的总轮数,取最大值作为游戏的总轮数值
              */
             if (currentGameInfo.turn < nextUser.turn) {
                 currentGameInfo.turn = nextUser.turn;
+            }
+
+            //判断用户是否暂停,如是则再调用一次该方法
+            if(nextUser.suspended > 0){
+                nextUser.suspended = nextUser.suspended - 1;
+                wsUtils.gameLog(`${nextUser.nickname}暂停一轮`);
+                nextTurn();
             }
 
             io.emit("nextTurn", nextUser);//这里传整个用户对象,是因为可能会有个用户信息前后端不同步的BUG

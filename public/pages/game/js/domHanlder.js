@@ -100,18 +100,18 @@ const dom_btn_buyHero_cancel = $("#buyHero_cancel");
     dom_buyTroop_show.hide();
     dom_btn_buyTroop_confirm.on('click', () => {
         game_ws.payTroop(dom_buyTroop_value.val());
-        showEndTurnBtn();
+        //showEndTurnBtn();//后端调用显示回合结束按钮
     });
     dom_btn_buyTroop_cancel.on('click', () => {
         dom_buyTroop_show.hide();
-        showEndTurnBtn();
+        showEndTurnBtn();//前端直接调用显示回合结束按钮
     });
 
     //默认隐藏购买武将界面
     dom_buyHero_show.hide();
     dom_btn_buyHero_confirm.on('click', () => {
         game_ws.payHero(dom_buyHero_value.val());
-        showEndTurnBtn();
+        //showEndTurnBtn();
     });
     dom_btn_buyHero_cancel.on('click', () => {
         dom_buyHero_show.hide();
@@ -198,7 +198,6 @@ export const addErrorLog = message => {
 /**
  * 处理下一回合触发时方法
  * @param currentTurnUser
- * @param myUserId
  */
 export const handleNextTurn = (currentTurnUser) => {
     if(currentTurnUser.userId === myUserId){

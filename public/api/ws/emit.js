@@ -56,6 +56,12 @@ const game_ws = {
     },
     upgradeCity: (stageId, ifPay = true, level = 1) => {
         socket.emit("upgradeCity",stageId, ifPay, level);
+    },
+    inPark: () => {
+        socket.emit("inPark");
+    },
+    inMassage: () => {
+        socket.emit("inMassage");
     }
 };
 
