@@ -319,6 +319,43 @@ const init = (socket, io, roomNumber, wsUtils) => {
     });
 
     /**
+     * 金银岛
+     */
+    socket.on('inIsland', () => {
+        const currentUser = getUser(socket.userId);
+        const point = getDicePoint(currentGameInfo.diceRange);
+        const gainMoney = point * 1000;
+        currentUser.money = currentUser.money + gainMoney;
+
+        wsUtils.gameLog(`${currentUser.nickname}在金银岛投掷点数为${point}点,获${gainMoney}两`);
+        wsUtils.updateRoomToAll(room);
+        wsUtils.eventOver(sg_constant.stage_type.island);
+    });
+
+    /**
+     * 在起点
+     */
+    socket.on('inStart', () => {
+        const currentUser = getUser(socket.userId);
+        currentUser.money = currentUser.money + 4000;
+
+        wsUtils.gameLog(`${currentUser.nickname}停留在起点,获4000两`);
+        wsUtils.updateRoomToAll(room);
+        wsUtils.eventOver(sg_constant.stage_type.start);
+    });
+
+    /**
+     * 从起点路过
+     */
+    socket.on('passByStart', () => {
+        const currentUser = getUser(socket.userId);
+        currentUser.money = currentUser.money + 2000;
+
+        wsUtils.gameLog(`${currentUser.nickname}经过起点,获2000两`);
+        wsUtils.updateRoomToAll(room);
+    });
+
+    /**
      * 改造城市,包括升级或者降级,可指定任意城市
      * ifPay 为是否付钱,区别于锦囊妙计的非付费升级
      */

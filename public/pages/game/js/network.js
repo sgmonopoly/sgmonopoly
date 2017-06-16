@@ -7,6 +7,7 @@ import * as domHanlder from './domHanlder'
 import * as canvasHandler from './canvasHandler'
 import * as gameService from './gameService'
 import myUserId from './localData'
+import * as _ from 'lodash'
 
 /**
  * 连ws并接收ws任务
@@ -95,10 +96,12 @@ const initNetwork = (roomId) => {
         const offset = result.offset;
         console.log("掷骰子点数:", point, "途径", midway);
         //根据点数走路
-        canvasHandler.movePiece(userId, midway, offset);
 
-        gameService.targetPositionFeedback(midway.pop(), result.userInfo);
+        canvasHandler.movePiece(userId, _.cloneDeep(midway), offset);
+
+        gameService.targetPositionFeedback(midway.shift(), midway.pop(), result.userInfo);
     });
+
     /**
      * 后端通知前端任务已完成
      */

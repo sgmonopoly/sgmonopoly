@@ -68,7 +68,17 @@ const game_ws = {
     },
     inCottage: () => {
         socket.emit("inCottage");
+    },
+    inIsland: () => {
+        socket.emit("inIsland");
+    },
+    inStart: () => {
+        socket.emit("inStart");
+    },
+    passByStart: () => {
+        socket.emit("passByStart");
     }
+
 };
 
 export {socket,room_ws,game_ws}

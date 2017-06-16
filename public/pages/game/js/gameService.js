@@ -10,13 +10,19 @@ import myUserId from './localData'
  * 根据目标位置,作出需要的操作反馈
  * @param position
  */
-const targetPositionFeedback = (position, userInfo) => {
-    console.log('targetPositionFeedback', position, userInfo);
+const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
+    console.log('targetPositionFeedback', endPosition, userInfo);
     if (myUserId !== userInfo.userId) {
         //只对当前玩家生效
         return;
     }
-    const city = map_info[position];
+    const city = map_info[endPosition];
+
+    if(startPosition > endPosition && endPosition != 1){
+        //如果过了起点,且终点并不是起点,给2000
+        game_ws.passByStart();
+    }
+
     switch (city.stageType) {
         case 1://城池
             //TODO 以后做
@@ -40,6 +46,7 @@ const targetPositionFeedback = (position, userInfo) => {
             game_ws.inCottage();
             break;
         case 8://金银岛
+            game_ws.inIsland();
             break;
         case 9://赌馆
             break;
@@ -48,8 +55,10 @@ const targetPositionFeedback = (position, userInfo) => {
         case 11://锦囊妙计
             break;
         case 12://起点
+            game_ws.inStart();
             break;
     }
+
 };
 /**
  * 后端通知前端任务结束时,调用的回调
