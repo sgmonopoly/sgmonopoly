@@ -213,8 +213,6 @@ export const handleNextTurn = (currentTurnUser) => {
 };
 /**
  * 显示回合结束按钮
- * @param currentTurnUserId
- * @param myUserId
  */
 export const showEndTurnBtn = () => {
     dom_btn_endTurn.show(1000);
@@ -222,21 +220,13 @@ export const showEndTurnBtn = () => {
 
 /**
  * 显示购买兵力
- * @param currentTurnUserId
- * @param myUserId
  */
-export const showBuyTroop = (currentTurnUserId) => {
-    if(currentTurnUserId === myUserId){
-        dom_buyTroop_show.show(1000);
-    }else{
-        dom_buyTroop_show.hide();
-    }
+export const showBuyTroop = () => {
+    dom_buyTroop_show.show(1000);
 };
 
 /**
  * 隐藏购买兵力
- * @param currentTurnUserId
- * @param myUserId
  */
 export const hideBuyTroop = () => {
     dom_buyTroop_show.hide();
@@ -244,20 +234,12 @@ export const hideBuyTroop = () => {
 
 /**
  * 显示招将
- * @param currentTurnUserId
- * @param myUserId
  */
-export const showBuyHero = (currentTurnUserId) => {
-    if(currentTurnUserId === myUserId){
-        dom_buyHero_show.show(1000);
-    }else{
-        dom_buyHero_show.hide();
-    }
+export const showBuyHero = () => {
+    dom_buyHero_show.show(1000);
 };
 /**
  * 隐藏招将
- * @param currentTurnUserId
- * @param myUserId
  */
 export const hideBuyHero = () => {
     dom_buyHero_show.hide();

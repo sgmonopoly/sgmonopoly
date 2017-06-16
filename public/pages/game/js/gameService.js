@@ -4,23 +4,28 @@
 
 import {map_info} from "./mapInfo"
 import * as domHanlder from './domHanlder'
-
+import {game_ws} from '../../../api/ws/emit'
+import myUserId from './localData'
 /**
  * 根据目标位置,作出需要的操作反馈
  * @param position
  */
 const targetPositionFeedback = (position, userInfo) => {
     console.log('targetPositionFeedback', position, userInfo);
+    if(myUserId !== userInfo.userId){
+        //只对当前玩家生效
+        return;
+    }
     const city = map_info[position];
     switch (city.stageType) {
         case 1://城池
             //TODO 以后做
             break;
         case 2://征兵
-            domHanlder.showBuyTroop(userInfo.userId);
+            domHanlder.showBuyTroop();
             break;
         case 3://招将
-            domHanlder.showBuyHero(userInfo.userId);
+            domHanlder.showBuyHero();
             break;
         case 4://游乐园
             break;
