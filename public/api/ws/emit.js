@@ -62,6 +62,12 @@ const game_ws = {
     },
     inMassage: () => {
         socket.emit("inMassage");
+    },
+    inTax: () => {
+        socket.emit("inTax");
+    },
+    inCottage: () => {
+        socket.emit("inCottage");
     }
 };
 

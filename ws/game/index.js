@@ -123,21 +123,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         });
 
     });
-    /**
-     * 掷3骰子,并广播骰子总点数
-     */
-    socket.on('throw3Dices', (point1, point2, point3) => {
-        if (!point1) point1 = getDicePoint(currentGameInfo.diceRange);
-        if (!point2) point2 = getDicePoint(currentGameInfo.diceRange);
-        if (!point3) point3 = getDicePoint(currentGameInfo.diceRange);
-        const pointAll = point1 + point2 + point3;
-        wsUtils.gameLog(`${socket.nickname}投掷3次分别为:${point1}点、${point2}点和${point3}点,总点数${pointAll}点`);
-        io.emit('diceResult', {
-            userId: socket.userId,
-            nickname: socket.nickname,
-            point: pointAll
-        });
-    });
+
     /**
      * 买空城
      */
@@ -235,7 +221,9 @@ const init = (socket, io, roomNumber, wsUtils) => {
         currentUser.money = currentUser.money - needMoney;
         _.times(num, function () {
             const cardId = getNextCardIndex();
-            currentUser.cards.push(cardId);
+            if(cardId){
+                currentUser.cards.push(cardId);
+            }
         });
 
         wsUtils.gameLog(`${currentUser.nickname}购买了${num}名武将卡`);
@@ -279,6 +267,55 @@ const init = (socket, io, roomNumber, wsUtils) => {
         wsUtils.gameLog(`${currentUser.nickname}进入按摩院交费${payMoney}两, 并暂停一轮`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.massage);
+    });
+
+    /**
+     * 缴税,交500
+     */
+    socket.on('inTax', () => {
+        const currentUser = getUser(socket.userId);
+        let payMoney = 500;
+        if (currentUser.money < payMoney) {
+            payMoney = currentUser.money;
+            currentUser.money = 0;
+        } else {
+            currentUser.money = currentUser.money - payMoney;
+        }
+
+        wsUtils.gameLog(`${currentUser.nickname}向国库缴费${payMoney}两`);
+        wsUtils.updateRoomToAll(room);
+        wsUtils.eventOver(sg_constant.stage_type.tax);
+    });
+
+    /**
+     * 茅庐,累加3次骰子,根据结果送武将
+     */
+    socket.on('inCottage', () => {
+        const currentUser = getUser(socket.userId);
+        const point1 = getDicePoint(currentGameInfo.diceRange);
+        const point2 = getDicePoint(currentGameInfo.diceRange);
+        const point3 = getDicePoint(currentGameInfo.diceRange);
+        const pointAll = point1 + point2 + point3;
+
+        let heroCount = 0;
+        if(pointAll > 15 ){
+            heroCount = 3;
+        }else if(pointAll > 12){
+            heroCount = 2;
+        }else if(pointAll > 9){
+            heroCount = 1;
+        }
+
+        _.times(heroCount, function () {
+            const cardId = getNextCardIndex();
+            if(cardId){
+                currentUser.cards.push(cardId);
+            }
+        });
+
+        wsUtils.gameLog(`${socket.nickname}投掷3次分别为:${point1}点、${point2}点和${point3}点,总点数${pointAll}点,得武将${heroCount}名`);
+        wsUtils.updateRoomToAll(room);
+        wsUtils.eventOver(sg_constant.stage_type.cottage);
     });
 
     /**
@@ -361,7 +398,9 @@ const init = (socket, io, roomNumber, wsUtils) => {
             //金钱和兵力早已初始化过了,这里只摸3张武将卡
             _.times(3, () => {
                 const cardId = getNextCardIndex();
-                user.cards.push(cardId);
+                if(cardId){
+                    user.cards.push(cardId);
+                }
             });
             //将所有人置为开始游戏状态
             user.status = sg_constant.user_status.gaming;
@@ -424,6 +463,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             getNextUser();
         }
     };
+
     /**
      * 获取下一个用户索引
      */
@@ -443,6 +483,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     const getNextCardIndex = () => {
         if (currentGameInfo.cardOrders.length === 0) {
+            wsUtils.gameLog("国库无剩余武将了!");
             return false;
         }
         return currentGameInfo.cardOrders.shift();

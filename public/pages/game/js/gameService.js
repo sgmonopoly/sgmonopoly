@@ -12,7 +12,7 @@ import myUserId from './localData'
  */
 const targetPositionFeedback = (position, userInfo) => {
     console.log('targetPositionFeedback', position, userInfo);
-    if(myUserId !== userInfo.userId){
+    if (myUserId !== userInfo.userId) {
         //只对当前玩家生效
         return;
     }
@@ -34,8 +34,10 @@ const targetPositionFeedback = (position, userInfo) => {
             game_ws.inMassage();
             break;
         case 6://缴税
+            game_ws.inTax();
             break;
         case 7://茅庐
+            game_ws.inCottage();
             break;
         case 8://金银岛
             break;
@@ -61,7 +63,6 @@ const eventOverCallback = (stageType) => {
             break;
         case 2://征兵
             domHanlder.hideBuyTroop();
-
             break;
         case 3://招将
             domHanlder.hideBuyHero();
@@ -88,4 +89,4 @@ const eventOverCallback = (stageType) => {
     domHanlder.showEndTurnBtn();
 };
 
-export {targetPositionFeedback}
+export {targetPositionFeedback, eventOverCallback}
