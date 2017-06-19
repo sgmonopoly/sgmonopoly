@@ -318,6 +318,19 @@ const init = (socket, io, roomNumber, wsUtils) => {
     });
 
     /**
+     * 进入赌馆
+     */
+    socket.on('inBet', () => {
+        const currentUser = getUser(socket.userId);
+        let money = 500;
+        money = payMoney(currentUser, money);
+
+        wsUtils.gameLog(`${currentUser.nickname}进入赌馆,收入场费${money}两`);
+        wsUtils.updateRoomToAll(room);
+        wsUtils.eventOver(sg_constant.stage_type.bet);
+    });
+
+    /**
      * 在起点
      */
     socket.on('inStart', () => {
