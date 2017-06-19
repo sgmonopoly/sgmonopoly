@@ -237,15 +237,10 @@ const init = (socket, io, roomNumber, wsUtils) => {
     socket.on('inPark', () => {
         const currentUser = getUser(socket.userId);
         currentUser.suspended = currentUser.suspended + 1;
-        let payMoney = 500;
-        if (currentUser.money < payMoney) {
-            payMoney = currentUser.money;
-            currentUser.money = 0;
-        } else {
-            currentUser.money = currentUser.money - payMoney;
-        }
+        let money = 500;
+        money = payMoney(currentUser, money);
 
-        wsUtils.gameLog(`${currentUser.nickname}进入游乐园交游玩费${payMoney}两, 并暂停一轮`);
+        wsUtils.gameLog(`${currentUser.nickname}进入游乐园交游玩费${money}两, 并暂停一轮`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.park);
     });
@@ -256,15 +251,10 @@ const init = (socket, io, roomNumber, wsUtils) => {
     socket.on('inMassage', () => {
         const currentUser = getUser(socket.userId);
         currentUser.suspended = currentUser.suspended + 1;
-        let payMoney = 800;
-        if (currentUser.money < payMoney) {
-            payMoney = currentUser.money;
-            currentUser.money = 0;
-        } else {
-            currentUser.money = currentUser.money - payMoney;
-        }
+        let money = 800;
+        money = payMoney(currentUser, money);
 
-        wsUtils.gameLog(`${currentUser.nickname}进入按摩院交费${payMoney}两, 并暂停一轮`);
+        wsUtils.gameLog(`${currentUser.nickname}进入按摩院交费${money}两, 并暂停一轮`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.massage);
     });
@@ -274,15 +264,10 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     socket.on('inTax', () => {
         const currentUser = getUser(socket.userId);
-        let payMoney = 500;
-        if (currentUser.money < payMoney) {
-            payMoney = currentUser.money;
-            currentUser.money = 0;
-        } else {
-            currentUser.money = currentUser.money - payMoney;
-        }
+        let money = 500;
+        money = payMoney(currentUser, money);
 
-        wsUtils.gameLog(`${currentUser.nickname}向国库缴费${payMoney}两`);
+        wsUtils.gameLog(`${currentUser.nickname}向国库缴费${money}两`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.tax);
     });
@@ -703,6 +688,21 @@ const getMidway = (origin, point) => {
         }
     });
     return midway;
+};
+/**
+ * 支付金钱,不够则全交
+ * @param currentUser
+ * @param money
+ * @returns {*}
+ */
+const payMoney = (currentUser, money) => {
+    if (currentUser.money < money) {
+        money = currentUser.money;
+        currentUser.money = 0;
+    } else {
+        currentUser.money = currentUser.money - money;
+    }
+    return money;
 };
 
 module.exports = init;
