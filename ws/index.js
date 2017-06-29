@@ -36,7 +36,7 @@ sg_constant.roomNumbers.forEach(roomNumber => {
             },
             /**
              * 局部
-             * 全局警告日志
+             * 警告日志
              */
             alertLog: (message) => {
                 socket.emit(sg_constant.ws_name.alertLog, message);

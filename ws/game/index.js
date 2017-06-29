@@ -125,6 +125,20 @@ const init = (socket, io, roomNumber, wsUtils) => {
     });
 
     /**
+     * 进入城市,返回城市主人ID,用于给前端判断逻辑
+     */
+    socket.on('inCity', stageId => {
+        if (!stageId) {
+            return wsUtils.errorLog("stageId参数为空");
+        }
+        const city = currentGameInfo.getCity(stageId);
+        if (!city) {
+            return wsUtils.errorLog("城市找不到" + stageId);
+        }
+        return socket.emit("cityOwnerId", stageId, city.stageName, city.ownerId);
+    });
+
+    /**
      * 买空城
      */
     socket.on('buyCity', stageId => {
@@ -145,6 +159,9 @@ const init = (socket, io, roomNumber, wsUtils) => {
 
         user.money = user.money - city.occupyPrice;//付钱
         currentGameInfo.occupyCity(user, city);//占领城市
+
+        wsUtils.eventOver("buyCityOver");
+        wsUtils.gameLog(`${user.nickname}购买了空城${city.stageName}`);
         wsUtils.updateRoomToAll(room);
     });
 
@@ -178,7 +195,58 @@ const init = (socket, io, roomNumber, wsUtils) => {
         currentUser.money = currentUser.money - toll;
         targetUser.money = targetUser.money + toll;
 
+        wsUtils.eventOver("upgradeCityOver");
         wsUtils.gameLog(`${currentUser.nickname}路过${city.stageName}付过路税金${toll}给${targetUser.nickname}`);
+        wsUtils.updateRoomToAll(room);
+    });
+
+    /**
+     * 改造城市,包括升级或者降级,可指定任意城市
+     * ifPay 为是否付钱,区别于锦囊妙计的非付费升级
+     */
+    socket.on('upgradeCity', (stageId, ifPay = true, level = 1) => {
+        if (!stageId) {
+            return wsUtils.errorLog("stageId参数为空");
+        }
+        const city = currentGameInfo.getCity(stageId);
+        if (!city) {
+            return wsUtils.errorLog("城市找不到" + stageId);
+        }
+        if (!city.ownerId) {
+            return wsUtils.alertLog("城市未占领,无法改造" + stageId);
+        }
+        if (city.ownerId != socket.userId) {
+            return wsUtils.alertLog(`城市的占领者并非自己,占领者${city.ownerId},自己${socket.userId}`);
+        }
+        if (city.stageType != sg_constant.stage_type.city) {
+            return wsUtils.alertLog("当前地点并非城市" + stageId);
+        }
+        if (city.colorFollow === sg_constant.city_follow.ancient) {
+            return wsUtils.alertLog("古战场不能改造" + stageId);
+        }
+        //先算出要改造多少级别的城市
+        const targetLevel = rebuildAndGetLevelMade(city, level);
+        const levelMade = targetLevel - city.cityType;//用差值来判断升级了多少
+        if (levelMade <= 0) {//城市如果没有任何变化,返回报错
+            return wsUtils.alertLog("城市无法改造" + stageId);
+        }
+        const cityUser = getUser(city.ownerId);
+        //根据改造的结果,付钱,
+        if (ifPay) {
+            const rebuildMoney = levelMade * city.buildPrice;
+            if (cityUser.money < rebuildMoney) {
+                return wsUtils.alertLog(cityUser.nickname + "金钱不足以改造城市");
+            }
+            cityUser.money = cityUser.money - rebuildMoney;
+        }
+
+        //真正开始升级
+        //升级1次,或者2次
+        _.times(levelMade, function () {
+            currentGameInfo.upgradeCity(cityUser, city);
+        });
+
+        wsUtils.gameLog(`${city.stageName}改造成了${sg_constant.city_type_cn[levelMade]}`);
         wsUtils.updateRoomToAll(room);
     });
 
@@ -350,56 +418,6 @@ const init = (socket, io, roomNumber, wsUtils) => {
         currentUser.money = currentUser.money + 2000;
 
         wsUtils.gameLog(`${currentUser.nickname}经过起点,获2000两`);
-        wsUtils.updateRoomToAll(room);
-    });
-
-    /**
-     * 改造城市,包括升级或者降级,可指定任意城市
-     * ifPay 为是否付钱,区别于锦囊妙计的非付费升级
-     */
-    socket.on('upgradeCity', (stageId, ifPay = true, level = 1) => {
-        if (!stageId) {
-            return wsUtils.errorLog("stageId参数为空");
-        }
-        const city = currentGameInfo.getCity(stageId);
-        if (!city) {
-            return wsUtils.errorLog("城市找不到" + stageId);
-        }
-        if (!city.ownerId) {
-            return wsUtils.alertLog("城市未占领,无法改造" + stageId);
-        }
-        if (city.ownerId != socket.userId) {
-            return wsUtils.alertLog(`城市的占领者并非自己,占领者${city.ownerId},自己${socket.userId}`);
-        }
-        if (city.stageType != sg_constant.stage_type.city) {
-            return wsUtils.alertLog("当前地点并非城市" + stageId);
-        }
-        if (city.colorFollow === sg_constant.city_follow.ancient) {
-            return wsUtils.alertLog("古战场不能改造" + stageId);
-        }
-        //先算出要改造多少级别的城市
-        const targetLevel = rebuildAndGetLevelMade(city, level);
-        const levelMade = targetLevel - city.cityType;//用差值来判断升级了多少
-        if (levelMade <= 0) {//城市如果没有任何变化,返回报错
-            return wsUtils.alertLog("城市无法改造" + stageId);
-        }
-        const cityUser = getUser(city.ownerId);
-        //根据改造的结果,付钱,
-        if (ifPay) {
-            const rebuildMoney = levelMade * city.buildPrice;
-            if (cityUser.money < rebuildMoney) {
-                return wsUtils.alertLog(cityUser.nickname + "金钱不足以改造城市");
-            }
-            cityUser.money = cityUser.money - rebuildMoney;
-        }
-
-        //真正开始升级
-        //升级1次,或者2次
-        _.times(levelMade, function () {
-            currentGameInfo.upgradeCity(cityUser, city);
-        });
-
-        wsUtils.gameLog(`${city.stageName}改造成了${sg_constant.city_type_cn[levelMade]}`);
         wsUtils.updateRoomToAll(room);
     });
 

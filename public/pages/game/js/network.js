@@ -105,8 +105,23 @@ const initNetwork = (roomId) => {
     /**
      * 后端通知前端任务已完成
      */
-    socket.on("eventOver", (stageType) => {
-        gameService.eventOverCallback(stageType);
+    socket.on("eventOver", (overType) => {
+        gameService.eventOverCallback(overType);
+    });
+
+    /**
+     * 进入城市,返回城市主人ID
+     */
+    socket.on("cityOwnerId", (cityId, cityName, ownerId) => {
+        if(!ownerId){
+            //空城,显示是否购买
+            domHanlder.showBuyCity(cityId, cityName);
+        }else if(ownerId === myUserId){
+            //自己的城,显示是否升级
+            domHanlder.showUpgradeCity(cityId, cityName);
+        }else{
+            //TODO 别人的城,显示是否攻打,以后做
+        }
     });
 
 };

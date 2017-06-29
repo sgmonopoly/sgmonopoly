@@ -38,6 +38,18 @@ const dom_buyHero_show = $("#buyHero_show");
 const dom_buyHero_value = $("#buyHero_value");
 const dom_btn_buyHero_confirm = $("#buyHero_confirm");
 const dom_btn_buyHero_cancel = $("#buyHero_cancel");
+//购买城市
+const dom_buyCity_show = $("#buyCity_show");
+const dom_buyCity_name = $("#buyCity_name");
+const dom_buyCity_id = $("#buyCity_id");
+const dom_btn_buyCity_confirm = $("#buyCity_confirm");
+const dom_btn_buyCity_cancel = $("#buyCity_cancel");
+//升级城市
+const dom_upgradeCity_show = $("#upgradeCity_show");
+const dom_upgradeCity_name = $("#upgradeCity_name");
+const dom_upgradeCity_id = $("#upgradeCity_id");
+const dom_btn_upgradeCity_confirm = $("#upgradeCity_confirm");
+const dom_btn_upgradeCity_cancel = $("#upgradeCity_cancel");
 
 (function () {
     /**
@@ -115,6 +127,27 @@ const dom_btn_buyHero_cancel = $("#buyHero_cancel");
     });
     dom_btn_buyHero_cancel.on('click', () => {
         dom_buyHero_show.hide();
+        showEndTurnBtn();
+    });
+
+    //默认隐藏购买城市界面
+    dom_buyCity_show.hide();
+    dom_btn_buyCity_confirm.on('click', () => {
+        const stageId = dom_buyCity_id.val();
+        game_ws.buyCity(stageId);
+    });
+    dom_btn_buyCity_cancel.on('click', () => {
+        dom_buyCity_show.hide();
+        showEndTurnBtn();
+    });
+    //默认隐藏升级城市界面
+    dom_upgradeCity_show.hide();
+    dom_btn_upgradeCity_confirm.on('click', () => {
+        const stageId = dom_upgradeCity_id.val();
+        game_ws.upgradeCity(stageId);
+    });
+    dom_btn_upgradeCity_cancel.on('click', () => {
+        dom_upgradeCity_show.hide();
         showEndTurnBtn();
     });
 
@@ -242,4 +275,34 @@ export const showBuyHero = () => {
  */
 export const hideBuyHero = () => {
     dom_buyHero_show.hide();
+};
+
+/**
+ * 显示购买城市
+ */
+export const showBuyCity = (cityId, cityName) => {
+    dom_buyCity_show.show(1000);
+    dom_buyCity_name.text(cityName);
+    dom_buyCity_id.val(cityId);
+};
+/**
+ * 隐藏购买城市
+ */
+export const hideBuyCity = () => {
+    dom_buyCity_show.hide();
+};
+
+/**
+ * 显示购买城市
+ */
+export const showUpgradeCity = (cityId, cityName) => {
+    dom_upgradeCity_show.show(1000);
+    dom_upgradeCity_name.text(cityName);
+    dom_upgradeCity_id.val(cityId);
+};
+/**
+ * 隐藏购买城市
+ */
+export const hideUpgradeCity = () => {
+    dom_upgradeCity_show.hide();
 };

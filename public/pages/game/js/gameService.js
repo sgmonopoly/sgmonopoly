@@ -25,7 +25,7 @@ const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
 
     switch (city.stageType) {
         case 1://城池
-            //TODO 以后做
+            game_ws.inCity(endPosition);
             break;
         case 2://征兵
             domHanlder.showBuyTroop();
@@ -64,9 +64,9 @@ const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
  * 后端通知前端任务结束时,调用的回调
  * @param stageType
  */
-const eventOverCallback = (stageType) => {
-    console.log('eventOverCallback', stageType);
-    switch (stageType) {
+const eventOverCallback = (overType) => {
+    console.log('eventOverCallback', overType);
+    switch (overType) {
         case 1://城池
             //TODO 以后做
             break;
@@ -93,6 +93,12 @@ const eventOverCallback = (stageType) => {
         case 11://锦囊妙计
             break;
         case 12://起点
+            break;
+        case "buyCityOver"://购买城市结束
+            domHanlder.hideBuyCity();
+            break;
+        case "upgradeCityOver"://升级城市结束
+            domHanlder.hideUpgradeCity();
             break;
     }
     domHanlder.showEndTurnBtn();
