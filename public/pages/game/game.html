@@ -16,7 +16,7 @@
 骰子点数<input type="number" id="dicePoint"/><button id="throwDice">掷骰子</button>
 <br/>
 <span id="buyTroop_show">选择购买的兵力
-    <input type="number" id="buyTroop_value" value="0"/><button id="buyTroop_confirm">确定</button><button id="buyTroop_cancel">取消</button>
+    <input type="number" id="buyTroop_value" value="500"/><button id="buyTroop_confirm">确定</button><button id="buyTroop_cancel">取消</button>
 </span>
 <span id="buyHero_show">选择购买武将数量
     <input type="number" id="buyHero_value" value="1"/><button id="buyHero_confirm">确定</button><button id="buyHero_cancel">取消</button>
@@ -29,8 +29,11 @@
 </span>
 <span id="paytollOrAttack_show">
     付<label id="paytollOrAttack_cityname"></label>(<label id="paytollOrAttack_owner"></label>)过路费<label id="paytollOrAttack_toll"></label>两,还是攻城?
-    <input type="hidden" id="paytollOrAttack_cityid"/><input type="hidden" id="paytollOrAttack_userid"/>
+    <input type="hidden" id="paytollOrAttack_cityid"/>
     <button id="paytollOrAttack_paytoll">付费</button><button id="paytollOrAttack_attack">攻城</button>
+</span>
+<span id="bet_show">赌多少<input type="number" id="bet_money" value="0"/>
+    <button id="bet_confirm">确定</button><button id="bet_cancel">取消</button>
 </span>
 <br/>
 房间信息:<br/>

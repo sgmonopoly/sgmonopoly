@@ -49,6 +49,8 @@ const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
             game_ws.inIsland();
             break;
         case 9://赌馆
+            game_ws.inBet();
+            domHanlder.showBet();
             break;
         case 10://紧急军情
             break;
@@ -87,6 +89,7 @@ const eventOverCallback = (overType) => {
         case 8://金银岛
             break;
         case 9://赌馆
+            domHanlder.hideBet();
             break;
         case 10://紧急军情
             break;

@@ -160,14 +160,14 @@ const init = (socket, io, roomNumber, wsUtils) => {
         }
         const user = getUser(socket.userId);
         if (user.money < city.occupyPrice) {
-            return wsUtils.alertLog("当前用户" + user.nickname + "买不起" + city.stageName);
+            return wsUtils.alertLog("当前用户" + user.name + "买不起" + city.stageName);
         }
 
         user.money = user.money - city.occupyPrice;//付钱
         currentGameInfo.occupyCity(user, city);//占领城市
 
         wsUtils.eventOver("buyCityOver");
-        wsUtils.gameLog(`${user.nickname}购买了空城${city.stageName}`);
+        wsUtils.gameLog(`${user.name}购买了空城${city.stageName}`);
         wsUtils.updateRoomToAll(room);
     });
 
@@ -190,7 +190,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         }
         const currentUser = getUser(socket.userId);
         if (city.ownerId === socket.userId) {
-            return wsUtils.gameLog(`${city.stageName}是${currentUser.nickname}自己的,不需要付费`);
+            return wsUtils.gameLog(`${city.stageName}是${currentUser.name}自己的,不需要付费`);
         }
 
         const targetUser = getUser(city.ownerId);
@@ -241,7 +241,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         if (ifPay) {
             const rebuildMoney = levelMade * city.buildPrice;
             if (cityUser.money < rebuildMoney) {
-                return wsUtils.alertLog(cityUser.nickname + "金钱不足以改造城市");
+                return wsUtils.alertLog(cityUser.name + "金钱不足以改造城市");
             }
             cityUser.money = cityUser.money - rebuildMoney;
         }
@@ -267,12 +267,12 @@ const init = (socket, io, roomNumber, wsUtils) => {
         const currentUser = getUser(socket.userId);
         if (currentUser.money < troop) {
             //1兵力=1两钱,所以钱不够时,不准买
-            return wsUtils.alertLog(currentUser.nickname + "金钱不足以购买兵力" + troop);
+            return wsUtils.alertLog(currentUser.name + "金钱不足以购买兵力" + troop);
         }
         currentUser.money = currentUser.money - troop;
         currentUser.troop = currentUser.troop + troop;
 
-        wsUtils.gameLog(`${currentUser.nickname}购买了兵力${troop}`);
+        wsUtils.gameLog(`${currentUser.name}购买了兵力${troop}`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.conscription);
     });
@@ -287,7 +287,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         const currentUser = getUser(socket.userId);
         const needMoney = num * 1000;
         if (currentUser.money < needMoney) {
-            return wsUtils.alertLog(currentUser.nickname + "金钱不足以购买武将");
+            return wsUtils.alertLog(currentUser.name + "金钱不足以购买武将");
         }
         if (currentGameInfo.cardOrders.length < num) {
             return wsUtils.alertLog("国库中已经少于" + num + "张卡片了");
@@ -301,7 +301,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             }
         });
 
-        wsUtils.gameLog(`${currentUser.nickname}购买了${num}名武将卡`);
+        wsUtils.gameLog(`${currentUser.name}购买了${num}名武将卡`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.draft);
     });
@@ -315,7 +315,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         let money = 500;
         money = payMoney(currentUser, money);
 
-        wsUtils.gameLog(`${currentUser.nickname}进入游乐园交游玩费${money}两, 并暂停一轮`);
+        wsUtils.gameLog(`${currentUser.name}进入游乐园交游玩费${money}两, 并暂停一轮`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.park);
     });
@@ -329,7 +329,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         let money = 800;
         money = payMoney(currentUser, money);
 
-        wsUtils.gameLog(`${currentUser.nickname}进入按摩院交费${money}两, 并暂停一轮`);
+        wsUtils.gameLog(`${currentUser.name}进入按摩院交费${money}两, 并暂停一轮`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.massage);
     });
@@ -342,7 +342,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         let money = 500;
         money = payMoney(currentUser, money);
 
-        wsUtils.gameLog(`${currentUser.nickname}向国库缴费${money}两`);
+        wsUtils.gameLog(`${currentUser.name}向国库缴费${money}两`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.tax);
     });
@@ -387,7 +387,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         const gainMoney = point * 1000;
         currentUser.money = currentUser.money + gainMoney;
 
-        wsUtils.gameLog(`${currentUser.nickname}在金银岛投掷点数为${point}点,获${gainMoney}两`);
+        wsUtils.gameLog(`${currentUser.name}在金银岛投掷点数为${point}点,获${gainMoney}两`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.island);
     });
@@ -400,7 +400,41 @@ const init = (socket, io, roomNumber, wsUtils) => {
         let money = 500;
         money = payMoney(currentUser, money);
 
-        wsUtils.gameLog(`${currentUser.nickname}进入赌馆,收入场费${money}两`);
+        wsUtils.gameLog(`${currentUser.name}进入赌馆,收入场费${money}两`);
+        wsUtils.updateRoomToAll(room);
+    });
+
+    /**
+     * 赌博
+     */
+    socket.on('bet', (money) => {
+        if(!money){
+            return wsUtils.alertLog("未填写赌博的数目!");
+        }
+        money = parseInt(money);
+        const currentUser = getUser(socket.userId);
+        if(money > 10000){
+            return wsUtils.alertLog("最大赌资10000!");
+        }
+        if(money > currentUser.money){
+            return wsUtils.alertLog("赌资超过已有的数目!");
+        }
+
+        const point = getDicePoint([1,2,3]);
+        switch (point) {
+            case 1://win
+                currentUser.money += money;
+                wsUtils.gameLog(`${currentUser.name}赌博赢了${money}两`);
+                break;
+            case 2://draw
+                wsUtils.gameLog(`${currentUser.name}赌博未分胜负`);
+                break;
+            case 3://lose
+                currentUser.money -= money;
+                wsUtils.gameLog(`${currentUser.name}赌博输了${money}两`);
+                break;
+
+        }
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.bet);
     });
@@ -412,7 +446,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         const currentUser = getUser(socket.userId);
         currentUser.money = currentUser.money + 4000;
 
-        wsUtils.gameLog(`${currentUser.nickname}停留在起点,获4000两`);
+        wsUtils.gameLog(`${currentUser.name}停留在起点,获4000两`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.start);
     });
@@ -424,7 +458,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         const currentUser = getUser(socket.userId);
         currentUser.money = currentUser.money + 2000;
 
-        wsUtils.gameLog(`${currentUser.nickname}经过起点,获2000两`);
+        wsUtils.gameLog(`${currentUser.name}经过起点,获2000两`);
         wsUtils.updateRoomToAll(room);
     });
 
@@ -487,7 +521,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             //判断用户是否暂停,如是则再调用一次该方法
             if(nextUser.suspended > 0){
                 nextUser.suspended = nextUser.suspended - 1;
-                wsUtils.gameLog(`${nextUser.nickname}暂停一轮`);
+                wsUtils.gameLog(`${nextUser.name}暂停一轮`);
                 nextTurn();
             }
             io.emit("nextTurn", nextUser);//这里传整个用户对象,是因为可能会有个用户信息前后端不同步的BUG

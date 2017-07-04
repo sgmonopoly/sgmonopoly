@@ -75,6 +75,12 @@ const game_ws = {
     inIsland: () => {
         socket.emit("inIsland");
     },
+    inBet: () => {
+        socket.emit("inBet");
+    },
+    bet: (money) => {
+        socket.emit("bet", money);
+    },
     inStart: () => {
         socket.emit("inStart");
     },

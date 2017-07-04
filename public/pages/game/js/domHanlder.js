@@ -4,7 +4,7 @@
  */
 import $ from 'jquery'
 import * as _ from 'lodash'
-import {socket, room_ws, game_ws} from '../../../api/ws/emit'
+import {room_ws, game_ws} from '../../../api/ws/emit'
 import myUserId from './localData'
 
 const dom_chatLog = $("#chatLog");
@@ -56,10 +56,13 @@ const dom_paytollOrAttack_cityname = $("#paytollOrAttack_cityname");
 const dom_paytollOrAttack_owner = $("#paytollOrAttack_owner");
 const dom_paytollOrAttack_toll = $("#paytollOrAttack_toll");
 const dom_paytollOrAttack_cityid = $("#paytollOrAttack_cityid");
-const dom_paytollOrAttack_userid = $("#paytollOrAttack_userid");
 const dom_btn_paytollOrAttack_paytoll = $("#paytollOrAttack_paytoll");
-const dom_btn_paytollOrAttack_attack = $("#paytollOrAttack_attack");
-
+const dom_btn_paytollOrAttack_attack = $("#paytollOrAttack_attack")
+//赌博
+const dom_bet_show = $("#bet_show");
+const dom_bet_money = $("#bet_money");
+const dom_btn_bet_confirm = $("#bet_confirm");
+const dom_btn_bet_cancel = $("#bet_cancel");
 
 (function () {
     /**
@@ -169,6 +172,16 @@ const dom_btn_paytollOrAttack_attack = $("#paytollOrAttack_attack");
     dom_btn_paytollOrAttack_attack.on('click', () => {
         //TODO 攻打先不做
     });
+    //默认赌博界面不出现
+    dom_bet_show.hide();
+    dom_btn_bet_confirm.on('click', () => {
+        const money = dom_bet_money.val();
+        game_ws.bet(money);
+    });
+    dom_btn_bet_cancel.on('click', () => {
+        dom_bet_show.hide();
+        showEndTurnBtn();
+    });
 
 })();
 
@@ -273,6 +286,7 @@ export const showEndTurnBtn = () => {
  * 显示购买兵力
  */
 export const showBuyTroop = () => {
+    dom_buyTroop_value.val(500);
     dom_buyTroop_show.show(1000);
 };
 
@@ -287,6 +301,7 @@ export const hideBuyTroop = () => {
  * 显示招将
  */
 export const showBuyHero = () => {
+    dom_buyHero_value.val(1);
     dom_buyHero_show.show(1000);
 };
 /**
@@ -341,4 +356,18 @@ export const showPaytollOrAttack = (obj) => {
  */
 export const hidePaytollOrAttack = () => {
     dom_paytollOrAttack_show.hide();
+};
+
+/**
+ * 显示赌博
+ */
+export const showBet = () => {
+    dom_bet_money.val(0);
+    dom_bet_show.show(1000);
+};
+/**
+ * 隐藏赌博
+ */
+export const hideBet = () => {
+    dom_bet_show.hide();
 };
