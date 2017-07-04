@@ -40,7 +40,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 本轮结束
      */
     socket.on('endTurn', () => {
-        wsUtils.gameLog(socket.nickname + "结束了当前回合");
+        wsUtils.gameLog(socket.fullName + "结束了当前回合");
         wsUtils.updateRoomToAll(room);
         currentGameInfo = room.gameInfo;//解决游戏信息无故消失的BUG
         nextTurn();
@@ -99,12 +99,14 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 可以前端直接传,不传的话就后端随机生成
      */
     socket.on('throwDiceForWalk', (point) => {
+        currentGameInfo = room.gameInfo;//解决游戏信息无故消失的BUG
         if (!point) point = getDicePoint(currentGameInfo.diceRange);
         console.log("throwDice", point);
-
-        wsUtils.gameLog(socket.nickname + "投掷点数:" + point);
-
         const currentUser = getUser(socket.userId);
+        if(!socket.fullName){
+            socket.fullName = currentUser.name;
+        }
+        wsUtils.gameLog(socket.fullName + "投掷点数:" + point);
         //返回途径的所有节点
         const midway = getMidway(currentUser.currentPosition, point);
 
@@ -121,7 +123,6 @@ const init = (socket, io, roomNumber, wsUtils) => {
                 money: currentUser.money
             }//20170614 返回用户对象给targetPositionFeedback用
         });
-
     });
 
     /**
@@ -135,7 +136,12 @@ const init = (socket, io, roomNumber, wsUtils) => {
         if (!city) {
             return wsUtils.errorLog("城市找不到" + stageId);
         }
-        return socket.emit("cityOwnerId", stageId, city.stageName, city.ownerId);
+        let ownerName;
+        if(city.ownerId){
+            const owner = getUser(city.ownerId);
+            ownerName = owner.name;
+        }
+        return socket.emit("cityOwnerId", stageId, city.stageName, city.ownerId, ownerName, city.toll);
     });
 
     /**
@@ -177,7 +183,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             return wsUtils.errorLog("城市找不到" + stageId);
         }
         if (city.stageType != sg_constant.stage_type.city) {
-            return wsUtils.alertLog("当前地点并非城市" + stageId);
+            return wsUtils.errorLog("当前地点并非城市" + stageId);
         }
         if (!city.ownerId) {
             return wsUtils.gameLog(city.stageName + "是空城,不需要付费");
@@ -195,8 +201,8 @@ const init = (socket, io, roomNumber, wsUtils) => {
         currentUser.money = currentUser.money - toll;
         targetUser.money = targetUser.money + toll;
 
-        wsUtils.eventOver("upgradeCityOver");
-        wsUtils.gameLog(`${currentUser.nickname}路过${city.stageName}付过路税金${toll}给${targetUser.nickname}`);
+        wsUtils.eventOver("payTollOver");
+        wsUtils.gameLog(`${currentUser.name}路过${city.stageName}付过路税金${toll}给${targetUser.name}`);
         wsUtils.updateRoomToAll(room);
     });
 
@@ -246,6 +252,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             currentGameInfo.upgradeCity(cityUser, city);
         });
 
+        wsUtils.eventOver("upgradeCityOver");
         wsUtils.gameLog(`${city.stageName}改造成了${sg_constant.city_type_cn[levelMade]}`);
         wsUtils.updateRoomToAll(room);
     });
@@ -366,7 +373,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             }
         });
 
-        wsUtils.gameLog(`${socket.nickname}投掷3次分别为:${point1}点、${point2}点和${point3}点,总点数${pointAll}点,得武将${heroCount}名`);
+        wsUtils.gameLog(`${socket.fullName}投掷3次分别为:${point1}点、${point2}点和${point3}点,总点数${pointAll}点,得武将${heroCount}名`);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.cottage);
     });
@@ -442,6 +449,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             user.lordName = sg_constant.lord_property[lordId].name;
             user.lordAvatar = sg_constant.lord_property[lordId].avatar;
             user.offset = userIndex++ * sg_constant.avatar_offset;//偏移量暂时设置为20
+            user.updateName();//更新整体的名称
             selectedLords.push(lordId);
         });
         //去掉选择掉的君主
@@ -467,7 +475,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         try {
             const nextUser = getNextUser();
             nextUser.turn = nextUser.turn + 1;//总轮数+1
-            wsUtils.gameLog("当前回合用户:" + nextUser);
+            wsUtils.gameLog("当前回合用户:" + nextUser.name);
             /*
              为了防止某些用户掉线,而造成这个数值的不正确
              这里判断每个人的总轮数,取最大值作为游戏的总轮数值
@@ -482,7 +490,6 @@ const init = (socket, io, roomNumber, wsUtils) => {
                 wsUtils.gameLog(`${nextUser.nickname}暂停一轮`);
                 nextTurn();
             }
-
             io.emit("nextTurn", nextUser);//这里传整个用户对象,是因为可能会有个用户信息前后端不同步的BUG
         } catch (e) {
             console.error(e);

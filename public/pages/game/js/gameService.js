@@ -100,6 +100,9 @@ const eventOverCallback = (overType) => {
         case "upgradeCityOver"://升级城市结束
             domHanlder.hideUpgradeCity();
             break;
+        case "payTollOver"://付过路费结束
+            domHanlder.hidePaytollOrAttack();
+            break;
     }
     domHanlder.showEndTurnBtn();
 };

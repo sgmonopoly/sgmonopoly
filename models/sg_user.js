@@ -20,6 +20,11 @@ class SG_User extends require("./user_info") {
         this.color = "";//颜色
         this.offset = 0;//头像偏移量
         this.currentPosition = 1;//当前位置(默认初始化时在第一个地方)
+        this.name = "";//君主名+昵称
+    }
+
+    updateName(){
+        this.name = this.lordName + "(" + this.nickname + ")";
     }
 }
 module.exports = SG_User;

@@ -112,7 +112,7 @@ const initNetwork = (roomId) => {
     /**
      * 进入城市,返回城市主人ID
      */
-    socket.on("cityOwnerId", (cityId, cityName, ownerId) => {
+    socket.on("cityOwnerId", (cityId, cityName, ownerId, ownerName, toll) => {
         if(!ownerId){
             //空城,显示是否购买
             domHanlder.showBuyCity(cityId, cityName);
@@ -120,7 +120,10 @@ const initNetwork = (roomId) => {
             //自己的城,显示是否升级
             domHanlder.showUpgradeCity(cityId, cityName);
         }else{
-            //TODO 别人的城,显示是否攻打,以后做
+            //弹出选择付过路费,或者 攻打(攻打暂时不做)
+            domHanlder.showPaytollOrAttack({
+                cityId, cityName, ownerName, toll
+            });
         }
     });
 

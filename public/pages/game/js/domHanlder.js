@@ -50,6 +50,16 @@ const dom_upgradeCity_name = $("#upgradeCity_name");
 const dom_upgradeCity_id = $("#upgradeCity_id");
 const dom_btn_upgradeCity_confirm = $("#upgradeCity_confirm");
 const dom_btn_upgradeCity_cancel = $("#upgradeCity_cancel");
+//付过路费或者攻打
+const dom_paytollOrAttack_show = $("#paytollOrAttack_show");
+const dom_paytollOrAttack_cityname = $("#paytollOrAttack_cityname");
+const dom_paytollOrAttack_owner = $("#paytollOrAttack_owner");
+const dom_paytollOrAttack_toll = $("#paytollOrAttack_toll");
+const dom_paytollOrAttack_cityid = $("#paytollOrAttack_cityid");
+const dom_paytollOrAttack_userid = $("#paytollOrAttack_userid");
+const dom_btn_paytollOrAttack_paytoll = $("#paytollOrAttack_paytoll");
+const dom_btn_paytollOrAttack_attack = $("#paytollOrAttack_attack");
+
 
 (function () {
     /**
@@ -149,6 +159,15 @@ const dom_btn_upgradeCity_cancel = $("#upgradeCity_cancel");
     dom_btn_upgradeCity_cancel.on('click', () => {
         dom_upgradeCity_show.hide();
         showEndTurnBtn();
+    });
+    //默认隐藏付费攻打界面
+    dom_paytollOrAttack_show.hide();
+    dom_btn_paytollOrAttack_paytoll.on('click', () => {
+        const stageId = dom_paytollOrAttack_cityid.val();
+        game_ws.payToll(stageId);
+    });
+    dom_btn_paytollOrAttack_attack.on('click', () => {
+        //TODO 攻打先不做
     });
 
 })();
@@ -305,4 +324,21 @@ export const showUpgradeCity = (cityId, cityName) => {
  */
 export const hideUpgradeCity = () => {
     dom_upgradeCity_show.hide();
+};
+
+/**
+ * 显示付过路费或者攻打选项
+ */
+export const showPaytollOrAttack = (obj) => {
+    dom_paytollOrAttack_show.show(1000);
+    dom_paytollOrAttack_cityname.text(obj.cityName);
+    dom_paytollOrAttack_owner.text(obj.ownerName);
+    dom_paytollOrAttack_toll.text(obj.toll);
+    dom_paytollOrAttack_cityid.val(obj.cityId);
+};
+/**
+ * 隐藏付过路费或者攻打选项
+ */
+export const hidePaytollOrAttack = () => {
+    dom_paytollOrAttack_show.hide();
 };
