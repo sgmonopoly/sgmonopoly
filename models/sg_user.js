@@ -7,6 +7,7 @@ class SG_User extends require("./user_info") {
         super(_userId, _nickname, _avatar);
         this.lordName = "";//君主姓名
         this.lordAvatar = "";//君主头像
+        this.lordId = "";//君主id
         this.money = _money;//默认金额18000
         this.troop = _troop;//默认兵力2000
         this.citys = [];//占有的城池

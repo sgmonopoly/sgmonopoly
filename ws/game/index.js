@@ -459,16 +459,17 @@ const init = (socket, io, roomNumber, wsUtils) => {
 
         room.gameInfo = currentGameInfo;//将游戏属性设置到房间属性中
 
-        let lord = _.shuffle(sg_constant.lord_id_array);
+        let lordIds = _.shuffle(sg_constant.lord_id_array);
         const selectedLords = [];
         let userIndex = 0;
         //初始化君主
         roomUsers.forEach(user => {
             //FIXME 暂时用随机分配君主(ID 1 14 27 40),将来做成可以选的
-            const lordId = lord.shift();
+            const lordId = lordIds.shift();
             user.heros.push(lordId);
             user.lordName = sg_constant.lord_property[lordId].name;
             user.lordAvatar = sg_constant.lord_property[lordId].avatar;
+            user.lordId = lordId;
             user.offset = userIndex++ * sg_constant.avatar_offset;//偏移量暂时设置为20
             user.updateName();//更新整体的名称
             selectedLords.push(lordId);
