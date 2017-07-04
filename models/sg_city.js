@@ -14,6 +14,7 @@ class SG_City extends require('./sg_stage') {
         this.tax1 = this.occupyPrice / 2;//基数为领地价格的一半,普通为基数,小城为基数2倍,大城为基数4倍
         this.tax2 = this.occupyPrice;
         this.tax3 = this.occupyPrice * 2;
+        this.cityType = _cityType;
     }
 }
 module.exports = SG_City;

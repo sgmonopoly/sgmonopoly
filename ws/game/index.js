@@ -55,7 +55,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         if (!point) point = getDicePoint(currentGameInfo.diceRange);
         console.log("throwDice", point);
         const currentUser = getUser(socket.userId);
-        if(!socket.fullName){
+        if (!socket.fullName) {
             socket.fullName = currentUser.name;
         }
         wsUtils.gameLog(socket.fullName + "投掷点数:" + point);
@@ -89,7 +89,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             return wsUtils.errorLog("城市找不到" + stageId);
         }
         let ownerName;
-        if(city.ownerId){
+        if (city.ownerId) {
             const owner = getUser(city.ownerId);
             ownerName = owner.name;
         }
@@ -123,10 +123,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         wsUtils.updateRoomToAll(room);
     });
 
-    /**
-     * 付过路费
-     */
-    socket.on('payToll', stageId => {
+    const payToll = stageId => {
         if (!stageId) {
             return wsUtils.errorLog("stageId参数为空");
         }
@@ -156,7 +153,11 @@ const init = (socket, io, roomNumber, wsUtils) => {
         wsUtils.eventOver("payTollOver");
         wsUtils.gameLog(`${currentUser.name}路过${city.stageName}付过路税金${toll}给${targetUser.name}`);
         wsUtils.updateRoomToAll(room);
-    });
+    };
+    /**
+     * 付过路费
+     */
+    socket.on('payToll', payToll);
 
     /**
      * 改造城市,包括升级或者降级,可指定任意城市
@@ -248,7 +249,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         currentUser.money = currentUser.money - needMoney;
         _.times(num, function () {
             const cardId = getNextCardIndex();
-            if(cardId){
+            if (cardId) {
                 currentUser.heros.push(cardId);
             }
         });
@@ -310,17 +311,17 @@ const init = (socket, io, roomNumber, wsUtils) => {
         const pointAll = point1 + point2 + point3;
 
         let heroCount = 0;
-        if(pointAll > 15 ){
+        if (pointAll > 15) {
             heroCount = 3;
-        }else if(pointAll > 12){
+        } else if (pointAll > 12) {
             heroCount = 2;
-        }else if(pointAll > 9){
+        } else if (pointAll > 9) {
             heroCount = 1;
         }
 
         _.times(heroCount, function () {
             const cardId = getNextCardIndex();
-            if(cardId){
+            if (cardId) {
                 currentUser.heros.push(cardId);
             }
         });
@@ -360,19 +361,19 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * 赌博
      */
     socket.on('bet', (money) => {
-        if(!money){
+        if (!money) {
             return wsUtils.alertLog("未填写赌博的数目!");
         }
         money = parseInt(money);
         const currentUser = getUser(socket.userId);
-        if(money > 10000){
+        if (money > 10000) {
             return wsUtils.alertLog("最大赌资10000!");
         }
-        if(money > currentUser.money){
+        if (money > currentUser.money) {
             return wsUtils.alertLog("赌资超过已有的数目!");
         }
 
-        const point = getDicePoint([1,2,3]);
+        const point = getDicePoint([1, 2, 3]);
         switch (point) {
             case 1://win
                 currentUser.money += money;
@@ -417,7 +418,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
     /**
      * 攻城准备
      */
-    socket.on('readyBattle', (stageId) => {
+    socket.on('readyForBattle', (stageId) => {
         /**
          * 判断基本信息
          */
@@ -429,24 +430,70 @@ const init = (socket, io, roomNumber, wsUtils) => {
             return wsUtils.errorLog("城市找不到" + stageId);
         }
         let defUser;
-        if(city.ownerId){
+        if (city.ownerId) {
             defUser = getUser(city.ownerId);
-        }else{
-            return wsUtils.alertLog(city.name+"是空城");
+        } else {
+            return wsUtils.alertLog(city.name + "是空城");
         }
         const atkUser = getUser(socket.userId);
 
         /**
          * 判断武将是否至少有一名
+         * 应该不会出现这种情况,这里只是以防万一
          */
+        if (atkUser.heros.length === 0) {
+            return wsUtils.alertLog("攻方至少要有一名武将");
+        }
+        if (defUser.heros.length === 0) {
+            return wsUtils.alertLog("守方至少要有一名武将");
+        }
 
         /**
          * 判断兵力是否足够
          */
+        const {colorFollow, cityType, stageName} = city;
 
+        let atkTroop;
+        let defTroop;
+        let message;
+        let troopScale;
+        if (colorFollow !== sg_constant.city_follow.ancient) {
+            troopScale = cityType;
+            atkTroop = troopScale * 1500;
+            defTroop = troopScale * 500;
+            message = `进攻${stageName},该城市为${sg_constant.city_type_cn[cityType]},攻方需要兵力${atkTroop},守方需要兵力${defTroop}`;
+        } else {
+            //古战场
+            const ancientCityIds = sg_constant.city_follow_mapping[sg_constant.city_follow.ancient];
+            const commonAncientCitys = _.intersection(ancientCityIds, defUser.citys);
+            troopScale = commonAncientCitys.length;
+            atkTroop = troopScale * 1500;
+            defTroop = troopScale * 500;
+            message = `进攻古战场${stageName},防守方有${troopScale}座古战场,攻方需要兵力${atkTroop},守方需要兵力${defTroop}`;
+        }
 
+        if (atkUser.troop < atkTroop) {
+            message += ",但是攻方兵力不足,无法进攻。";
+            wsUtils.gameLog(message);
+            return payToll(stageId);//触发付费
+        }
+        if (defUser.troop < defTroop) {
+            message += ",但是守方兵力不足";
+            wsUtils.gameLog(message);
+            //TODO 触发进攻胜利结算
+            return;
+        }
 
+        message += ",攻城开始";
+        wsUtils.gameLog(message);
         wsUtils.updateRoomToAll(room);
+        io.emit("startBattle", {
+            stageId,
+            atkUserId: atkUser.userId,
+            defUserId: defUser.userId,
+            atkTroop,
+            defTroop
+        });
     });
 
     /////////////////////////////////////////////
@@ -481,7 +528,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             //金钱和兵力早已初始化过了,这里只摸3张武将卡
             _.times(3, () => {
                 const cardId = getNextCardIndex();
-                if(cardId){
+                if (cardId) {
                     user.heros.push(cardId);
                 }
             });
@@ -507,7 +554,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             }
 
             //判断用户是否暂停,如是则再调用一次该方法
-            if(nextUser.suspended > 0){
+            if (nextUser.suspended > 0) {
                 nextUser.suspended = nextUser.suspended - 1;
                 wsUtils.gameLog(`${nextUser.name}暂停一轮`);
                 nextTurn();
