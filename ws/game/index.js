@@ -45,54 +45,6 @@ const init = (socket, io, roomNumber, wsUtils) => {
         currentGameInfo = room.gameInfo;//解决游戏信息无故消失的BUG
         nextTurn();
     });
-    /**
-     * @deprecated 由于会有数值计算的事务问题,这个方法暂时不用
-     *
-     * 调整数值,完全由前端控制
-     * 【
-     *    {
-     *      userId:1,//用户ID
-     *      money:-1000,//钱少了1000
-     *      troop:2000,//兵力增加2000
-     *      addCitys:[1],//拥有城市1
-     *      removeCitys:[2,3],//失去城市2和3
-     *      upgradeCitys:[{cityId:31,up:-1}],//城市31降级(大变小,小变无)
-     *      addCards:[10,20],//增加卡片
-     *      removeCards:[11],//失去卡片
-     *      addSuggestions:[10,20],//增加锦囊
-     *      removeSuggestions:[11],//失去锦囊
-     *      suspended:1//停一次
-     *    },
-     *    {
-     *      userId:2,//用户ID
-     *      suspended:-1//解除停留一次
-     *    }
-     *  ]
-     */
-    socket.on('changeData', (data) => {
-        if (!data) {
-            return wsUtils.errorLog("data参数为空");
-        }
-        if (!common.checkValidUser(roomUsers, socket.id)) {
-            console.log(socket.id, "当前客户端非游戏玩家!");
-            return wsUtils.errorLogAll("检测到有玩家在作弊!");
-        }
-        console.log("changeData:", data);
-        data.forEach(changeData => {
-            const user = common.getUser(roomUsers, changeData["userId"]);
-            if (user) {
-                changeDataNumber(changeData, "money", user, "money");
-                changeDataNumber(changeData, "troop", user, "troop");
-                changeDataArray(changeData, "addCitys", "removeCitys", user, "citys");
-                //TODO upgradeCitys不在这里做,在sg_game类里面做了
-                changeDataArray(changeData, "addCards", "removeCards", user, "cards");
-                changeDataArray(changeData, "addSuggestions", "removeSuggestions", user, "suggestions");
-                changeDataNumber(changeData, "suspended", user, "suspended");
-            }
-        });
-
-        wsUtils.updateRoomToAll(room);
-    });
 
     /**
      * 掷骰子走路,并广播骰子点数
@@ -289,15 +241,15 @@ const init = (socket, io, roomNumber, wsUtils) => {
         if (currentUser.money < needMoney) {
             return wsUtils.alertLog(currentUser.name + "金钱不足以购买武将");
         }
-        if (currentGameInfo.cardOrders.length < num) {
-            return wsUtils.alertLog("国库中已经少于" + num + "张卡片了");
+        if (currentGameInfo.herosOrders.length < num) {
+            return wsUtils.alertLog("国库中已经少于" + num + "武将了");
         }
 
         currentUser.money = currentUser.money - needMoney;
         _.times(num, function () {
             const cardId = getNextCardIndex();
             if(cardId){
-                currentUser.cards.push(cardId);
+                currentUser.heros.push(cardId);
             }
         });
 
@@ -369,7 +321,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         _.times(heroCount, function () {
             const cardId = getNextCardIndex();
             if(cardId){
-                currentUser.cards.push(cardId);
+                currentUser.heros.push(cardId);
             }
         });
 
@@ -462,6 +414,41 @@ const init = (socket, io, roomNumber, wsUtils) => {
         wsUtils.updateRoomToAll(room);
     });
 
+    /**
+     * 攻城准备
+     */
+    socket.on('readyBattle', (stageId) => {
+        /**
+         * 判断基本信息
+         */
+        if (!stageId) {
+            return wsUtils.errorLog("stageId参数为空 .");
+        }
+        const city = currentGameInfo.getCity(stageId);
+        if (!city) {
+            return wsUtils.errorLog("城市找不到" + stageId);
+        }
+        let defUser;
+        if(city.ownerId){
+            defUser = getUser(city.ownerId);
+        }else{
+            return wsUtils.alertLog(city.name+"是空城");
+        }
+        const atkUser = getUser(socket.userId);
+
+        /**
+         * 判断武将是否至少有一名
+         */
+
+        /**
+         * 判断兵力是否足够
+         */
+
+
+
+        wsUtils.updateRoomToAll(room);
+    });
+
     /////////////////////////////////////////////
 
     /**
@@ -479,7 +466,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         roomUsers.forEach(user => {
             //FIXME 暂时用随机分配君主(ID 1 14 27 40),将来做成可以选的
             const lordId = lord.shift();
-            user.cards.push(lordId);
+            user.heros.push(lordId);
             user.lordName = sg_constant.lord_property[lordId].name;
             user.lordAvatar = sg_constant.lord_property[lordId].avatar;
             user.offset = userIndex++ * sg_constant.avatar_offset;//偏移量暂时设置为20
@@ -487,14 +474,14 @@ const init = (socket, io, roomNumber, wsUtils) => {
             selectedLords.push(lordId);
         });
         //去掉选择掉的君主
-        currentGameInfo.cardOrders = _.difference(currentGameInfo.cardOrders, selectedLords);
+        currentGameInfo.herosOrders = _.difference(currentGameInfo.herosOrders, selectedLords);
 
         roomUsers.forEach(user => {
             //金钱和兵力早已初始化过了,这里只摸3张武将卡
             _.times(3, () => {
                 const cardId = getNextCardIndex();
                 if(cardId){
-                    user.cards.push(cardId);
+                    user.heros.push(cardId);
                 }
             });
             //将所有人置为开始游戏状态
@@ -576,11 +563,11 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * @returns {T|*}
      */
     const getNextCardIndex = () => {
-        if (currentGameInfo.cardOrders.length === 0) {
+        if (currentGameInfo.herosOrders.length === 0) {
             wsUtils.gameLog("国库无剩余武将了!");
             return false;
         }
-        return currentGameInfo.cardOrders.shift();
+        return currentGameInfo.herosOrders.shift();
     };
 
     /**
@@ -613,9 +600,9 @@ const init = (socket, io, roomNumber, wsUtils) => {
      * @returns {T|*}
      */
     const returnCardToHome = (cardId) => {
-        currentGameInfo.cardOrders.push(cardId);
-        let tempCards = currentGameInfo.cardOrders;
-        currentGameInfo.cardOrders = _.shuffle(tempCards);
+        currentGameInfo.herosOrders.push(cardId);
+        let tempCards = currentGameInfo.herosOrders;
+        currentGameInfo.herosOrders = _.shuffle(tempCards);
     };
     /**
      * 获取下一张紧急军情,没有则重新洗牌
@@ -692,45 +679,6 @@ const modifyAllUserStatus = (roomUsers, status) => {
     }
 };
 
-/**
- * @deprecated
- * 过滤变换的数据
- * @param changeData
- * @param key
- * @param user
- * @param userkey
- */
-const changeDataNumber = (changeData, key, user, userkey) => {
-    if (_.isNumber(changeData[key])) {
-        const adjustValue = changeData[key];
-        if (adjustValue < 0 && Math.abs(adjustValue) > user[userkey]) {
-            //如果是负数,且绝对值大于原来的数值,则将原来的值清零
-            user[userkey] = 0;
-        } else {
-            user[userkey] = user[userkey] + adjustValue;
-        }
-    }
-};
-/**
- * @deprecated
- * 用户的属性
- * 过滤变换的数据
- * @param changeData
- * @param addKey
- * @param removeKey
- * @param user
- * @param userkey
- */
-const changeDataArray = (changeData, addKey, removeKey, user, userkey) => {
-    if (_.isArray(changeData[addKey])) {//添加
-        const newArray = user[userkey].concat(changeData[addKey]);
-        user[userkey] = _.uniq(newArray, true);//去重排序
-    }
-    if (_.isArray(changeData[removeKey])) {//移除
-        const newArray = _.difference(user[userkey], changeData[removeKey]);
-        user[userkey] = _.uniq(newArray, true);
-    }
-};
 /**
  * 随机获取骰子点数
  * @param diceRange

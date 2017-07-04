@@ -12,7 +12,7 @@ const common = require("../services/common_roomUtils");
 class SG_Game {
 
     constructor() {
-        this.cardOrders = common.createShuffledArray(sg_constant.item_count.card);//卡片顺序(洗牌)
+        this.herosOrders = common.createShuffledArray(sg_constant.item_count.card);//国库武将顺序(洗牌)
         this.situationOrders = common.createShuffledArray(sg_constant.item_count.situation);//紧急军情顺序(洗牌)
         this.suggestionOrder = common.createShuffledArray(sg_constant.item_count.suggestion);//锦囊妙计顺序(洗牌)
         this.currentUserIndex = -1;//目前的用户索引(默认-1,则第一轮从(-1 + 1 = 0)的索引处开始)

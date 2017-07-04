@@ -10,6 +10,7 @@ class SG_User extends require("./user_info") {
         this.money = _money;//默认金额18000
         this.troop = _troop;//默认兵力2000
         this.citys = [];//占有的城池
+        this.heros = [];//拥有的武将
         this.cards = [];//拥有的卡片
         this.suggestions = [];//拥有的锦囊
         //this.order = 0;//顺序(1,2,3,4)
