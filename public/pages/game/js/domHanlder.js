@@ -63,6 +63,11 @@ const dom_bet_show = $("#bet_show");
 const dom_bet_money = $("#bet_money");
 const dom_btn_bet_confirm = $("#bet_confirm");
 const dom_btn_bet_cancel = $("#bet_cancel");
+//选择武将
+const dom_select_hero_show = $("#select_hero_show");
+const dom_select_hero_value = $("#select_hero_value");
+const dom_battle_id = $("#battle_id");
+const dom_btn_select_hero_confirm = $("#select_hero_confirm");
 
 (function () {
     /**
@@ -170,7 +175,8 @@ const dom_btn_bet_cancel = $("#bet_cancel");
         game_ws.payToll(stageId);
     });
     dom_btn_paytollOrAttack_attack.on('click', () => {
-        //TODO 攻打先不做
+        const stageId = dom_paytollOrAttack_cityid.val();
+        game_ws.readyForBattle(stageId);
     });
     //默认赌博界面不出现
     dom_bet_show.hide();
@@ -181,6 +187,15 @@ const dom_btn_bet_cancel = $("#bet_cancel");
     dom_btn_bet_cancel.on('click', () => {
         dom_bet_show.hide();
         showEndTurnBtn();
+    });
+
+    //默认隐藏选择武将
+    dom_select_hero_show.hide();
+    dom_btn_select_hero_confirm.on('click', () => {
+        const heroId = dom_select_hero_value.val();
+        const battleId = dom_battle_id.val();
+        game_ws.heroSelected(battleId, heroId);
+        dom_select_hero_show.hide();
     });
 
 })();
@@ -370,4 +385,20 @@ export const showBet = () => {
  */
 export const hideBet = () => {
     dom_bet_show.hide();
+};
+
+/**
+ * 显示要选择的武将
+ * @param herosDetail
+ * @param isAtk true是攻方,false是守方
+ */
+export const showSelectHero = (battleId, herosDetail) => {
+    dom_select_hero_value.empty();
+    dom_battle_id.val("");
+    //前端显示武将列表
+    herosDetail.forEach(hero => {
+        dom_select_hero_value.append(`<option value="${hero.cardId}">${hero.cardName}</option>`);
+    });
+    dom_battle_id.val(battleId);
+    dom_select_hero_show.show(1000);
 };

@@ -8,6 +8,7 @@ import * as canvasHandler from './canvasHandler'
 import * as gameService from './gameService'
 import myUserId from './localData'
 import * as _ from 'lodash'
+import {hero_info} from "./heroInfo"
 
 /**
  * 连ws并接收ws任务
@@ -125,6 +126,28 @@ const initNetwork = (roomId) => {
                 cityId, cityName, ownerName, toll
             });
         }
+    });
+    /**
+     * 开始攻城战
+     * 进入选择武将界面
+     */
+    socket.on("startBattle", (battleInfo) => {
+        const getDetailHeroInfo = (heroIds) => {
+            const detailHeros = [];
+            heroIds.forEach(heroId => {
+                detailHeros.push(hero_info[heroId]);
+            });
+            return detailHeros;
+        };
+
+        if(myUserId === battleInfo.atkUserId){
+            console.log("startBattle atkHeros", battleInfo.atkUserHeros);
+            domHanlder.showSelectHero(battleInfo.battleId, getDetailHeroInfo(battleInfo.atkUserHeros));
+        }else if(myUserId === battleInfo.defUserId){
+            console.log("startBattle defHeros", battleInfo.defUserHeros);
+            domHanlder.showSelectHero(battleInfo.battleId, getDetailHeroInfo(battleInfo.defUserHeros));
+        }
+
     });
 
 };

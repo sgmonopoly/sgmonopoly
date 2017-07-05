@@ -39,14 +39,14 @@ const game_ws = {
     throwDiceForWalk: (point) => {//point为空则随机
         socket.emit("throwDiceForWalk", point);
     },
-    throw3Dices: (point1,point2,point3) => {
-        socket.emit("throw3Dices",point1,point2,point3);
+    throw3Dices: (point1, point2, point3) => {
+        socket.emit("throw3Dices", point1, point2, point3);
     },
     buyCity: (stageId) => {
-        socket.emit("buyCity",stageId);
+        socket.emit("buyCity", stageId);
     },
     payToll: (stageId) => {
-        socket.emit("payToll",stageId);
+        socket.emit("payToll", stageId);
     },
     payTroop: (troop) => {
         socket.emit("payTroop", troop);
@@ -55,7 +55,7 @@ const game_ws = {
         socket.emit("payHero", num);
     },
     upgradeCity: (stageId, ifPay = true, level = 1) => {
-        socket.emit("upgradeCity",stageId, ifPay, level);
+        socket.emit("upgradeCity", stageId, ifPay, level);
     },
     inCity: (stageId) => {
         socket.emit("inCity", stageId);
@@ -86,8 +86,13 @@ const game_ws = {
     },
     passByStart: () => {
         socket.emit("passByStart");
+    },
+    readyForBattle: (stageId) => {
+        socket.emit("readyForBattle", stageId);
+    },
+    heroSelected: (battleId, heroId) => {
+        socket.emit("heroSelected", battleId, heroId);
     }
-
 };
 
-export {socket,room_ws,game_ws}
+export {socket, room_ws, game_ws}

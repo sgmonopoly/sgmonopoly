@@ -3,6 +3,7 @@
  */
 const _ = require("lodash");
 const sg_constant = require("../services/sg_constant");
+const heroInfo = require("../models/card_info");
 /**
  * 根据ID快速获取用户
  * @param roomUsers
@@ -28,7 +29,15 @@ exports.getUserIndex = (roomUsers, userId) => {
         }
     }
 };
-
+/**
+ * 获得武将的信息
+ * @param roomUsers
+ * @param userId
+ * @returns {*}
+ */
+exports.getHero = (heroId) => {
+    return heroInfo[heroId];
+};
 /**
  * 房间检测,没有人就取消房主,还有人则选第一个人自动当房主
  * @param room

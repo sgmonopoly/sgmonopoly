@@ -5,6 +5,7 @@ const allRoom = require("../../services/share_variables").allRoom;
 const SG_Game = require("../../models/sg_game");
 const _ = require("lodash");
 const common = require("../../services/common_roomUtils");
+const battle_service = require("../../services/battle_service");
 
 const init = (socket, io, roomNumber, wsUtils) => {
 
@@ -453,14 +454,17 @@ const init = (socket, io, roomNumber, wsUtils) => {
          */
         const {colorFollow, cityType, stageName} = city;
 
-        let atkTroop;
+        let atkTroop;//需要的兵力
         let defTroop;
+        let atkConsumeTroop;//消耗的兵力
+        let defConsumeTroop = 500;
         let message;
         let troopScale;
         if (colorFollow !== sg_constant.city_follow.ancient) {
             troopScale = cityType;
             atkTroop = troopScale * 1500;
             defTroop = troopScale * 500;
+            atkConsumeTroop = troopScale * 500;
             message = `进攻${stageName},该城市为${sg_constant.city_type_cn[cityType]},攻方需要兵力${atkTroop},守方需要兵力${defTroop}`;
         } else {
             //古战场
@@ -469,6 +473,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
             troopScale = commonAncientCitys.length;
             atkTroop = troopScale * 1500;
             defTroop = troopScale * 500;
+            atkConsumeTroop = troopScale * 500;
             message = `进攻古战场${stageName},防守方有${troopScale}座古战场,攻方需要兵力${atkTroop},守方需要兵力${defTroop}`;
         }
 
@@ -483,18 +488,79 @@ const init = (socket, io, roomNumber, wsUtils) => {
             //TODO 触发进攻胜利结算
             return;
         }
+        //定义一个ID,用来甄别攻城记录,并记录在本局游戏信息中
+        const battleId = _.now();
+        const battleInfo = {
+            battleId,
+            stageId,
+            cityName: city.stageName,
+            atkUserId: atkUser.userId,
+            defUserId: defUser.userId,
+            atkUserName: atkUser.name,
+            defUserName: defUser.name,
+            atkUserHeros: atkUser.heros,
+            defUserHeros: defUser.heros,
+            atkConsumeTroop,
+            defConsumeTroop,
+            atkUserOk: false,
+            defUserOk: false,
+            atkHeroId: "",
+            defHeroId: ""
+        };
+        currentGameInfo.nextBattleInfo = battleInfo;
 
         message += ",攻城开始";
         wsUtils.gameLog(message);
         wsUtils.updateRoomToAll(room);
-        io.emit("startBattle", {
-            stageId,
-            atkUserId: atkUser.userId,
-            defUserId: defUser.userId,
-            atkTroop,
-            defTroop
-        });
+        io.emit("startBattle", battleInfo);
     });
+    /**
+     * 选择完英雄开始比较
+     * 这里由于会执行2次,所以不管谁先谁后,都会检测双方是否都已经选择好
+     */
+    socket.on('heroSelected', (battleId, heroId) => {
+        console.log(`heroSelected battleId:${battleId} heroId:${heroId}`);
+        const nextBattleInfo = currentGameInfo.nextBattleInfo;
+        console.log("nextBattleInfo ", nextBattleInfo);
+        if (battleId != nextBattleInfo.battleId) {
+            return wsUtils.errorLog("攻城数据不匹配");
+        }
+
+        if (nextBattleInfo.atkUserId === socket.userId) {
+            nextBattleInfo.atkHeroId = heroId;
+            nextBattleInfo.atkUserOk = true;//攻方表示准备好了
+            wsUtils.gameLog(`攻方${nextBattleInfo.atkUserName}已经选好武将了`);
+        } else if (nextBattleInfo.defUserId === socket.userId) {
+            nextBattleInfo.defHeroId = heroId;
+            nextBattleInfo.defUserOk = true;//守方表示准备好了
+            wsUtils.gameLog(`守方${nextBattleInfo.defUserName}已经选好武将了`);
+        } else {
+            return wsUtils.alertLog("当前用户并未处在攻城中");
+        }
+        startBattle();
+    });
+
+    /**
+     * 开始攻城战
+     */
+    const startBattle = () => {
+        const nextBattleInfo = currentGameInfo.nextBattleInfo;
+        if (!nextBattleInfo.atkUserOk || !nextBattleInfo.defUserOk) {
+            return wsUtils.gameLog("等待双方选择武将完毕");
+        }
+        const messages = battle_service.startBattle(nextBattleInfo, roomUsers, currentGameInfo);
+
+        messages.forEach(message => {
+            wsUtils.gameLog(message);
+        });
+
+        //清空战斗信息
+        currentGameInfo.nextBattleInfo = {};
+
+        wsUtils.updateRoomToAll(room);
+        wsUtils.eventOver();
+    };
+
 
     /////////////////////////////////////////////
 
@@ -679,6 +745,13 @@ const init = (socket, io, roomNumber, wsUtils) => {
      */
     const getUser = (userId) => {
         return common.getUser(roomUsers, userId);
+    };
+    /**
+     * 获取武将信息
+     * @param heroId
+     */
+    const getHero = (heroId) => {
+        return common.getHero(heroId);
     };
     /**
      * 结束游戏

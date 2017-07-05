@@ -1,6 +1,6 @@
 //以后改成rest获取
 
-export let map_info = {
+export const map_info = {
     "1": {"stageId": 1, "stageType": 12, "picPath": "", "stageName": "起点"},
     "2": {"stageId": 2, "stageType": 2, "picPath": "", "stageName": "征兵处"},
     "3": {

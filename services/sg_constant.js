@@ -127,5 +127,12 @@ module.exports = {
         27: {name: "刘备", avatar: "/assets/liubei.png"},
         40: {name: "曹操", avatar: "/assets/caocao.png"}
     },
-    avatar_offset: 20//头像偏移量
+    avatar_offset: 20,//头像偏移量
+    battle_result: {
+        prefect: 1,//赢得人不损失,且占有对方兵力,武将,城池
+        drawWithNoLoss: 2,//只将双方武将归还国库,
+        victory: 3,//赢得人不损失,输的人损失兵力,武将被俘虏
+        drawWithLoss: 4,//双方武将归还国库,且损失兵力
+        littleBeat: 5,//双方损失兵力,输的人损失兵力,武将被俘虏
+    }
 };
