@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-export function userLogin(nickname = '', password = '') {
+export function userLogin(nickname) {
     return axios.post('/user/login', {
-        nickname: nickname,
-        password: password
+        nickname: nickname
     });
 }
 

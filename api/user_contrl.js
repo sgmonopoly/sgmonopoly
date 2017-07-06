@@ -31,6 +31,7 @@ allUser["test4"] = testUser4;
 allUser["test5"] = testUser4;
 
 /**
+ * @deprecated 暂时不用注册也能进入游戏
  * 注册
  * @param req
  * @param res
@@ -64,21 +65,13 @@ exports.register = (req, res) => {
 exports.loginByNickname = (req, res) => {
 
     const nickname = req.body.nickname;
-    const password = req.body.password;
-    console.log("login:", nickname,password);
+    const avatar = req.body.avatar;
+    console.log("login:", nickname);
 
-    //先根据昵称返回用户对象
-    const user = allUser[nickname];
-    if (user) {
-        if(user.password != password){
-            return res.status(400).send("密码不正确");
-        }
-        const currentUser = new USER_Info(user.userId, user.nickname, user.avatar);
-        //密码正确则直接返回
-        req.session.user = currentUser;
-        return res.send(currentUser);
-    }
-    return res.status(401).send("无此用户");
+    const currentUser = new USER_Info(uuid.v1().replace(/-/g, ""), nickname, avatar);
+
+    req.session.user = currentUser;
+    return res.send(currentUser);
 };
 /**
  * 更改用户信息
@@ -88,18 +81,14 @@ exports.loginByNickname = (req, res) => {
  */
 exports.changeUserInfo = (req, res) => {
 
-    const oldNickname = req.session.user.nickname;
+    const currentUser = req.session.user;
     const nickname = req.body.nickname;
     const avatar = req.body.avatar;
 
-    if (oldNickname !== nickname && allUser[nickname]) {
-        return res.status(400).send('此昵称已被人使用');
-    }
-    const oldUserId = allUser[oldNickname].userId;
-    const oldPwd = allUser[oldNickname].password;
-    delete allUser[oldNickname];
-    allUser[nickname] = new USER_Info(oldUserId, nickname, avatar);
-    allUser[nickname].password = oldPwd;
+    currentUser.nickname = nickname;
+    currentUser.avatar = avatar;
+
+    req.session.user = currentUser;
 
     return res.send('success');
 };

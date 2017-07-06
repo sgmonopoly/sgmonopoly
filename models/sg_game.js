@@ -157,6 +157,9 @@ class SG_Game {
         }
     }
 
+    /**
+     * 将武将卡洗牌
+     */
     shuffleHero(){
         this.herosOrders = _.shuffle(this.herosOrders);
     }

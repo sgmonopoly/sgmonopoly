@@ -12,7 +12,7 @@ router.get('/mapInfo', gameController.mapInfo);
 /**
  * 基本的卡片信息
  */
-router.get('/cardInfo', gameController.cardInfo);
+router.get('/heroInfo', gameController.heroInfo);
 /**
  * 基本的紧急军情信息
  */

@@ -23,13 +23,9 @@ function setErrorInfo(msg, domId) {
     $('#err-content').html(msg);
 }
 
-function isValid(name,password) {
+function isValid(name) {
     if(!name){
-        setErrorInfo('姓名不能为空！', 'loginNickname');
-        return false;
-    }
-    if(!password){
-        setErrorInfo('密码不能为空！', 'loginPassword');
+        setErrorInfo('昵称不能为空！', 'loginNickname');
         return false;
     }
     return true;
@@ -38,9 +34,8 @@ function isValid(name,password) {
 function login() {
     clearForm();
     let loginNickname = $('#loginNickname').val();
-    let loginPassword = $('#loginPassword').val();
-    if(isValid(loginNickname,loginPassword)){
-        userLogin(loginNickname,loginPassword)
+    if(isValid(loginNickname)){
+        userLogin(loginNickname)
             .then((result) => {
                 console.log('success!',result.data.userId);
                 saveUserInfo(result.data.userId);

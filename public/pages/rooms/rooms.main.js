@@ -8,7 +8,7 @@ function initAnimation() {
     roomObj.addClass('init-block');
     setTimeout(() => {
         roomObj.removeClass('init-block');
-    }, 800)
+    }, 800);
 
 }
 
@@ -61,7 +61,7 @@ function init() {
     //5秒刷新一次
     setTimeout(()=> {
         init();
-    }, 5000)
+    }, 5000);
 }
 
 init();

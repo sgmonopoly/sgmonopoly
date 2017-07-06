@@ -1,6 +1,22 @@
-//以后改成rest获取
+import {getMapInfo} from '../../../api/rest/game'
+import * as _ from 'lodash'
 
-export const map_info = {
+export let map_info = {};
+
+(function () {
+    if(_.isEmpty(map_info)){
+        getMapInfo()
+            .then((res) => {
+                map_info = res.data;
+            })
+            .catch((err) => {
+                console.log(err.response.data);
+            });
+    }
+})();
+/*
+
+export const map_info2 = {
     "1": {"stageId": 1, "stageType": 12, "picPath": "", "stageName": "起点"},
     "2": {"stageId": 2, "stageType": 2, "picPath": "", "stageName": "征兵处"},
     "3": {
@@ -357,4 +373,4 @@ export const map_info = {
         "tax3": 2000
     },
     "56": {"stageId": 56, "stageType": 6, "picPath": "", "stageName": "缴税"}
-};
+};*/

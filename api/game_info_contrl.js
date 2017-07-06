@@ -19,7 +19,7 @@ exports.mapInfo = (req, res) => {
  * @param req
  * @param res
  */
-exports.cardInfo = (req, res) => {
+exports.heroInfo = (req, res) => {
     res.send(heroInfo);
 };
 

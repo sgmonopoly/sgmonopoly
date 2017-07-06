@@ -4,8 +4,8 @@ const getMapInfo = () => {
     return axios.get('/base/mapInfo');
 };
 
-const getCardInfo = () => {
-    return axios.get('/base/cardInfo');
+const getHeroInfo = () => {
+    return axios.get('/base/heroInfo');
 };
 
 const getSituationInfo = () => {
@@ -16,4 +16,4 @@ const getSuggestionInfo = () => {
     return axios.get('/base/suggestionInfo');
 };
 
-export {getMapInfo,getCardInfo,getSituationInfo,getSuggestionInfo}
+export {getMapInfo,getHeroInfo,getSituationInfo,getSuggestionInfo}
