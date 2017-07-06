@@ -1,4 +1,4 @@
-import {getMapInfo} from '../../../api/rest/game'
+/*import {getMapInfo} from '../../../api/rest/game'
 import * as _ from 'lodash'
 
 export let map_info = {};
@@ -13,10 +13,8 @@ export let map_info = {};
                 console.log(err.response.data);
             });
     }
-})();
-/*
-
-export const map_info2 = {
+})();*/
+export const map_info = {
     "1": {"stageId": 1, "stageType": 12, "picPath": "", "stageName": "起点"},
     "2": {"stageId": 2, "stageType": 2, "picPath": "", "stageName": "征兵处"},
     "3": {
@@ -373,4 +371,4 @@ export const map_info2 = {
         "tax3": 2000
     },
     "56": {"stageId": 56, "stageType": 6, "picPath": "", "stageName": "缴税"}
-};*/
+};

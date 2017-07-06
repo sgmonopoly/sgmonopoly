@@ -1,13 +1,13 @@
 /**
  * Created by yuanxiang on 7/4/17.
  */
-import {getHeroInfo} from '../../../api/rest/game'
+/*import {getHeroInfo} from '../../../api/rest/game'
 import * as _ from 'lodash'
 
 export let hero_info = {};
 
 (function () {
-    if(_.isEmpty(map_info)){
+    if(_.isEmpty(hero_info)){
         getHeroInfo()
             .then((res) => {
                 hero_info = res.data;
@@ -16,9 +16,7 @@ export let hero_info = {};
                 console.log(err.response.data);
             });
     }
-})();
-
-/*
+})();*/
 
 export const hero_info = {
     "1": {
@@ -670,4 +668,3 @@ export const hero_info = {
         "des": ""
     }
 };
-*/

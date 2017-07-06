@@ -41,20 +41,22 @@ exports.enter = (req, res) => {
     if (!ifReconnected && room.currentNum >= 4) {
         return res.status(402).send("房间已满");
     }
-
+    console.log("ifReconnected true表示用户已经在当前房间中", ifReconnected);
     //判断用户是否在其他房间内,有则踢掉
-    const ifKick = kickUserFromRooms(currentUser.userId);
+    let statusCode = 200;
+    if(!ifReconnected){
+        const ifKick = kickUserFromRooms(currentUser.userId);
+        if(ifKick === true) statusCode = 201;
 
-    const statusCode = ifKick ? 201 : 200;
+        //如果没人,要设置房主
+        if (room.currentNum === 0) {
+            room.hostId = currentUser.userId;
+            room.hostNickname = currentUser.nickname;
+        }
 
-    //如果没人,要设置房主
-    if (room.currentNum === 0) {
-        room.hostId = currentUser.userId;
-        room.hostNickname = currentUser.nickname;
+        room.users.push(new SG_User(currentUser.userId, currentUser.nickname, currentUser.avatar));
+        room.currentNum = room.users.length;
     }
-
-    room.users.push(new SG_User(currentUser.userId, currentUser.nickname, currentUser.avatar));
-    room.currentNum = room.users.length;
 
     console.log("allRoom:", allRoom);
 
@@ -98,7 +100,7 @@ const kickUserFromRooms = (userId) => {
         for (let j = 0; j < room.users.length; j++) {
             if (userId === room.users[j].userId) {
                 //找到该用户
-                console.log(`${userId}该用户已在其他房间登入,位置${i} ${j}`);
+                console.log(`${userId}该用户已在其他房间登入,位置第${i+1}个房间 第${j+1}个位置`);
                 indexUser = j;
                 break;
             }

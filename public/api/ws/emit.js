@@ -2,7 +2,7 @@
  * Created by yuanxiang on 3/24/17.
  */
 let socket;
-socket = io();
+//socket = io();
 const room_ws = {
     connect: roomId => {
         socket = io("/room/" + roomId);
