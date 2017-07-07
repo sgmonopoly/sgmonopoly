@@ -3,7 +3,7 @@
  */
 const _ = require("lodash");
 const sg_constant = require("../services/sg_constant");
-const heroInfo = require("../models/card_info");
+const heroInfo = require("../models/hero_info");
 /**
  * 根据ID快速获取用户
  * @param roomUsers

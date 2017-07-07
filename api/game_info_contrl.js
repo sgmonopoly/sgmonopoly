@@ -3,7 +3,7 @@
  */
 'use strict';
 const mapInfo = require("../models/map_info");
-const heroInfo = require("../models/card_info");
+const heroInfo = require("../models/hero_info");
 const situationInfo = require("../models/situation_info");
 const suggestionInfo = require("../models/suggestion_info");
 /**
