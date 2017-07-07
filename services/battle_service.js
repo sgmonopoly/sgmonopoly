@@ -120,6 +120,7 @@ const compareHero = (atkHero, defHero) => {
  * @param battleInfo
  * @param roomUsers
  * @param gameInfo
+ * @param messages
  */
 const battleSummary = (result, battleInfo, roomUsers, gameInfo, messages) => {
     const {winner, handler} = result;
@@ -129,10 +130,10 @@ const battleSummary = (result, battleInfo, roomUsers, gameInfo, messages) => {
     switch (handler) {
         case sg_constant.battle_result.drawWithNoLoss :
             //只将双方武将归还国库
-            removeHero(atkUser, battleInfo.atkHeroId);
-            removeHero(defUser, battleInfo.defHeroId);
-            addHeroToBank(battleInfo.atkHeroId, gameInfo);
-            addHeroToBank(battleInfo.defHeroId, gameInfo);
+            this.removeHero(atkUser, battleInfo.atkHeroId);
+            this.removeHero(defUser, battleInfo.defHeroId);
+            this.addHeroToBank(battleInfo.atkHeroId, gameInfo);
+            this.addHeroToBank(battleInfo.defHeroId, gameInfo);
 
             messages.push(`进攻方${battleInfo.atkUserName}失去武将${result.atkHero.cardName}`);
             messages.push(`武将${result.atkHero.cardName}已归还国库`);
@@ -142,13 +143,13 @@ const battleSummary = (result, battleInfo, roomUsers, gameInfo, messages) => {
             break;
         case sg_constant.battle_result.drawWithLoss :
             //双方武将归还国库,且损失兵力
-            removeHero(atkUser, battleInfo.atkHeroId);
-            removeHero(defUser, battleInfo.defHeroId);
-            addHeroToBank(battleInfo.atkHeroId, gameInfo);
-            addHeroToBank(battleInfo.defHeroId, gameInfo);
+            this.removeHero(atkUser, battleInfo.atkHeroId);
+            this.removeHero(defUser, battleInfo.defHeroId);
+            this.addHeroToBank(battleInfo.atkHeroId, gameInfo);
+            this.addHeroToBank(battleInfo.defHeroId, gameInfo);
 
-            removeTroop(atkUser, battleInfo.atkConsumeTroop);
-            removeTroop(defUser, battleInfo.defConsumeTroop);
+            this.removeTroop(atkUser, battleInfo.atkConsumeTroop);
+            this.removeTroop(defUser, battleInfo.defConsumeTroop);
 
             messages.push(`进攻方${battleInfo.atkUserName}失去武将${result.atkHero.cardName}`);
             messages.push(`武将${result.atkHero.cardName}已归还国库`);
@@ -162,14 +163,14 @@ const battleSummary = (result, battleInfo, roomUsers, gameInfo, messages) => {
         case sg_constant.battle_result.prefect :
             if ("atk" === winner) {
                 //进攻赢得人不损失,且占有对方兵力,武将,城池
-                removeHero(defUser, battleInfo.defHeroId);
-                addHeroToUser(atkUser, battleInfo.defHeroId);
+                this.removeHero(defUser, battleInfo.defHeroId);
+                this.addHeroToUser(atkUser, battleInfo.defHeroId);
 
-                removeTroop(defUser, battleInfo.defConsumeTroop);
-                addTroop(atkUser, battleInfo.defConsumeTroop);
+                this.removeTroop(defUser, battleInfo.defConsumeTroop);
+                this.addTroop(atkUser, battleInfo.defConsumeTroop);
 
-                removeCity(defUser, battleInfo.stageId, gameInfo);
-                addCityToUser(atkUser, battleInfo.stageId);
+                this.removeCity(defUser, battleInfo.stageId, gameInfo);
+                this.addCityToUser(atkUser, battleInfo.stageId);
 
                 messages.push(`防守方${battleInfo.defUserName}失去武将${result.defHero.cardName}`);
                 messages.push(`进攻方${battleInfo.atkUserName}俘虏武将${result.defHero.cardName}`);
@@ -182,11 +183,11 @@ const battleSummary = (result, battleInfo, roomUsers, gameInfo, messages) => {
 
             } else {
                 //守方赢得人不损失,且占有对方兵力,武将
-                removeHero(atkUser, battleInfo.atkHeroId);
-                addHeroToUser(defUser, battleInfo.atkHeroId);
+                this.removeHero(atkUser, battleInfo.atkHeroId);
+                this.addHeroToUser(defUser, battleInfo.atkHeroId);
 
-                removeTroop(atkUser, battleInfo.atkConsumeTroop);
-                addTroop(defUser, battleInfo.atkConsumeTroop);
+                this.removeTroop(atkUser, battleInfo.atkConsumeTroop);
+                this.addTroop(defUser, battleInfo.atkConsumeTroop);
 
                 messages.push(`进攻方${battleInfo.atkUserName}失去武将${result.atkHero.cardName}`);
                 messages.push(`防守方${battleInfo.defUserName}俘虏武将${result.atkHero.cardName}`);
@@ -198,13 +199,13 @@ const battleSummary = (result, battleInfo, roomUsers, gameInfo, messages) => {
         case sg_constant.battle_result.victory :
             if ("atk" === winner) {
                 //进攻赢得人不损失,且占有城池,输的人损失兵力和武将
-                removeHero(defUser, battleInfo.defHeroId);
-                addHeroToBank(battleInfo.defHeroId, gameInfo);
+                this.removeHero(defUser, battleInfo.defHeroId);
+                this.addHeroToBank(battleInfo.defHeroId, gameInfo);
 
-                removeTroop(defUser, battleInfo.defConsumeTroop);
+                this.removeTroop(defUser, battleInfo.defConsumeTroop);
 
-                removeCity(defUser, battleInfo.stageId, gameInfo);
-                addCityToUser(atkUser, battleInfo.stageId);
+                this.removeCity(defUser, battleInfo.stageId, gameInfo);
+                this.addCityToUser(atkUser, battleInfo.stageId);
 
                 messages.push(`防守方${battleInfo.defUserName}失去武将${result.defHero.cardName}`);
                 messages.push(`武将${result.defHero.cardName}已归还国库`);
@@ -215,10 +216,10 @@ const battleSummary = (result, battleInfo, roomUsers, gameInfo, messages) => {
                 messages.push(`进攻方${battleInfo.atkUserName}占领城池${battleInfo.cityName}`);
             } else {
                 //防守赢得人不损失,输的人损失兵力,武将被俘虏,
-                removeHero(atkUser, battleInfo.atkHeroId);
-                addHeroToUser(defUser, battleInfo.atkHeroId);
+                this.removeHero(atkUser, battleInfo.atkHeroId);
+                this.addHeroToUser(defUser, battleInfo.atkHeroId);
 
-                removeTroop(atkUser, battleInfo.atkConsumeTroop);
+                this.removeTroop(atkUser, battleInfo.atkConsumeTroop);
 
                 messages.push(`进攻方${battleInfo.atkUserName}失去武将${result.atkHero.cardName}`);
                 messages.push(`防守方${battleInfo.defUserName}俘虏武将${result.atkHero.cardName}`);
@@ -228,18 +229,18 @@ const battleSummary = (result, battleInfo, roomUsers, gameInfo, messages) => {
             break;
         case sg_constant.battle_result.littleBeat :
             //双方损失兵力
-            removeTroop(atkUser, battleInfo.atkConsumeTroop);
-            removeTroop(defUser, battleInfo.defConsumeTroop);
+            this.removeTroop(atkUser, battleInfo.atkConsumeTroop);
+            this.removeTroop(defUser, battleInfo.defConsumeTroop);
 
             messages.push(`进攻方${battleInfo.atkUserName}损失兵力${battleInfo.atkConsumeTroop}`);
             messages.push(`防守方${battleInfo.defUserName}损失兵力${battleInfo.defConsumeTroop}`);
             if ("atk" === winner) {
                 //赢的人占有城池,输的人损失武将
-                removeHero(defUser, battleInfo.defHeroId);
-                addHeroToBank(battleInfo.defHeroId, gameInfo);
+                this.removeHero(defUser, battleInfo.defHeroId);
+                this.addHeroToBank(battleInfo.defHeroId, gameInfo);
 
-                removeCity(defUser, battleInfo.stageId, gameInfo);
-                addCityToUser(atkUser, battleInfo.stageId);
+                this.removeCity(defUser, battleInfo.stageId, gameInfo);
+                this.addCityToUser(atkUser, battleInfo.stageId);
 
                 messages.push(`防守方${battleInfo.defUserName}失去武将${result.defHero.cardName}`);
                 messages.push(`武将${result.defHero.cardName}已归还国库`);
@@ -248,8 +249,8 @@ const battleSummary = (result, battleInfo, roomUsers, gameInfo, messages) => {
                 messages.push(`进攻方${battleInfo.atkUserName}占领城池${battleInfo.cityName}`);
             } else if ("def" === winner) {
                 //输的人武将被俘虏
-                removeHero(atkUser, battleInfo.atkHeroId);
-                addHeroToUser(defUser, battleInfo.atkHeroId);
+                this.removeHero(atkUser, battleInfo.atkHeroId);
+                this.addHeroToUser(defUser, battleInfo.atkHeroId);
 
                 messages.push(`进攻方${battleInfo.atkUserName}失去武将${result.atkHero.cardName}`);
                 messages.push(`防守方${battleInfo.defUserName}俘虏武将${result.atkHero.cardName}`);
@@ -262,9 +263,8 @@ const battleSummary = (result, battleInfo, roomUsers, gameInfo, messages) => {
  * 移除用户的武将
  * @param user
  * @param heroId
- * @param gameInfo
  */
-const removeHero = (user, heroId) => {
+exports.removeHero = (user, heroId) => {
     user.heros = _.without(user.heros, parseInt(heroId));
 };
 
@@ -273,17 +273,17 @@ const removeHero = (user, heroId) => {
  * @param heroId
  * @param gameInfo
  */
-const addHeroToBank = (heroId, gameInfo) => {
+exports.addHeroToBank = (heroId, gameInfo) => {
     gameInfo.herosOrders.push(parseInt(heroId));
     gameInfo.shuffleHero();//返回国库后,要洗牌
 };
 
 /**
  * 俘虏武将
+ * @param user
  * @param heroId
- * @param gameInfo
  */
-const addHeroToUser = (user, heroId) => {
+exports.addHeroToUser = (user, heroId) => {
     user.heros.push(parseInt(heroId));
 };
 
@@ -292,7 +292,7 @@ const addHeroToUser = (user, heroId) => {
  * @param user
  * @param consumeTroop
  */
-const addTroop = (user, consumeTroop) => {
+exports.addTroop = (user, consumeTroop) => {
     user.troop += parseInt(consumeTroop);
 };
 /**
@@ -300,7 +300,7 @@ const addTroop = (user, consumeTroop) => {
  * @param user
  * @param consumeTroop
  */
-const removeTroop = (user, consumeTroop) => {
+exports.removeTroop = (user, consumeTroop) => {
     user.troop -= consumeTroop;
 };
 
@@ -310,7 +310,7 @@ const removeTroop = (user, consumeTroop) => {
  * @param stageId
  * @param gameInfo
  */
-const removeCity = (user, stageId, gameInfo) => {
+exports.removeCity = (user, stageId, gameInfo) => {
     user.citys = _.without(user.citys, parseInt(stageId));
     removeCityType(gameInfo, stageId);
 };
@@ -319,7 +319,7 @@ const removeCity = (user, stageId, gameInfo) => {
  * @param stageId
  * @param gameInfo
  */
-const removeCityType = (gameInfo, stageId) => {
+exports.removeCityType = (gameInfo, stageId) => {
     gameInfo.gameCitys[stageId].cityType = 1;
 };
 /**
@@ -327,6 +327,6 @@ const removeCityType = (gameInfo, stageId) => {
  * @param stageId
  * @param user
  */
-const addCityToUser = (user, stageId) => {
+exports.addCityToUser = (user, stageId) => {
     user.citys.push(parseInt(stageId));
 };

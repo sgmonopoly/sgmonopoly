@@ -709,16 +709,6 @@ const init = (socket, io, roomNumber, wsUtils) => {
     };
 
     /**
-     * 交还武将卡给国库,并重新洗牌
-     * @param cardId
-     * @returns {T|*}
-     */
-    const returnCardToHome = (cardId) => {
-        currentGameInfo.herosOrders.push(cardId);
-        let tempCards = currentGameInfo.herosOrders;
-        currentGameInfo.herosOrders = _.shuffle(tempCards);
-    };
-    /**
      * 获取下一张紧急军情,没有则重新洗牌
      * @returns {T|*}
      */

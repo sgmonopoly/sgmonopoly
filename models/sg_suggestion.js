@@ -4,8 +4,8 @@
  */
 'use strict';
 class SG_Suggestion extends require("./SG_Situation") {
-    constructor(_id, _name, _des, _isReserve) {
-        super(_id, _name, _des);
+    constructor(_id, _name, _des, _isReserve, cb) {
+        super(_id, _name, _des, cb);
         this.isReserve = _isReserve;
     }
 }

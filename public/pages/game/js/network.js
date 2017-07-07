@@ -19,6 +19,7 @@ const initNetwork = (roomId) => {
 
     console.log(`roomId:${roomId}`);
 
+    //为了解决进入游戏后,刷新出错的问题,这里也执行一次enterRoom方法
     enterRoom(roomId)
         .then(() => {
             room_ws.connect(roomId);
