@@ -47,11 +47,7 @@ situation = new SG_Situation(i, name, des,
         let earnMoney = 0;
         roomUsers.forEach(user => {
             if (user.id !== myId) {
-                let loseMoney = 1000;
-                if (user.money < 1000) {
-                    loseMoney = user.money;
-                }
-                user.money -= loseMoney;
+                const loseMoney = battle_service.removeMoney(user, 1000);
                 earnMoney += loseMoney;
                 messages.push(`${user.name}失去${loseMoney}两`);
             }
@@ -73,6 +69,9 @@ situation = new SG_Situation(i, name, des,
         const mine = common.getUser(roomUsers, myId);
         const messages = [];
         //TODO
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
     }
 );
 situation_info[i++] = situation;
@@ -126,37 +125,234 @@ situation = new SG_Situation(i, name, des,
 );
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "勤政爱民,深得民心", "送给所有其他玩家每人500两");
+name = "勤政爱民,深得民心";
+des = "送给所有其他玩家每人500两";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//6
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+        const payUserCount = roomUsers.length - 1;
+
+        let everyEarnMoney = 500;
+        let needPayMoney = payUserCount * everyEarnMoney;
+        if (mine.money < needPayMoney) {
+            needPayMoney = mine.money;
+            everyEarnMoney = parseInt(needPayMoney / payUserCount);
+        }
+
+        roomUsers.forEach(user => {
+            if (myId === user.userId) {
+                const loseMoney = battle_service.removeMoney(user, needPayMoney);
+                messages.push(`${user.name}损失${loseMoney}两`);
+            } else {
+                battle_service.addMoney(user, everyEarnMoney);
+                messages.push(`${user.name}获得${everyEarnMoney}两`);
+            }
+        });
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
+    }
+);
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "前进至茅庐,如经过起点,可拿取经费", "移动到茅庐");
+name = "前进至茅庐,如经过起点,可拿取经费";
+des = "移动到茅庐";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//7
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+        //TODO
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
+    }
+);
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "城里遭遇盗贼团伙洗劫", "每有一座大城或者小城,损失200两");
+name = "城里遭遇盗贼团伙洗劫";
+des = "每有一座大城或者小城,损失200两";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//8
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+        const myCitys = common.getCitysByIds(gameInfo.gameCitys, mine.citys);
+        let loseMoney = 0;
+        myCitys.forEach(item => {
+            switch (item.cityType) {
+                case sg_constant.city_type.small://每个小城损失200
+                    loseMoney += 200;
+                    break;
+                case sg_constant.city_type.big://每个大城损失200
+                    loseMoney += 200;
+                    break;
+            }
+        });
+
+        const loseMoneyActually = battle_service.removeMoney(mine, loseMoney);
+        messages.push(`${mine.name}损失${loseMoneyActually}两`);
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
+    }
+);
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "强将手下无弱兵,敌军慕名前来投靠", "向每位玩家收取500兵力(不足则全交)");
+name = "强将手下无弱兵,敌军慕名前来投靠";
+des = "向每位玩家收取500兵力(不足则全交)";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//9
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+        const everyTroop = 500;
+        let earnTroop = 0;
+
+        roomUsers.forEach(user => {
+            if (myId !== user.userId) {
+                const everyTroopActually = battle_service.removeTroop(user, everyTroop);
+                earnTroop += everyTroopActually;
+                messages.push(`${user.name}损失兵力${everyTroopActually}`);
+            }
+        });
+
+        battle_service.addTroop(mine, earnTroop);
+        messages.push(`${mine.name}获得兵力${earnTroop}`);
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
+    }
+);
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "幸遇高人指点,赐锦囊妙计", "前进至最近的锦囊妙计");
+name = "幸遇高人指点,赐锦囊妙计";
+des = "前进至最近的锦囊妙计";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//10
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+        //TODO
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
+    }
+);
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "游说成功,招来士兵", "获得1000兵力");
+name = "游说成功,招来士兵";
+des = "获得1000兵力";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//11
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+        battle_service.addTroop(mine, 1000);
+        messages.push(`${mine.name}获得兵力1000`);
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
+    }
+);
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "间谍成功获得敌军情报", "查看所有人的武将卡");
+name = "间谍成功获得敌军情报";
+des = "查看所有人的武将卡";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//12
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+
+        roomUsers.forEach(user => {
+            if (myId !== user.userId) {
+                messages.push(`${user.name}武将如下`);
+                user.heros.forEach(heroId => {
+                    const hero = common.getHero(heroId);
+                    messages.push(`${hero.heroName} 攻击力${hero.atk} 防御力${hero.def}`);
+                });
+            }
+        });
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(socket, messages);
+    }
+);
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "智商不足,听信敌军谣言,军心涣散,损失兵力1000", "上缴国库1000兵力(不足则全交)");
+name = "智商不足,听信敌军谣言,军心涣散,损失兵力1000";
+des = "上缴国库1000兵力(不足则全交)";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//13
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+        const loseTroop = battle_service.removeTroop(mine, 1000);
+        messages.push(`${mine.name}损失兵力${loseTroop}`);
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
+    }
+);
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "乘船遇龙卷风,漂至金银岛", "前进至金银岛");
+name = "乘船遇龙卷风,漂至金银岛";
+des = "前进至金银岛";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//14
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+        //TODO
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
+    }
+);
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "截获免战卡", "获得国库中或者玩家手里的免战卡");
+name = "截获免战卡";
+des = "获得国库中或者玩家手里的免战卡";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//15
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+        //TODO
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
+    }
+);
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "截获通行证", "获得国库中或者玩家手里的通行证");
+name = "截获通行证";
+des = "获得国库中或者玩家手里的通行证";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//16
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+        //TODO
+
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
+    }
+);
 situation_info[i++] = situation;
 
 

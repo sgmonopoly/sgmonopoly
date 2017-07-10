@@ -155,12 +155,12 @@ exports.getRandomFromArray = (array) => {
  * @param io
  * @param messages
  */
-exports.addGameLog = (io, messages) => {
+exports.addGameLog = (socketIo, messages) => {
     if (_.isString(messages)) {
-        io.emit(sg_constant.ws_name.gameLog, messages);
+        socketIo.emit(sg_constant.ws_name.gameLog, messages);
     } else if (_.isArray(messages)) {
         messages.forEach(message => {
-            io.emit(sg_constant.ws_name.gameLog, message);
+            socketIo.emit(sg_constant.ws_name.gameLog, message);
         });
     }
 };
