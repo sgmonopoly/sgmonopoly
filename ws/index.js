@@ -6,6 +6,7 @@ const sg_constant = require("../services/sg_constant");
 const ios = require("socket.io-express-session");
 const session = require("../session");
 const _ = require("lodash");
+const common = require("../services/common_roomUtils");
 
 sg_constant.roomNumbers.forEach(roomNumber => {
     const roomIo = io.of("/room/" + roomNumber);
@@ -52,8 +53,8 @@ sg_constant.roomNumbers.forEach(roomNumber => {
              * 广播
              * 增加操作日志
              */
-            gameLog: (message) => {
-                roomIo.emit(sg_constant.ws_name.gameLog, message);
+            gameLog: (messages) => {
+                common.addGameLog(roomIo, messages);
             },
             /**
              * 广播

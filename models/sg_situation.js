@@ -13,13 +13,10 @@ class SG_Situation {
 
     /**
      * 执行对应的回调函数
-     * @param roomUsers
-     * @param gameInfo
-     * @param io
-     * @param socket
+     * @param obj
      */
-    execute(roomUsers, gameInfo, io, socket) {
-        if (this.cb) this.cb(roomUsers, gameInfo, io, socket);
+    execute(obj) {
+        if (this.cb && typeof(cb) === "function") this.cb.call(this, obj);
     }
 }
 module.exports = SG_Situation;

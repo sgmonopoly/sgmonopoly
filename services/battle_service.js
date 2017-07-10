@@ -288,6 +288,23 @@ exports.addHeroToUser = (user, heroId) => {
 };
 
 /**
+ * 加钱
+ * @param user
+ * @param money
+ */
+exports.addMoney = (user, money) => {
+    user.money += parseInt(money);
+};
+/**
+ * 扣钱
+ * @param user
+ * @param money
+ */
+exports.removeMoney = (user, money) => {
+    user.money -= money;
+};
+
+/**
  * 占有兵力
  * @param user
  * @param consumeTroop

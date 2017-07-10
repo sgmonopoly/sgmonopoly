@@ -86,3 +86,68 @@ exports.checkValidUser = (roomUsers, socketId) => {
     }
     return false;
 };
+
+/**
+ * 根据城市ID返回城市
+ * 这里的citysObj是对象,并不是数据
+ */
+exports.getCityById = (citysObj, cityId) => {
+    return citysObj[cityId];
+};
+
+/**
+ * 根据多个城市ID返回多个城市
+ * 这里的citysObj是对象,并不是数据
+ */
+exports.getCitysByIds = (citysObj, cityIds) => {
+    const returnCitys = [];
+    cityIds.forEach(cityId => {
+        returnCitys.push(citysObj[cityId]);
+    });
+    return returnCitys
+};
+
+/**
+ * 从已拥有的城市中随机挑选几个,并返回
+ * @param citysObj 当前所有城市对象
+ * @param myCityIds 已拥有的城市ID
+ * @param returnNum 要返回几个
+ * @returns {Array}
+ */
+exports.getRandomCityIndexByNum = (citysObj, myCityIds, returnNum) => {
+    if (!myCityIds || myCityIds.length === 0) {
+        return [];
+    }
+    const myCityIdsClone = _.shuffle(_.cloneDeep(myCityIds));
+    if (returnNum > myCityIdsClone.length) {
+        returnNum = myCityIdsClone.length;
+    }
+    const returnVal = [];
+
+    while (returnVal.length < returnNum && myCityIdsClone.length > 0) {
+        const cityId = myCityIdsClone.shift();
+        const city = this.getCityById(citysObj, cityId);
+        //古战场要跳过,大城也跳过
+        if (sg_constant.city_follow.ancient !== city.colorFollow &&
+            sg_constant.city_type.big !== city.cityType) {
+            returnVal.push(city);
+        }
+    }
+
+    return returnVal;
+};
+
+/**
+ * 游戏日志,统一入口
+ * @param io
+ * @param messages
+ */
+exports.addGameLog = (io, messages) => {
+    if (_.isString(messages)) {
+        io.emit(sg_constant.ws_name.gameLog, messages);
+    } else if (_.isArray(messages)) {
+        messages.forEach(message => {
+            io.emit(sg_constant.ws_name.gameLog, message);
+        });
+    }
+};

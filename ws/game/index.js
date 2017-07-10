@@ -6,6 +6,7 @@ const SG_Game = require("../../models/sg_game");
 const _ = require("lodash");
 const common = require("../../services/common_roomUtils");
 const battle_service = require("../../services/battle_service");
+const situation_info = require("../../models/situation_info");
 
 const init = (socket, io, roomNumber, wsUtils) => {
 
@@ -417,6 +418,42 @@ const init = (socket, io, roomNumber, wsUtils) => {
     });
 
     /**
+     * 紧急军情
+     */
+    socket.on('inSituation', (index) => {
+        let situationIndex;
+        if (!index) {
+            //前端可以控制索引
+            situationIndex = getNextSituationIndex();
+        } else {
+            situationIndex = index;
+        }
+        console.log("紧急军情第几个 ", situationIndex);
+        const situation = situation_info[situationIndex];
+
+        /**
+         * 调用对应的回调
+         */
+        situation.execute(
+            {
+                myId: socket.userId,
+                targetId: "",
+                roomUsers,
+                gameInfo: currentGameInfo.gameInfo,
+                io,
+                socket
+            }
+        );
+
+        //wsUtils.gameLog(`${currentUser.name}经过起点,获2000两`);
+        wsUtils.updateRoomToAll(room);
+    });
+
+    socket.on('inSuggestion', (index) => {
+
+    });
+
+    /**
      * 攻城准备
      */
     socket.on('readyForBattle', (stageId) => {
@@ -550,9 +587,7 @@ const init = (socket, io, roomNumber, wsUtils) => {
         }
         const messages = battle_service.startBattle(nextBattleInfo, roomUsers, currentGameInfo);
 
-        messages.forEach(message => {
-            wsUtils.gameLog(message);
-        });
+        wsUtils.gameLog(messages);
 
         //清空战斗信息
         currentGameInfo.nextBattleInfo = {};

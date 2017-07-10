@@ -6,11 +6,13 @@ import {map_info} from "./mapInfo"
 import * as domHanlder from './domHanlder'
 import {game_ws} from '../../../api/ws/emit'
 import myUserId from './localData'
+import * as aaa from '../../../../models/hero_info'
 /**
  * 根据目标位置,作出需要的操作反馈
  * @param position
  */
 const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
+    console.log(aaa)
     console.log('targetPositionFeedback', endPosition, userInfo);
     if (myUserId !== userInfo.userId) {
         //只对当前玩家生效
@@ -53,9 +55,11 @@ const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
             domHanlder.showBet();
             break;
         case 10://紧急军情
+            game_ws.inSituation();
             break;
         case 11://锦囊妙计
-            break;
+            game_ws.inSuggestion();
+            break;;
         case 12://起点
             game_ws.inStart();
             break;

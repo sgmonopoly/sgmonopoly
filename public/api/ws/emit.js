@@ -84,6 +84,12 @@ const game_ws = {
     inStart: () => {
         socket.emit("inStart");
     },
+    inSituation: (index) => {
+        socket.emit("inSituation", index);
+    },
+    inSuggestion: (index) => {
+        socket.emit("inSuggestion", index);
+    },
     passByStart: () => {
         socket.emit("passByStart");
     },
