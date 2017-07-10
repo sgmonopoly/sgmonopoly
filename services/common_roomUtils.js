@@ -138,6 +138,19 @@ exports.getRandomCityIndexByNum = (citysObj, myCityIds, returnNum) => {
 };
 
 /**
+ * 从数据中随机挑1个
+ * @param array
+ * @returns {*}
+ */
+exports.getRandomFromArray = (array) => {
+    if(!array || array.length === 0){
+        return null;
+    }
+    const arrayClone = _.shuffle(_.cloneDeep(array));
+    return arrayClone.shift();
+};
+
+/**
  * 游戏日志,统一入口
  * @param io
  * @param messages

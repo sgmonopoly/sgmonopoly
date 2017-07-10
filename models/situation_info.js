@@ -30,8 +30,8 @@ let situation = new SG_Situation(i, name, des,
         });
 
         battle_service.addMoney(mine, earnMoney);
-        io.emit(sg_constant.ws_name.gameLog, `${mine.name}抽取紧急军情为${name},${des}`);
-        io.emit(sg_constant.ws_name.gameLog, `${mine.name}最终获得${earnMoney}两`);
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, `${mine.name}最终获得${earnMoney}两`);
     }
 );
 situation_info[i++] = situation;
@@ -43,7 +43,7 @@ situation = new SG_Situation(i, name, des,
         console.log("进入紧急军情索引", i);//2
         const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
         const mine = common.getUser(roomUsers, myId);
-        let messages = [];
+        const messages = [];
         let earnMoney = 0;
         roomUsers.forEach(user => {
             if (user.id !== myId) {
@@ -58,8 +58,8 @@ situation = new SG_Situation(i, name, des,
         });
         messages.push(`${mine.name}一共获得${earnMoney}两`);
 
-        io.emit(sg_constant.ws_name.gameLog, `${mine.name}抽取紧急军情为${name},${des}`);
-        common.addGameLog(messages);
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
     }
 );
 situation_info[i++] = situation;
@@ -71,11 +71,11 @@ situation = new SG_Situation(i, name, des,
         console.log("进入紧急军情索引", i);//3
         const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
         const mine = common.getUser(roomUsers, myId);
+        const messages = [];
         //TODO
     }
 );
 situation_info[i++] = situation;
-
 
 name = "得建筑设计师相助,设计两座城池";
 des = "免费在随机自己的两处城池上,空城改小城或小城改大城";
@@ -85,19 +85,45 @@ situation = new SG_Situation(i, name, des,
         const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
         const mine = common.getUser(roomUsers, myId);
         const randomCitys = common.getRandomCityIndexByNum(gameInfo.gameCitys, mine.citys, 2);
-        let messages = [];
+        const messages = [];
         randomCitys.forEach(city => {
             gameInfo.upgradeCity(mine, city);
             messages.push(`${city.stageName}升级为${sg_constant.city_type_cn[city.cityType]}`);
         });
+        if (messages.length === 0) {
+            messages.push(`${mine.name}没有找到任何符合要求的城池`);
+        }
 
-        io.emit(sg_constant.ws_name.gameLog, `${mine.name}抽取紧急军情为${name},${des}`);
-        common.addGameLog(messages);
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
     }
 );
 situation_info[i++] = situation;
 
-situation = new SG_Situation(i, "军中瘟疫肆虐,损兵折将", "损失兵力1000(不足则全交),并随机弃置一张武将卡,如弃置的是君主卡,需缴纳国库2000两赎回");
+name = "军中瘟疫肆虐,损兵折将";
+des = "损失兵力1000(不足则全交),并随机弃置一张武将卡,如弃置的是君主卡,需缴纳国库2000两赎回";
+situation = new SG_Situation(i, name, des,
+    (obj) => {
+        console.log("进入紧急军情索引", i);//5
+        const {myId, targetId, roomUsers, gameInfo, io, socket} = obj;
+        const mine = common.getUser(roomUsers, myId);
+        const messages = [];
+        const removeTroop = battle_service.removeTroop(mine, 1000);
+        messages.push(`${mine.name}损失兵力${removeTroop}`);
+        const loseHeroId = common.getRandomFromArray(mine.heros);
+        if (loseHeroId) {
+            const loseHero = common.getHero(loseHeroId);
+            messages.push(`随机弃置了${mine.name}一名武将为${loseHero.heroName}`);
+            if (loseHero.heroId === mine.lordId) {
+                //如果是自己的君主,则需要交费2000
+                const removeMoney = battle_service.removeMoney(mine, 2000);
+                messages.push(`由于弃置了君主,已花费${removeMoney}两赎回`);
+            }
+        }
+        common.addGameLog(io, `${mine.name}抽取紧急军情为${name},${des}`);
+        common.addGameLog(io, messages);
+    }
+);
 situation_info[i++] = situation;
 
 situation = new SG_Situation(i, "勤政爱民,深得民心", "送给所有其他玩家每人500两");

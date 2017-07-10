@@ -301,7 +301,11 @@ exports.addMoney = (user, money) => {
  * @param money
  */
 exports.removeMoney = (user, money) => {
+    if(user.money < money){
+        money = user.money;
+    }
     user.money -= money;
+    return money;
 };
 
 /**
@@ -318,7 +322,11 @@ exports.addTroop = (user, consumeTroop) => {
  * @param consumeTroop
  */
 exports.removeTroop = (user, consumeTroop) => {
+    if(user.troop < consumeTroop){
+        consumeTroop = user.troop;
+    }
     user.troop -= consumeTroop;
+    return consumeTroop;
 };
 
 /**
@@ -329,7 +337,7 @@ exports.removeTroop = (user, consumeTroop) => {
  */
 exports.removeCity = (user, stageId, gameInfo) => {
     user.citys = _.without(user.citys, parseInt(stageId));
-    removeCityType(gameInfo, stageId);
+    this.removeCityType(gameInfo, stageId);
 };
 /**
  * 摧毁城市上的建筑
