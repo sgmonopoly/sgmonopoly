@@ -1,24 +1,11 @@
 /**
  * Created by yuanxiang on 7/4/17.
  */
-/*import {getHeroInfo} from '../../../api/rest/game'
-import * as _ from 'lodash'
+import * as hero_info_backend from '../../../../models/hero_info'
 
-export let hero_info = {};
-
-(function () {
-    if(_.isEmpty(hero_info)){
-        getHeroInfo()
-            .then((res) => {
-                hero_info = res.data;
-            })
-            .catch((err) => {
-                console.log(err.response.data);
-            });
-    }
-})();*/
-
-export const hero_info = {
+export const hero_info = hero_info_backend;
+/*
+{
     "1": {
         "cardId": 1,
         "cardName": "孙权",
@@ -668,3 +655,4 @@ export const hero_info = {
         "des": ""
     }
 };
+*/

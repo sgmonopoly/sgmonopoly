@@ -16,7 +16,7 @@ class SG_Situation {
      * @param obj
      */
     execute(obj) {
-        if (this.cb && typeof(cb) === "function") this.cb.call(this, obj);
+        if (this.cb && typeof(this.cb) === "function") this.cb.call(this, obj);
     }
 }
 module.exports = SG_Situation;

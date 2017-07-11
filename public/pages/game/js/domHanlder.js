@@ -68,6 +68,12 @@ const dom_select_hero_show = $("#select_hero_show");
 const dom_select_hero_value = $("#select_hero_value");
 const dom_battle_id = $("#battle_id");
 const dom_btn_select_hero_confirm = $("#select_hero_confirm");
+//默认紧急军情
+const dom_default_situation = $("#default_situation");
+//默认锦囊妙计
+const dom_default_suggestion = $("#default_suggestion");
+
+
 
 (function () {
     /**
@@ -401,4 +407,34 @@ export const showSelectHero = (battleId, herosDetail) => {
     });
     dom_battle_id.val(battleId);
     dom_select_hero_show.show(1000);
+};
+
+/**
+ * 返回默认紧急军情
+ * @returns {*}
+ */
+export const getDefaultSituation = () => {
+    let value = dom_default_situation.val();
+    if(value){
+        value = parseInt(value);
+        if(_.isNumber(value)){
+            return value;
+        }
+    }
+    return null;
+};
+
+/**
+ * 返回默认锦囊妙计
+ * @returns {*}
+ */
+export const getDefaultSuggestion = () => {
+    let value = dom_default_suggestion.val();
+    if(value){
+        value = parseInt(value);
+        if(_.isNumber(value)){
+            return value;
+        }
+    }
+    return null;
 };

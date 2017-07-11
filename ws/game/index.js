@@ -249,14 +249,18 @@ const init = (socket, io, roomNumber, wsUtils) => {
         }
 
         currentUser.money = currentUser.money - needMoney;
+        const messages = [];
         _.times(num, function () {
             const cardId = getNextCardIndex();
             if (cardId) {
                 currentUser.heros.push(cardId);
+                const hero = common.getHero(cardId);
+                messages.push(`你购买了武将:${hero.heroName}`);
             }
         });
 
         wsUtils.gameLog(`${currentUser.name}购买了${num}名武将卡`);
+        common.addGameLog(socket, messages);
         wsUtils.updateRoomToAll(room);
         wsUtils.eventOver(sg_constant.stage_type.draft);
     });
@@ -428,29 +432,37 @@ const init = (socket, io, roomNumber, wsUtils) => {
         } else {
             situationIndex = index;
         }
-        console.log("紧急军情第几个 ", situationIndex);
+        console.log("紧急军情第几个", situationIndex);
         const situation = situation_info[situationIndex];
 
-        /**
-         * 调用对应的回调
-         */
-        situation.execute(
-            {
-                myId: socket.userId,
-                targetId: "",
-                roomUsers,
-                gameInfo: currentGameInfo.gameInfo,
-                io,
-                socket
-            }
-        );
+        if(situation){
+            /**
+             * 调用对应的回调
+             */
+            situation.execute(
+                {
+                    myId: socket.userId,
+                    targetId: "",
+                    roomUsers,
+                    gameInfo: currentGameInfo,
+                    io,
+                    socket
+                }
+            );
+        }else{
+            wsUtils.errorLog("无此紧急军情", situationIndex);
+        }
+
 
         //wsUtils.gameLog(`${currentUser.name}经过起点,获2000两`);
+        wsUtils.eventOver(sg_constant.stage_type.situation);
         wsUtils.updateRoomToAll(room);
     });
 
     socket.on('inSuggestion', (index) => {
 
+        wsUtils.eventOver(sg_constant.stage_type.suggestion);
+        wsUtils.updateRoomToAll(room);
     });
 
     /**

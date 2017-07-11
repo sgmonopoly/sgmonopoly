@@ -1,20 +1,7 @@
-/*import {getMapInfo} from '../../../api/rest/game'
-import * as _ from 'lodash'
-
-export let map_info = {};
-
-(function () {
-    if(_.isEmpty(map_info)){
-        getMapInfo()
-            .then((res) => {
-                map_info = res.data;
-            })
-            .catch((err) => {
-                console.log(err.response.data);
-            });
-    }
-})();*/
-export const map_info = {
+import * as map_info_backend from '../../../../models/map_info'
+export const map_info = map_info_backend;
+/*
+{
     "1": {"stageId": 1, "stageType": 12, "picPath": "", "stageName": "起点"},
     "2": {"stageId": 2, "stageType": 2, "picPath": "", "stageName": "征兵处"},
     "3": {
@@ -372,3 +359,4 @@ export const map_info = {
     },
     "56": {"stageId": 56, "stageType": 6, "picPath": "", "stageName": "缴税"}
 };
+*/

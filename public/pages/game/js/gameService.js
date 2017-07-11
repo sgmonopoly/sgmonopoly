@@ -12,7 +12,6 @@ import * as aaa from '../../../../models/hero_info'
  * @param position
  */
 const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
-    console.log(aaa)
     console.log('targetPositionFeedback', endPosition, userInfo);
     if (myUserId !== userInfo.userId) {
         //只对当前玩家生效
@@ -55,11 +54,14 @@ const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
             domHanlder.showBet();
             break;
         case 10://紧急军情
-            game_ws.inSituation();
+            //调试用
+            const defaultSituation = domHanlder.getDefaultSituation();
+            game_ws.inSituation(defaultSituation);
             break;
         case 11://锦囊妙计
-            game_ws.inSuggestion();
-            break;;
+            const defaultSuggestion = domHanlder.getDefaultSuggestion()
+            game_ws.inSuggestion(defaultSuggestion);
+            break;
         case 12://起点
             game_ws.inStart();
             break;
@@ -68,7 +70,7 @@ const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
 };
 /**
  * 后端通知前端任务结束时,调用的回调
- * @param stageType
+ * @param overType
  */
 const eventOverCallback = (overType) => {
     console.log('eventOverCallback', overType);
