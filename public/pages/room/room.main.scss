@@ -1,0 +1,62 @@
+@import "../../common/sass/base";
+
+.player {
+  align-items: center;
+  overflow: hidden;
+  border-radius: 5px;
+  border: solid 1px black;
+  width: 250px;
+  white-space: nowrap;
+  margin: 10px;
+  box-shadow: 2px 2px 5px #888888;
+  .left{
+    .player-pic {
+      width: 120px;
+      height: 120px;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    display: inline-block;
+    vertical-align: top;
+    .name {
+      width: 120px;
+      height: 30px;
+      line-height: 30px;
+      color: white;
+      font-size: 16px;
+      text-align: center;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+  }
+  .right {
+    box-sizing: border-box;
+    padding: 5px;
+    display: inline-block;
+    width:  130px;
+    height: 150px;
+    background-color: #eeeeee;
+    vertical-align: middle;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    .text {
+      color: #666666;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    .outer-city {
+      text-overflow: ellipsis;
+      color: #999999;
+      font-size: 12px;
+      white-space: normal;
+      word-break:break-all;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+      display: -webkit-box;
+    }
+  }
+}

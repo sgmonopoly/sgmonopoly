@@ -1,5 +1,6 @@
 export const pages = {
     'index': '/pages/login/login.html',
     'rooms': '/pages/rooms/rooms.html',
-    'game': '/pages/game/game.html'
+    'room': '/pages/room/room.html',
+    'game': '/pages/game/game.html',
 };
