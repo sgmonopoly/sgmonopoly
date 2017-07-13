@@ -17,6 +17,9 @@ import {stage, cjs, container2, getStage} from './chessboard'
  */
 const pieceReady = (userId, lordAvatar, offset, currentPosition = 1) => {
     console.log("pieceReady", lordAvatar);
+    if(!lordAvatar) {
+        return;
+    }
     const image = new Image();
     image.src = "../../.." + lordAvatar;
     const targetStage = getStage(currentPosition);
