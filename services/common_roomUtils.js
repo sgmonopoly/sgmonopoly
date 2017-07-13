@@ -64,10 +64,7 @@ exports.checkAndResetRoomHost = (room, currentUserId) => {
  * @param maxNum
  */
 exports.createShuffledArray = maxNum => {
-    let array = [];
-    _.times(maxNum, function (n) {
-        array.push(++n);
-    });
+    const array = Array.apply(null, {length: maxNum}).map((ele, index) => index + 1);
     return _.shuffle(array);
 };
 
@@ -143,7 +140,7 @@ exports.getRandomCityIndexByNum = (citysObj, myCityIds, returnNum) => {
  * @returns {*}
  */
 exports.getRandomFromArray = (array) => {
-    if(!array || array.length === 0){
+    if (!array || array.length === 0) {
         return null;
     }
     const arrayClone = _.shuffle(_.cloneDeep(array));
@@ -152,7 +149,7 @@ exports.getRandomFromArray = (array) => {
 
 /**
  * 游戏日志,统一入口
- * @param io
+ * @param socketIo
  * @param messages
  */
 exports.addGameLog = (socketIo, messages) => {
