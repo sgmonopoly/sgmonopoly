@@ -14,6 +14,10 @@ export default class LeftContainerDom extends Component{
         if(!!this.state.players.find(p => p.id === playerDom.id)){
             throw `添加失败，含有重复id的player！id：${playerDom.id}`
         }
+        //校验玩家个数
+        if(this.state.players.length >= 3){
+            throw `player的个数达到上限！总玩家不能超过4个！`
+        }
         this.state.players.push(playerDom)
         super.refresh()
     }
@@ -38,6 +42,6 @@ export default class LeftContainerDom extends Component{
     }
 
     render(){
-        return `<div>${this._getPlayersDom()}</div>`
+        return `<div class="left-container-dom">${this._getPlayersDom()}</div>`
     }
 }

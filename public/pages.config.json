@@ -1,6 +1,3 @@
 {
-    "login": "./public/pages/login/login.main.js",
-    "rooms": "./public/pages/rooms/rooms.main.js",
-    "game": "./public/pages/game/game.main.js",
     "room": "./public/pages/room/room.main.js"
 }

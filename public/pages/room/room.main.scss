@@ -1,4 +1,71 @@
 @import "../../common/sass/base";
+body {
+  background-color: #eeeeee;
+  height: 100%;
+  width: 100%;
+}
+.outer-box {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  flex-direction: column;
+  vertical-align: top;
+  .td {
+    display: -webkit-box;
+    flex-direction: row;
+    vertical-align: top;
+    flex: 1;
+    overflow: hidden;
+    .lcd {
+
+    }
+
+    .ccd {
+      flex: 1;
+
+      .center-container-dom{
+        .top {
+          .block {
+            display: inline-block;
+            box-sizing: border-box;
+            width: 50%;
+            font-size: 18px;
+            padding: 10px;
+            vertical-align: top;
+            .left {
+              color: #333333;
+            }
+
+            .right {
+              color: #666666;
+              padding-left: 10px;
+            }
+          }
+        }
+        .bottom {
+
+        }
+      }
+    }
+
+    .rcd {
+      margin: 10px 20px;
+    }
+  }
+
+  .bcd {
+    background-color: #0f6ab4;
+  }
+}
+
+.left-container-dom {
+
+}
+
+.center-container-dom{
+  width: 100%;
+  height: 100%;
+}
 
 .player {
   align-items: center;
@@ -37,7 +104,7 @@
     display: inline-block;
     width:  130px;
     height: 150px;
-    background-color: #eeeeee;
+    background-color: #ffffff;
     vertical-align: middle;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -57,6 +124,30 @@
       -webkit-box-orient:vertical;
       overflow:hidden;
       display: -webkit-box;
+    }
+  }
+}
+
+.game-log{
+  width: 180px;
+  box-shadow: 0 0 5px #999999;
+  .title {
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #0088bb;
+    text-align: center;
+  }
+
+  .log-container{
+    background-color: white;
+    color: #666666;
+    height: 200px;
+    overflow: scroll;
+    padding: 5px;
+    font-size: 12px;
+    .log {
+
     }
   }
 }
