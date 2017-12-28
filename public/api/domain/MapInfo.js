@@ -1,4 +1,4 @@
-import * as map_info_backend from '../../../../models/map_info'
+import * as map_info_backend from '../../../models/map_info'
 export const map_info = map_info_backend;
 /*
 {

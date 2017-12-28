@@ -36,7 +36,7 @@ module.exports = {
             }
         ],
     },
-    //devtool: 'source-map', //编译时创建map文件
+    devtool: 'source-map', //编译时创建map文件
     plugins: [
         new webpack.ProvidePlugin({
             io: 'socket.io-client'

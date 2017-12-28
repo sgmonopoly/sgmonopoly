@@ -2,14 +2,16 @@
  * Created by yuanxiang on 6/14/17.
  */
 
-import {map_info} from "./mapInfo"
-import * as domHanlder from './domHanlder'
-import {game_ws} from '../../../api/ws/emit'
-import myUserId from './localData'
-import * as aaa from '../../../../models/hero_info'
+import {map_info} from "../domain/MapInfo"
+import * as domHanlder from './DomHanlder'
+import myUserId from '../domain/LocalData'
+import {roomAction,gameAction} from "../network"
+
 /**
  * 根据目标位置,作出需要的操作反馈
- * @param position
+ * @param startPosition
+ * @param endPosition
+ * @param userInfo
  */
 const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
     console.log('targetPositionFeedback', endPosition, userInfo);
@@ -21,12 +23,12 @@ const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
 
     if(startPosition > endPosition && endPosition != 1){
         //如果过了起点,且终点并不是起点,给2000
-        game_ws.passByStart();
+        gameAction.passByStart();
     }
 
     switch (city.stageType) {
         case 1://城池
-            game_ws.inCity(endPosition);
+            gameAction.inCity(endPosition);
             break;
         case 2://征兵
             domHanlder.showBuyTroop();
@@ -35,35 +37,35 @@ const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
             domHanlder.showBuyHero();
             break;
         case 4://游乐园
-            game_ws.inPark();
+            gameAction.inPark();
             break;
         case 5://按摩院
-            game_ws.inMassage();
+            gameAction.inMassage();
             break;
         case 6://缴税
-            game_ws.inTax();
+            gameAction.inTax();
             break;
         case 7://茅庐
-            game_ws.inCottage();
+            gameAction.inCottage();
             break;
         case 8://金银岛
-            game_ws.inIsland();
+            gameAction.inIsland();
             break;
         case 9://赌馆
-            game_ws.inBet();
+            gameAction.inBet();
             domHanlder.showBet();
             break;
         case 10://紧急军情
             //调试用
             const defaultSituation = domHanlder.getDefaultSituation();
-            game_ws.inSituation(defaultSituation);
+            gameAction.inSituation(defaultSituation);
             break;
         case 11://锦囊妙计
             const defaultSuggestion = domHanlder.getDefaultSuggestion()
-            game_ws.inSuggestion(defaultSuggestion);
+            gameAction.inSuggestion(defaultSuggestion);
             break;
         case 12://起点
-            game_ws.inStart();
+            gameAction.inStart();
             break;
     }
 

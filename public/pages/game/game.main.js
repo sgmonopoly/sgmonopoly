@@ -1,8 +1,8 @@
 /**
  * Created by yuanxiang on 3/24/17.
  */
-import {initChessBoard} from './js/chessboard'
-import {initNetwork} from './js/network'
+import {initChessBoard} from '../../api/pageHandler/Chessboard'
+import {initNetwork} from '../../api/network'
 import {getQueryString} from '../../common/utils/router'
 
 

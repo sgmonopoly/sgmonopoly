@@ -2,6 +2,8 @@ import LeftContainerDom from './components/LeftContainerDom'
 import CenterContainerDom from './components/CenterContainerDom'
 import RightContainerDom from './components/RightContainerDom'
 import PlayerDom from './components/PlayerDom'
+import {initNetwork} from '../../api/network'
+import {getQueryString} from '../../common/utils/router'
 
 function initPage() {
     let lcd = new LeftContainerDom('lcd')
@@ -24,6 +26,11 @@ function initPage() {
     setInterval(() => {
         rcd.addLog('啦啦啦啦啦')
     }, 1000)
+
+
+    //初始化网络
+    const roomNo = getQueryString("roomNo");
+    initNetwork(roomNo);
 }
 
 initPage()

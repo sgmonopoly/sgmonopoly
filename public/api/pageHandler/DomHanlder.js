@@ -4,8 +4,8 @@
  */
 import $ from 'jquery'
 import * as _ from 'lodash'
-import {room_ws, game_ws} from '../../../api/ws/emit'
-import myUserId from './localData'
+import {roomAction, gameAction} from '../network'
+import myUserId from '../domain/localData'
 
 const dom_chatLog = $("#chatLog");
 const dom_errorLog = $("#errorLog");
@@ -80,32 +80,32 @@ const dom_default_suggestion = $("#default_suggestion");
      * 绑定退出房间事件
      */
     dom_btn_quitRoom.on('click', () => {
-        room_ws.quitRoom();
+        roomAction.quitRoom();
     });
     /**
      * 绑定发送聊天事件
      */
     dom_btn_sendMessage.on('click', () => {
         const message = dom_chatMessage.val();
-        if(message) room_ws.addChatMessage(message);
+        if(message) roomAction.addChatMessage(message);
     });
     /**
      * 绑定准备好了事件
      */
     dom_btn_toReady.on('click', () => {
-        room_ws.toReady();
+        roomAction.toReady();
     });
     /**
      * 绑定取消准备事件
      */
     dom_btn_toUnready.on('click', () => {
-        room_ws.toUnready();
+        roomAction.toUnready();
     });
     /**
      * 绑定开始游戏事件
      */
     dom_btn_startGame.on('click', () => {
-        game_ws.startGame();
+        gameAction.startGame();
     });
     //默认隐藏 回合结束 和 掷骰子
     dom_btn_endTurn.hide();
@@ -114,14 +114,14 @@ const dom_default_suggestion = $("#default_suggestion");
      * 绑定回合结束事件
      */
     dom_btn_endTurn.on('click', () => {
-        game_ws.endTurn();
+        gameAction.endTurn();
         dom_btn_endTurn.hide();
     });
     /**
      * 绑定回合结束事件2,临时的
      */
     dom_btn_endTurn2.on('click', () => {
-        game_ws.endTurn();
+        gameAction.endTurn();
     });
     /**
      * 绑定掷骰子事件
@@ -129,13 +129,13 @@ const dom_default_suggestion = $("#default_suggestion");
     dom_btn_throwDice.on('click', () => {
         const point = dom_dicePoint.val();
         console.log("掷骰子",point);
-        game_ws.throwDiceForWalk(point);
+        gameAction.throwDiceForWalk(point);
     });
 
     //默认隐藏购买兵力界面
     dom_buyTroop_show.hide();
     dom_btn_buyTroop_confirm.on('click', () => {
-        game_ws.payTroop(dom_buyTroop_value.val());
+        gameAction.payTroop(dom_buyTroop_value.val());
         //showEndTurnBtn();//后端调用显示回合结束按钮
     });
     dom_btn_buyTroop_cancel.on('click', () => {
@@ -146,7 +146,7 @@ const dom_default_suggestion = $("#default_suggestion");
     //默认隐藏购买武将界面
     dom_buyHero_show.hide();
     dom_btn_buyHero_confirm.on('click', () => {
-        game_ws.payHero(dom_buyHero_value.val());
+        gameAction.payHero(dom_buyHero_value.val());
         //showEndTurnBtn();
     });
     dom_btn_buyHero_cancel.on('click', () => {
@@ -158,7 +158,7 @@ const dom_default_suggestion = $("#default_suggestion");
     dom_buyCity_show.hide();
     dom_btn_buyCity_confirm.on('click', () => {
         const stageId = dom_buyCity_id.val();
-        game_ws.buyCity(stageId);
+        gameAction.buyCity(stageId);
     });
     dom_btn_buyCity_cancel.on('click', () => {
         dom_buyCity_show.hide();
@@ -168,7 +168,7 @@ const dom_default_suggestion = $("#default_suggestion");
     dom_upgradeCity_show.hide();
     dom_btn_upgradeCity_confirm.on('click', () => {
         const stageId = dom_upgradeCity_id.val();
-        game_ws.upgradeCity(stageId);
+        gameAction.upgradeCity(stageId);
     });
     dom_btn_upgradeCity_cancel.on('click', () => {
         dom_upgradeCity_show.hide();
@@ -178,17 +178,17 @@ const dom_default_suggestion = $("#default_suggestion");
     dom_paytollOrAttack_show.hide();
     dom_btn_paytollOrAttack_paytoll.on('click', () => {
         const stageId = dom_paytollOrAttack_cityid.val();
-        game_ws.payToll(stageId);
+        gameAction.payToll(stageId);
     });
     dom_btn_paytollOrAttack_attack.on('click', () => {
         const stageId = dom_paytollOrAttack_cityid.val();
-        game_ws.readyForBattle(stageId);
+        gameAction.readyForBattle(stageId);
     });
     //默认赌博界面不出现
     dom_bet_show.hide();
     dom_btn_bet_confirm.on('click', () => {
         const money = dom_bet_money.val();
-        game_ws.bet(money);
+        gameAction.bet(money);
     });
     dom_btn_bet_cancel.on('click', () => {
         dom_bet_show.hide();
@@ -200,7 +200,7 @@ const dom_default_suggestion = $("#default_suggestion");
     dom_btn_select_hero_confirm.on('click', () => {
         const heroId = dom_select_hero_value.val();
         const battleId = dom_battle_id.val();
-        game_ws.heroSelected(battleId, heroId);
+        gameAction.heroSelected(battleId, heroId);
         dom_select_hero_show.hide();
     });
 

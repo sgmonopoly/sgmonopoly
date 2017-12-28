@@ -1,7 +1,7 @@
 /**
  * Created by yuanxiang on 7/4/17.
  */
-import * as hero_info_backend from '../../../../models/hero_info'
+import * as hero_info_backend from '../../../models/hero_info'
 
 export const hero_info = hero_info_backend;
 /*

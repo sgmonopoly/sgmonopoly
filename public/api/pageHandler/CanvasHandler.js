@@ -4,9 +4,8 @@
  */
 import 'yuki-createjs'
 import * as _ from 'lodash'
-import {game_constants} from "./game_constants"
-import {map_info} from "./mapInfo"
-import {stage, cjs, container2, getStage} from './chessboard'
+import {game_constants} from "../common/GameConstants"
+import {stage, cjs, container2, getStage} from '../pageHandler/Chessboard'
 
 /**
  * 准备棋子的图片和位置

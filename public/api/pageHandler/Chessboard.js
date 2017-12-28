@@ -4,9 +4,9 @@
  */
 import 'yuki-createjs'
 import * as _ from 'lodash'
-import {game_constants} from "./game_constants"
-import {map_info} from "./mapInfo"
-import {DrawRect} from "./common"
+import {game_constants} from "../common/GameConstants"
+import {map_info} from "../domain/MapInfo"
+import {DrawRect} from "./CreateJsCommon"
 
 let cjs = createjs,
     canvas,
