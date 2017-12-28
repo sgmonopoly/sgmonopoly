@@ -7,6 +7,10 @@ export default class Component {
         this.state = {...oldState, ...newState}
     }
 
+    getState(){
+        return this.state
+    }
+
     componentWillMount(){}
     render(){}
     componentDidMount(){}

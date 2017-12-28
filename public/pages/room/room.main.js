@@ -1,7 +1,7 @@
 import LeftContainerDom from './components/LeftContainerDom'
 import CenterContainerDom from './components/CenterContainerDom'
 import RightContainerDom from './components/RightContainerDom'
-import PlayerDom from './components/PlayerDom'
+import GameComponents from '../../api/domain/GameComponents'
 import {initNetwork} from '../../api/network'
 import {getQueryString} from '../../common/utils/router'
 
@@ -28,10 +28,11 @@ function initPage() {
         rcd.addLog('啦啦啦啦啦')
     }, 1000)*/
 
+    const gameComponents = new GameComponents(lcd, ccd, rcd.getState().gameLogDom, rcd.getState().chatDom)
 
     //初始化网络
     const roomNo = getQueryString("roomNo");
-    initNetwork(roomNo);
+    initNetwork(roomNo, gameComponents);
 }
 
 initPage()

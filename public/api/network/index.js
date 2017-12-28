@@ -12,23 +12,22 @@ import GameAction from "../../api/action/GameAction"
 import RoomReduce from "../../api/reduce/RoomReduce"
 import GameReduce from "../../api/reduce/GameReduce"
 
-
-let roomAction, gameAction, roomReduce, gameReduce
+let roomAction, gameAction, roomReduce, gameReduce, gameComponents
 
 /**
  * 连ws并接收ws任务
  * @param roomId
+ * @param _gameComponents
  */
-const initNetwork = async(roomId) => {
+const initNetwork = async(roomId, _gameComponents) => {
 
-  console.log(`roomId:${roomId}`);
+  console.log(`roomId:${roomId}`)
 
   //为了解决进入游戏后,刷新出错的问题,这里也执行一次enterRoom方法
   try {
     await enterRoom(roomId)
   } catch (err) {
-    alert(err.response.data);
-    return console.log(err.response.data);
+    return console.log(err.response.data)
   }
 
   const socket = io("/room/" + roomId)
@@ -39,6 +38,7 @@ const initNetwork = async(roomId) => {
   gameAction = new GameAction(socket)
   roomReduce = new RoomReduce(socket)
   gameReduce = new GameReduce(socket)
+  gameComponents = _gameComponents
 };
 
-export {initNetwork, roomAction, gameAction, roomReduce, gameReduce}
+export {initNetwork, roomAction, gameAction, roomReduce, gameReduce, gameComponents}
