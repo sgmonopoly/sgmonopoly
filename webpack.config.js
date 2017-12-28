@@ -15,7 +15,9 @@ module.exports = {
                 loader: 'babel-loader',
                 query: {
                     presets: [
+                        { "plugins": [ "transform-runtime" ] }, //async支持
                         'es2015',
+                        'es2016',
                         'latest',
                         'stage-0',
                         'stage-1',
@@ -34,7 +36,7 @@ module.exports = {
             }
         ],
     },
-    devtool: 'source-map',
+    //devtool: 'source-map', //编译时创建map文件
     plugins: [
         new webpack.ProvidePlugin({
             io: 'socket.io-client'
