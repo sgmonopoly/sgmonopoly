@@ -31,20 +31,20 @@ function isValid(name) {
     return true;
 }
 
-function login() {
+async function login() {
+    console.log("开始登入");
     clearForm();
     let loginNickname = $('#loginNickname').val();
     if(isValid(loginNickname)){
-        userLogin(loginNickname)
-            .then((result) => {
-                console.log('success!',result.data.userId);
-                saveUserInfo(result.data.userId);
-                open(pages.rooms);
-            })
-            .catch((err) => {
-                console.log(err.response.data);
-                setErrorInfo(err.response.data, 'loginNickname');
-            });
+        try{
+            const result = await userLogin(loginNickname)
+            console.log('success!',result.data.userId);
+            saveUserInfo(result.data.userId);
+            open(pages.rooms);
+        }catch(err) {
+            console.log(err.response.data);
+            setErrorInfo(err.response.data, 'loginNickname');
+        }
     }
 }
 /**
