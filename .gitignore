@@ -5,3 +5,4 @@ public/test/
 *.log
 tmp/
 test.js
+*.css
