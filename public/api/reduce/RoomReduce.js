@@ -2,8 +2,8 @@
  * Created by yuanxiang on 12/28/17.
  */
 import {roomAction} from "../network"
-import myUserId from '../domain/localData'
-import * as domHanlder from '../pageHandler/domHanlder'
+import {currentOwnerUserId} from '../domain/LocalCacheData'
+import * as domHanlder from '../pageHandler/DomHandler'
 import * as canvasHandler from '../pageHandler/canvasHandler'
 import * as moveEventHandler from '../pageHandler/MoveEventHandler'
 import * as _ from 'lodash'
@@ -116,7 +116,7 @@ export default class RoomReduce {
     if (!ownerId) {
       //空城,显示是否购买
       domHanlder.showBuyCity(cityId, cityName);
-    } else if (ownerId === myUserId) {
+    } else if (ownerId === currentOwnerUserId) {
       //自己的城,显示是否升级
       domHanlder.showUpgradeCity(cityId, cityName);
     } else {
@@ -140,10 +140,10 @@ export default class RoomReduce {
       return detailHeros;
     };
 
-    if (myUserId === battleInfo.atkUserId) {
+    if (currentOwnerUserId === battleInfo.atkUserId) {
       console.log("startBattle atkHeros", battleInfo.atkUserHeros);
       domHanlder.showSelectHero(battleInfo.battleId, getDetailHeroInfo(battleInfo.atkUserHeros));
-    } else if (myUserId === battleInfo.defUserId) {
+    } else if (currentOwnerUserId === battleInfo.defUserId) {
       console.log("startBattle defHeros", battleInfo.defUserHeros);
       domHanlder.showSelectHero(battleInfo.battleId, getDetailHeroInfo(battleInfo.defUserHeros));
     }

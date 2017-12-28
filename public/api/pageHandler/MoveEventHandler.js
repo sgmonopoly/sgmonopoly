@@ -3,8 +3,8 @@
  */
 
 import {map_info} from "../domain/MapInfo"
-import * as domHanlder from './DomHanlder'
-import myUserId from '../domain/LocalData'
+import * as domHanlder from './DomHandler'
+import {currentOwnerUserId} from '../domain/LocalCacheData'
 import {roomAction,gameAction} from "../network"
 
 /**
@@ -15,7 +15,7 @@ import {roomAction,gameAction} from "../network"
  */
 const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
     console.log('targetPositionFeedback', endPosition, userInfo);
-    if (myUserId !== userInfo.userId) {
+    if (currentOwnerUserId !== userInfo.userId) {
         //只对当前玩家生效
         return;
     }

@@ -1,7 +1,7 @@
 /**
  * Created by yuanxiang on 12/28/17.
  */
-import myUserId from '../domain/localData'
+import {currentOwnerUserId} from '../domain/LocalCacheData'
 
 export default class RoomAction {
   constructor(socket) {
@@ -9,7 +9,7 @@ export default class RoomAction {
   }
 
   enterGameRoom() {
-    this.socket.emit("enterRoom", myUserId);
+    this.socket.emit("enterRoom", currentOwnerUserId);
   }
 
   quitGameRoom(isKick = false) {

@@ -5,7 +5,7 @@
 import $ from 'jquery'
 import * as _ from 'lodash'
 import {roomAction, gameAction} from '../network'
-import myUserId from '../domain/localData'
+import {currentOwnerUserId} from '../domain/LocalCacheData'
 
 const dom_chatLog = $("#chatLog");
 const dom_errorLog = $("#errorLog");
@@ -286,7 +286,7 @@ export const addErrorLog = message => {
  * @param currentTurnUser
  */
 export const handleNextTurn = (currentTurnUser) => {
-    if(currentTurnUser.userId === myUserId){
+    if(currentTurnUser.userId === currentOwnerUserId){
         //如果是自己,则显示掷骰子
         //dom_btn_endTurn.show(1000);
         dom_btn_throwDice.show(1000);
