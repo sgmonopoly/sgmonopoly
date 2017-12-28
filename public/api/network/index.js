@@ -10,14 +10,16 @@ import {enterRoom} from '../../api/rest/rooms'
 import RoomAction from "../../api/action/RoomAction"
 import GameAction from "../../api/action/GameAction"
 import RoomReduce from "../../api/reduce/RoomReduce"
+import GameReduce from "../../api/reduce/GameReduce"
 
-let roomAction,gameAction,roomReduce
+
+let roomAction, gameAction, roomReduce, gameReduce
 
 /**
  * 连ws并接收ws任务
  * @param roomId
  */
-const initNetwork = async (roomId) => {
+const initNetwork = async(roomId) => {
 
   console.log(`roomId:${roomId}`);
 
@@ -36,6 +38,7 @@ const initNetwork = async (roomId) => {
   roomAction = new RoomAction(socket)
   gameAction = new GameAction(socket)
   roomReduce = new RoomReduce(socket)
+  gameReduce = new GameReduce(socket)
 };
 
-export {initNetwork,roomAction,gameAction,roomReduce}
+export {initNetwork, roomAction, gameAction, roomReduce, gameReduce}
