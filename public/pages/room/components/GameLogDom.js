@@ -14,11 +14,12 @@ export default class GameLogDom {
     }
 
     addLog(content = ""){
+        const logContainer = $('#log-container')
         if(content){
             this.logs.push(content)
-            $('#log-container').html(this._getLogDom())
+            logContainer.html(this._getLogDom())
             if(this.isScrollToBottom){
-                $('#log-container')[0].scrollTop = $('#log-container')[0].scrollHeight
+                logContainer[0].scrollTop = logContainer[0].scrollHeight
             }
         }
     }
