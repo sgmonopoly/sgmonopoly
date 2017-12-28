@@ -7,6 +7,7 @@ const _ = require("lodash");
 const common = require("../../services/common_roomUtils");
 const battle_service = require("../../services/battle_service");
 const situation_info = require("../../models/situation_info");
+const suggestion_info = require("../../models/suggestion_info");
 
 const init = (socket, io, roomNumber, wsUtils) => {
 
@@ -460,6 +461,27 @@ const init = (socket, io, roomNumber, wsUtils) => {
     });
 
     socket.on('inSuggestion', (index) => {
+
+        let suggestionIndex;
+        if (!index) {
+            //前端可以控制索引
+            suggestionIndex = getNextSuggestionIndex();
+        } else {
+            suggestionIndex = index;
+        }
+        console.log("锦囊妙计第几个", suggestionIndex);
+        const suggestion = suggestion_info[suggestionIndex];
+
+        if(suggestion){
+            if(suggestion.isReserve){
+                const currentUser = getUser(socket.userId);
+                //保留卡直接进用户数据
+                currentUser.suggestions.push(suggestionIndex);
+            }else{
+                //todo 直接运行
+
+            }
+        }
 
         wsUtils.eventOver(sg_constant.stage_type.suggestion);
         wsUtils.updateRoomToAll(room);

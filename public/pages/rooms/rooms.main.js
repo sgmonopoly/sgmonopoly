@@ -25,6 +25,7 @@ async function init() {
     let i = 2;
     rooms.forEach(room => {
         const str = [];
+        const roomNo = room.roomNo
         str.push("<div class=\"room-block background-g-" + (i++ % 2) + "\" id=\"" + room.roomNo + "\">");
         str.push("房间号:" + room.roomNo);
         str.push("&nbsp;");
@@ -40,12 +41,12 @@ async function init() {
         roomContainer.append(str.join(""));
 
         //增加事件
-        const currentDiv = $(`#${room.roomNo}`);
+        const currentDiv = $(`#${roomNo}`);
         currentDiv.on("click", () => {
-            enterRoom(room.roomNo)
+            enterRoom(roomNo)
                 .then(() => {
                     //跳转
-                    open(pages.game, {roomNo: room.roomNo});
+                    open(pages.room, {roomNo});
                 })
                 .catch((err) => {
                     alert(err.response.data);

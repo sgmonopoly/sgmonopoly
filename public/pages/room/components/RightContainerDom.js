@@ -1,7 +1,7 @@
-import Component from './Component'
+import JqueryComponent from '../../../common/myreact/JqueryComponent'
 import GameLogDom from './GameLogDom'
 
-export default class RightContainerDom extends Component{
+export default class RightContainerDom extends JqueryComponent{
 
     constructor(id){
         super(id)

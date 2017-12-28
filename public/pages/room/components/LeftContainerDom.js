@@ -1,6 +1,6 @@
-import Component from './Component'
+import JqueryComponent from '../../../common/myreact/JqueryComponent'
 
-export default class LeftContainerDom extends Component{
+export default class LeftContainerDom extends JqueryComponent{
 
     constructor(id){
         super(id)

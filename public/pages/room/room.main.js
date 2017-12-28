@@ -16,7 +16,7 @@ function initPage() {
     setTimeout(() => {
         lcd.setPlayerValueById({color: 'black', money: 200000, name: '小黑鸭'}, 'id2')
         lcd.removePlayer('id3')
-        ccd.setGameTime(12323543512)
+        ccd.setGameTime(10000)
         rcd.clearLog()
         rcd.isScrollToBottomForLog(false)
     }, 5000)

@@ -257,6 +257,6 @@ map_info[i++] = stage;
 stage = new SG_Stage(i, sg_constant.stage_type.tax, "缴税");
 map_info[i++] = stage;
 
-console.log(JSON.stringify(map_info));
+//console.log(JSON.stringify(map_info));
 
 module.exports = map_info;

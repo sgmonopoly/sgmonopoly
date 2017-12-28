@@ -1,6 +1,7 @@
-import Component from './Component'
+import JqueryComponent from '../../../common/myreact/JqueryComponent'
+import GameContainerDom from './game/GameContainerDom'
 import $ from 'jquery'
-export default class LeftContainerDom extends Component{
+export default class CenterContainerDom extends JqueryComponent{
 
     constructor(id){
         super(id)
@@ -8,6 +9,7 @@ export default class LeftContainerDom extends Component{
             //单位是秒
             gameTime: 0,
             leftHeroes: 0,
+            gameDom: new GameContainerDom()
         }
     }
 
@@ -29,14 +31,18 @@ export default class LeftContainerDom extends Component{
         $('#leftHeroes').html(this.state.leftHeroes)
     }
 
+    componentDidMount(){
+        this.state.gameDom.componentDidMount()
+    }
+
     render(){
         return `<div class="center-container-dom">
                     <div class="top">
                         <div class="block"><span class="left">游戏时长: <span id="gameTime" class="right">${this._getShowedGameTime()}</span></span><span></span>
                         </div><div class="block"><span class="left">剩余武将: <span id="leftHeroes" class="right">${this.state.leftHeroes}</span></span><span></span></div>
                     </div>
-                    <div class="bottom">
-                        <canvas id="game"></canvas>
+                    <div class="bottom" id="gameDiv">
+                        ${this.state.gameDom.render()}
                     </div>
                 </div>`
     }

@@ -18,10 +18,15 @@ let cjs = createjs,
     image,
     gameStageCoodInfos = [];
 
-const initChessBoard = () => {
+/**
+ * 初始化棋盘
+ * @param domId
+ * @param canvasWidth canvas的宽度不能通过css控制,手动传入
+ */
+const initChessBoard = (domId = 'game', canvasWidth = ww) => {
     //设置canvas属性
-    canvas = document.getElementById('game');
-    canvas.width = parseInt(ww * game_constants.global_scale);//这里要乘以一个整体缩放系数
+    canvas = document.getElementById(domId);
+    canvas.width = canvasWidth//parseInt(ww * game_constants.global_scale);//这里要乘以一个整体缩放系数
     canvas.height = parseInt(canvas.width / 1.625);
     console.log("ww ", ww);
     console.log("wh ", wh);
@@ -102,7 +107,7 @@ const initChessBoard = () => {
         s2.y = gameStageInfo.s2.y;
         s2.name = gameStage.stageId + "_" + "s2";
         //画字
-        const text = new cjs.Text(gameStage.stageId + "," + gameStage.stageName, "13px Arial", "#FFFFFF");
+        const text = new cjs.Text(gameStage.stageId + "," + gameStage.stageName, "20px Arial", "#FFFFFF");
         text.x = s2.x + 5;
         text.y = s2.y + 5;
         text.name = gameStage.stageId + "_" + "text";
