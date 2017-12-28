@@ -8,6 +8,13 @@ const user = require('./user');
 const room = require('./room');
 
 /**
+ * 首页
+ */
+router.get('/', (req, res) => {
+    res.redirect("/pages/login/login.html")
+});
+
+/**
  * 心跳检测
  */
 router.get('/ping', (req, res) => {
