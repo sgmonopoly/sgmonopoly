@@ -21,6 +21,7 @@ class SG_Game {
         this.turn = 0;//当前轮次
         this.nextBattleInfo = {};//下一场攻城信息
         this.initCity();//初始化城市方法
+        this.startTime = parseInt((new Date().getTime()) / 1000)//开始时间,用来计算当前游戏时长,单位秒
     }
 
     initCity() {
@@ -163,6 +164,7 @@ class SG_Game {
     shuffleHero(){
         this.herosOrders = _.shuffle(this.herosOrders);
     }
+
 }
 
 module.exports = SG_Game;

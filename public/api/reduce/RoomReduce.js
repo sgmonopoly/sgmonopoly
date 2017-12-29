@@ -2,15 +2,13 @@
  * Created by yuanxiang on 12/28/17.
  */
 import {roomAction} from "../network"
-import * as domHanlder from '../pageHandler/DomHandler'
-import * as canvasHandler from '../pageHandler/canvasHandler'
 import PlayerDom from '../../pages/room/components/PlayerDom'
 
 /**
  * 从服务端接受请求,业务和房间相关
  */
 export default class RoomReduce {
-  constructor(socket, {playerContainer, chatContainer}) {
+  constructor(socket, {playerContainer, chatContainer, gameLogContainer, infoContainer}) {
     this.socket = socket
     this.socket.on("handshake", this.handshake.bind(this))
     this.socket.on("room", this.room.bind(this))
@@ -20,6 +18,8 @@ export default class RoomReduce {
     this.socket.on("alertLog", this.alertLog.bind(this))
     this.playerContainer = playerContainer
     this.chatContainer = chatContainer
+    this.gameLogContainer = gameLogContainer
+    this.infoContainer = infoContainer
   }
 
   /**
@@ -35,13 +35,13 @@ export default class RoomReduce {
    */
   room(roomInfo, gameInfo) {
     console.log("receive room:", roomInfo, gameInfo)
-    console.log("playerContainer:", this.playerContainer)
+    //更新用户
     for (const user of roomInfo.users) {
       this.playerContainer.addPlayer(
         new PlayerDom({
             id: user.userId,
             img: 'http://img1.3lian.com/2015/w3/98/d/1.jpg',
-            name: user.nickname,
+            name: user.name,
             color: user.color || 'red',
             heroCount: user.heros.length,
             money: user.money,
@@ -51,6 +51,13 @@ export default class RoomReduce {
         )
       )
     }
+    //更新时间
+    if(gameInfo){
+      const {startTime} = gameInfo
+      const now = parseInt(new Date().getTime() / 1000) - startTime
+      this.infoContainer.startGameTime(now)
+    }
+
 
     //domHanlder.updateRoomInfo(roomInfo);
     //domHanlder.updateGameInfo(gameInfo);
@@ -71,22 +78,21 @@ export default class RoomReduce {
    */
   gameLog(message) {
     console.log("receive gameLog:", message);
-    domHanlder.addGameLog(message);
+    this.gameLogContainer.addLog(message)
+    //domHanlder.addGameLog(message);
   }
 
   /**
    * 接收错误日志
    */
   errorLog(message) {
-    console.log("receive errorLog:", message);
-    domHanlder.addErrorLog(message);
   }
 
   /**
    * 接收警告日志
    */
   alertLog(message) {
-    alert(message);
+    //TODO 模态框显示
   }
 
 }

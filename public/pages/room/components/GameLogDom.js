@@ -1,43 +1,62 @@
 import $ from 'jquery'
-export default class GameLogDom {
-    constructor(){
-        this.logs = [
-
-        ]
-        this.isScrollToBottom = true
+import Component from '../../../common/myreact/Component'
+export default class GameLogDom extends Component {
+  constructor() {
+    super()
+    this.state = {
+      logs: [],
+      isScrollToBottom: true
     }
+  }
 
-    _getLogDom(){
-        return this.logs.reduce((dom,log) => {
-            return `${dom}<div class="log">${log}</div>`
-        }, "")
+  setState(obj = {}) {
+    //状态可以直接修改,这里
+    if (obj !== {}) {
+      super.setState(obj)
     }
+    this.refresh()
+  }
 
-    addLog(content = ""){
-        const logContainer = $('#log-container')
-        if(content){
-            this.logs.push(content)
-            logContainer.html(this._getLogDom())
-            if(this.isScrollToBottom){
-                logContainer[0].scrollTop = logContainer[0].scrollHeight
-            }
-        }
+  getLogDom() {
+    return this.state.logs.reduce((dom, log) => {
+      return `${dom}<div class="log">${log}</div>`
+    }, "")
+  }
+
+  addLog(content = "") {
+    if (content) {
+      this.state.logs.push(content)
+      this.setState()
     }
+  }
 
-    clearLog(){
-        this.logs = []
-    }
+  clearLog() {
+    const logs = []
+    this.setState({logs})
+  }
 
-    setIsScrollToBottom(isStb = true){
-        this.isScrollToBottom = !!isStb
-    }
+  setIsScrollToBottom(isStb = true) {
+    this.state.isScrollToBottom = !!isStb
+  }
 
-    render(){
-        return `<div class="game-log">
+  componentDidMount() {
+    //渲染之后,获取DOM
+    this.logContainer = $('#log-container')
+  }
+
+  render() {
+    return `<div class="game-log">
                     <div class="title">游戏日志</div>
                     <div id="log-container" class="log-container">
-                        ${this._getLogDom()}
+                        ${this.getLogDom()}
                     </div>
                 </div>`
+  }
+
+  refresh() {
+    this.logContainer.html(this.getChatDom())
+    if (this.state.isScrollToBottom) {
+      this.logContainer[0].scrollTop = this.logContainer[0].scrollHeight
     }
+  }
 }

@@ -21,9 +21,20 @@ export default class CenterContainerDom extends JqueryComponent{
         return `${_hours}时${_mins}分${_sec}秒`
     }
 
+    /**
+     * 设置时间(单位秒)
+     */
     setGameTime(gt){
         this.state.gameTime = gt
         $('#gameTime').html(this.getShowedGameTime())
+    }
+
+    startGameTime(currentTime = 0){
+        let nowTime = currentTime
+        setInterval(() => {
+            nowTime += 1
+            this.setGameTime(nowTime)
+        }, 1000)
     }
 
     setLeftHeroes(count){
@@ -33,6 +44,9 @@ export default class CenterContainerDom extends JqueryComponent{
 
     componentDidMount(){
         this.state.gameDom.componentDidMount()
+
+        //FIXME 开始游戏后触发
+        this.startGameTime()
     }
 
     render(){
@@ -43,6 +57,7 @@ export default class CenterContainerDom extends JqueryComponent{
                     </div>
                     <div class="bottom" id="gameDiv">
                         ${this.state.gameDom.render()}
+                        <div><button>准备好了</button><button>开始游戏</button></div>
                     </div>
                 </div>`
     }

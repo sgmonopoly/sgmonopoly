@@ -12,20 +12,8 @@ export default class RightContainerDom extends JqueryComponent{
         }
     }
 
-    addLog(content = ''){
-        this.state.gameLogDom.addLog(content)
-    }
-
-    clearLog(){
-        this.state.gameLogDom.clearLog()
-        super.refresh()
-    }
-
-    isScrollToBottomForLog(isStb){
-        this.state.gameLogDom.setIsScrollToBottom(isStb)
-    }
-
     componentDidMount(){
+        this.state.gameLogDom.componentDidMount()
         this.state.chatDom.componentDidMount()
     }
 

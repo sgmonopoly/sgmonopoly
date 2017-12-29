@@ -16,7 +16,7 @@ export default class LeftContainerDom extends JqueryComponent{
         }
         //校验玩家个数
         if(this.state.players.length >= 4){
-            throw `player的个数达到上限！总玩家不能超过4个！`
+            throw `玩家的个数达到上限！总玩家不能超过4个！`
         }
         this.state.players.push(playerDom)
         super.refresh()
