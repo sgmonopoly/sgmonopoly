@@ -4,10 +4,10 @@
  */
 import $ from 'jquery'
 import * as _ from 'lodash'
-import {roomAction, gameAction, gameComponents} from '../network'
+import {roomAction, gameAction} from '../network'
 import {currentOwnerUserId} from '../domain/LocalCacheData'
 
-const {playerContainer, infoContainer, gameLogContainer, chatContainer} = gameComponents
+//const {playerContainer, infoContainer, gameLogContainer, chatContainer} = gameComponents
 
 const dom_chatLog = $("#chatLog");
 const dom_errorLog = $("#errorLog");

@@ -22,10 +22,15 @@ class SG_User extends require("./user_info") {
         this.offset = 0;//头像偏移量
         this.currentPosition = 1;//当前位置(默认初始化时在第一个地方)
         this.name = "";//君主名+昵称
+        this.updateName()
     }
 
     updateName(){
-        this.name = this.lordName + "(" + this.nickname + ")";
+        if(this.lordName){
+            this.name = this.lordName + "(" + this.nickname + ")";
+        }else{
+            this.name = this.nickname;
+        }
     }
 }
 module.exports = SG_User;

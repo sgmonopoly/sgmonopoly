@@ -13,7 +13,7 @@ export default class CenterContainerDom extends JqueryComponent{
         }
     }
 
-    _getShowedGameTime(){
+    getShowedGameTime(){
         let gt = this.state.gameTime
         let _hours = parseInt(gt/3600)
         let _mins = parseInt((gt - _hours*3600)/60)
@@ -23,7 +23,7 @@ export default class CenterContainerDom extends JqueryComponent{
 
     setGameTime(gt){
         this.state.gameTime = gt
-        $('#gameTime').html(this._getShowedGameTime())
+        $('#gameTime').html(this.getShowedGameTime())
     }
 
     setLeftHeroes(count){
@@ -38,7 +38,7 @@ export default class CenterContainerDom extends JqueryComponent{
     render(){
         return `<div class="center-container-dom">
                     <div class="top">
-                        <div class="block"><span class="left">游戏时长: <span id="gameTime" class="right">${this._getShowedGameTime()}</span></span><span></span>
+                        <div class="block"><span class="left">游戏时长: <span id="gameTime" class="right">${this.getShowedGameTime()}</span></span><span></span>
                         </div><div class="block"><span class="left">剩余武将: <span id="leftHeroes" class="right">${this.state.leftHeroes}</span></span><span></span></div>
                     </div>
                     <div class="bottom" id="gameDiv">

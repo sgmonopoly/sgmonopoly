@@ -1,5 +1,6 @@
 /**
  * Created by yuanxiang on 12/28/17.
+ * 发送请求,业务和房间相关
  */
 import {currentOwnerUserId} from '../domain/LocalCacheData'
 

@@ -145,8 +145,13 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
      * 发送聊天记录
      */
     socket.on('addChatMessage', (message)=> {
-        wsUtils.chat(message);
-    });
+        const currentUser = common.getUser(roomUsers, socket.userId)
+        if (currentUser) {
+            console.log("currentUser ", currentUser)
+            message = currentUser.name + "说:" +message
+        }
+        wsUtils.chat(message)
+    })
 
     /**
      * 发送游戏日志

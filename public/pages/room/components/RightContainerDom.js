@@ -25,6 +25,10 @@ export default class RightContainerDom extends JqueryComponent{
         this.state.gameLogDom.setIsScrollToBottom(isStb)
     }
 
+    componentDidMount(){
+        this.state.chatDom.componentDidMount()
+    }
+
     render(){
         return `<div>
                     ${this.state.gameLogDom.render()}

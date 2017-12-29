@@ -8,15 +8,18 @@ import * as moveEventHandler from '../pageHandler/MoveEventHandler'
 import * as _ from 'lodash'
 import {hero_info} from "../domain/heroInfo"
 
+/**
+ * 从服务端接受请求,业务和游戏相关
+ */
 export default class GameReduce {
   constructor(socket) {
     this.socket = socket
-    this.socket.on("gameOver", this.gameOver)
-    this.socket.on("nextTurn", this.nextTurn)
-    this.socket.on("diceResultForWalk", this.diceResultForWalk)
-    this.socket.on("eventOver", this.eventOver)
-    this.socket.on("cityOwnerId", this.cityOwnerId)
-    this.socket.on("startBattle", this.startBattle)
+    this.socket.on("gameOver", this.gameOver.bind(this))
+    this.socket.on("nextTurn", this.nextTurn.bind(this))
+    this.socket.on("diceResultForWalk", this.diceResultForWalk.bind(this))
+    this.socket.on("eventOver", this.eventOver.bind(this))
+    this.socket.on("cityOwnerId", this.cityOwnerId.bind(this))
+    this.socket.on("startBattle", this.startBattle.bind(this))
   }
 
   /**

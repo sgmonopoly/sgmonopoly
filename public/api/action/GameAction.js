@@ -1,5 +1,6 @@
 /**
  * Created by yuanxiang on 12/28/17.
+ * 发送请求,业务和游戏相关
  */
 export default class GameAction {
   constructor(socket) {
@@ -21,7 +22,11 @@ export default class GameAction {
     this.socket.emit("endTurn");
   }
 
-  throwDiceForWalk(point) {//point为空则随机
+  /**
+   * 扔骰子走路
+   * @param point 点数为空则随机
+   */
+  throwDiceForWalk(point) {
     console.log("send throwDiceForWalk:", point);
     this.socket.emit("throwDiceForWalk", point);
   }

@@ -4,16 +4,22 @@
 import {roomAction} from "../network"
 import * as domHanlder from '../pageHandler/DomHandler'
 import * as canvasHandler from '../pageHandler/canvasHandler'
+import PlayerDom from '../../pages/room/components/PlayerDom'
 
+/**
+ * 从服务端接受请求,业务和房间相关
+ */
 export default class RoomReduce {
-  constructor(socket) {
+  constructor(socket, {playerContainer, chatContainer}) {
     this.socket = socket
-    this.socket.on("handshake", this.handshake)
-    this.socket.on("room", this.room)
-    this.socket.on("chat", this.chat)
-    this.socket.on("gameLog", this.gameLog)
-    this.socket.on("errorLog", this.errorLog)
-    this.socket.on("alertLog", this.alertLog)
+    this.socket.on("handshake", this.handshake.bind(this))
+    this.socket.on("room", this.room.bind(this))
+    this.socket.on("chat", this.chat.bind(this))
+    this.socket.on("gameLog", this.gameLog.bind(this))
+    this.socket.on("errorLog", this.errorLog.bind(this))
+    this.socket.on("alertLog", this.alertLog.bind(this))
+    this.playerContainer = playerContainer
+    this.chatContainer = chatContainer
   }
 
   /**
@@ -28,18 +34,36 @@ export default class RoomReduce {
    * 更新房间信息
    */
   room(roomInfo, gameInfo) {
-    console.log("receive room:", roomInfo, gameInfo);
-    domHanlder.updateRoomInfo(roomInfo);
-    domHanlder.updateGameInfo(gameInfo);
-    canvasHandler.updatePiecePosition(roomInfo.users);
+    console.log("receive room:", roomInfo, gameInfo)
+    console.log("playerContainer:", this.playerContainer)
+    for (const user of roomInfo.users) {
+      this.playerContainer.addPlayer(
+        new PlayerDom({
+            id: user.userId,
+            img: 'http://img1.3lian.com/2015/w3/98/d/1.jpg',
+            name: user.nickname,
+            color: user.color || 'red',
+            heroCount: user.heros.length,
+            money: user.money,
+            troop: user.troop,
+            citiesCount: user.citys.length
+          }
+        )
+      )
+    }
+
+    //domHanlder.updateRoomInfo(roomInfo);
+    //domHanlder.updateGameInfo(gameInfo);
+    //canvasHandler.updatePiecePosition(roomInfo.users);
   }
 
   /**
    * 接收聊天记录
    */
   chat(message) {
-    console.log("receive chat:", message);
-    domHanlder.addChatLog(message);
+    console.log("receive chat:", message)
+    this.chatContainer.addMessage(message)
+    //domHanlder.addChatLog(message);
   }
 
   /**

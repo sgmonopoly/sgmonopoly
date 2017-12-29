@@ -17,9 +17,9 @@ let roomAction, gameAction, roomReduce, gameReduce, gameComponents
 /**
  * 连ws并接收ws任务
  * @param roomId
- * @param _gameComponents
+ * @param gameComponents
  */
-const initNetwork = async(roomId, _gameComponents) => {
+const initNetwork = async(roomId, gameComponents) => {
 
   console.log(`roomId:${roomId}`)
 
@@ -36,9 +36,8 @@ const initNetwork = async(roomId, _gameComponents) => {
 
   roomAction = new RoomAction(socket)
   gameAction = new GameAction(socket)
-  roomReduce = new RoomReduce(socket)
-  gameReduce = new GameReduce(socket)
-  gameComponents = _gameComponents
-};
+  roomReduce = new RoomReduce(socket, gameComponents)
+  gameReduce = new GameReduce(socket, gameComponents)
+}
 
-export {initNetwork, roomAction, gameAction, roomReduce, gameReduce, gameComponents}
+export {initNetwork, roomAction, gameAction, roomReduce, gameReduce}
