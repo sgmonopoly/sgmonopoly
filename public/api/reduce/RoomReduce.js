@@ -9,7 +9,7 @@ import sg_constant from "../../../services/sg_constant"
  * 从服务端接受请求,业务和房间相关
  */
 export default class RoomReduce {
-  constructor(socket, {playerContainer, chatContainer, controlContainer, gameLogContainer, infoContainer}) {
+  constructor(socket, {playerContainer, chatContainer, controlContainer, gameLogContainer, infoContainer, gameContainer}) {
     this.socket = socket
     this.socket.on("handshake", this.handshake.bind(this))
     this.socket.on("room", this.room.bind(this))
@@ -24,6 +24,7 @@ export default class RoomReduce {
     this.controlContainer = controlContainer
     this.gameLogContainer = gameLogContainer
     this.infoContainer = infoContainer
+    this.gameContainer = gameContainer
   }
 
   /**
@@ -39,13 +40,13 @@ export default class RoomReduce {
    */
   room(roomInfo, gameInfo) {
     console.log("receive room:", roomInfo, gameInfo)
-    const removeUserIds = this.playerContainer.getAllPlayerId()
+    const removeUserIds = this.playerContainer.getAllPlayerIds()
     //更新用户
     for (const user of roomInfo.users) {
       this.playerContainer.mergePlayer(
         new PlayerDom({
             id: user.userId,
-            img: 'http://img1.3lian.com/2015/w3/98/d/1.jpg',
+            img: user.lordAvatar || 'http://img1.3lian.com/2015/w3/98/d/1.jpg',
             name: user.name,
             color: user.color || 'red',
             heroCount: user.heros.length,
@@ -63,6 +64,8 @@ export default class RoomReduce {
     this.removeOffLineUsers(removeUserIds)
     //更新时间
     this.updateTime(gameInfo)
+    //更新棋子
+    this.gameContainer.updatePiecePosition(roomInfo.users);
 
     //domHanlder.updateRoomInfo(roomInfo);
     //domHanlder.updateGameInfo(gameInfo);

@@ -33,7 +33,7 @@ function initPage() {
     }, 1000)*/
 
     const gameComponents = new GameComponents(lcd, ccd, ccd.getSubComponent().controlDom,
-      rcd.getSubComponent().gameLogDom, rcd.getSubComponent().chatDom)
+      rcd.getSubComponent().gameLogDom, rcd.getSubComponent().chatDom, ccd.getSubComponent().gameDom)
 
     //初始化网络
     const roomNo = getQueryString("roomNo");

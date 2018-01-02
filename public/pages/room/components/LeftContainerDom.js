@@ -49,7 +49,7 @@ export default class LeftContainerDom extends JqueryComponent {
     return this.state.players.find(p => p.id === id);
   }
 
-  getAllPlayerId() {
+  getAllPlayerIds() {
     return this.state.players.map(p => p.id)
   }
 
