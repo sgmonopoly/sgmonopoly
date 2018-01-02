@@ -54,7 +54,7 @@ export default class GameLogDom extends Component {
   }
 
   refresh() {
-    this.logContainer.html(this.getChatDom())
+    this.logContainer.html(this.getLogDom())
     if (this.state.isScrollToBottom) {
       this.logContainer[0].scrollTop = this.logContainer[0].scrollHeight
     }

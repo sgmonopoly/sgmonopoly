@@ -21,20 +21,26 @@ export default class ControlContainerDom extends Component{
      */
     this.readyBtn.on('click', () => {
       roomAction.readyCheck()
-    });
+    })
 
     /**
      * 绑定开始游戏事件
      */
     this.startGameBtn.on('click', () => {
       gameAction.startGame()
-    });
+    })
   }
 
+  /**
+   * 修改准备按钮的字,变成取消准备
+   */
   ready(){
     this.readyBtn.text("取消准备")
   }
 
+  /**
+   * 修改准备按钮的字,变成准备好了
+   */
   unready(){
     this.readyBtn.text("准备好了")
   }
