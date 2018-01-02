@@ -100,6 +100,7 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
 
     /**
      * 举手准备
+     * @deprecated 统一用readyCheck
      */
     socket.on('toReady', () => {
         const currentUser = common.getUser(roomUsers, socket.userId);
@@ -111,6 +112,7 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
     });
     /**
      * 取消准备
+     * @deprecated 统一用readyCheck
      */
     socket.on('toUnready', () => {
         const currentUser = common.getUser(roomUsers, socket.userId);
@@ -118,6 +120,25 @@ const init = (socket, roomIo, roomNumber, wsUtils) => {
             currentUser.status = sg_constant.user_status.unready;
             wsUtils.updateRoomToAll(room);
             wsUtils.chat(socket.nickname + "取消了准备");
+        }
+    });
+
+    /**
+     * 未准备的变准备,准备的变未准备
+     */
+    socket.on('readyCheck', () => {
+        const currentUser = common.getUser(roomUsers, socket.userId);
+        if (currentUser) {
+            if(sg_constant.user_status.unready === currentUser.status){
+                currentUser.status = sg_constant.user_status.ready;
+                wsUtils.chat(socket.nickname + "准备好了");
+            }else if(sg_constant.user_status.ready === currentUser.status){
+                currentUser.status = sg_constant.user_status.unready;
+                wsUtils.chat(socket.nickname + "取消了准备");
+            }
+
+            wsUtils.readyCheck(socket.userId, currentUser.status);
+
         }
     });
 

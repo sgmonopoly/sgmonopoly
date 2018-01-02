@@ -86,6 +86,9 @@ body {
       background-repeat: no-repeat;
       background-size: contain;
     }
+    .ready-pic {
+      visibility:hidden;
+    }
     display: inline-block;
     vertical-align: top;
     .name {
@@ -182,4 +185,7 @@ body {
       border:1px solid black;
     }
   }
+}
+.control{
+
 }

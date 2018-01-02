@@ -27,6 +27,11 @@ export default class LeftContainerDom extends JqueryComponent{
         super.refresh()
     }
 
+    removeAllPlayer(){
+        this.state.players = []
+        super.refresh()
+    }
+
     setPlayerValueById(vObj, id){
         this.state.players = this.state.players.map(p => {
             if(p.id === id){
@@ -39,6 +44,14 @@ export default class LeftContainerDom extends JqueryComponent{
 
     getPlayersDom(){
         return this.state.players.reduce((dom, p) => dom + p.render(), "")
+    }
+
+    getPlayer(id){
+        return this.state.players.find(p => p.id === id);
+    }
+
+    componentDidMount(){
+        this.state.players.forEach(playerDom => playerDom.componentDidMount())
     }
 
     render(){

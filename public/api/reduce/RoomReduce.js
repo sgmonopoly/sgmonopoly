@@ -3,12 +3,13 @@
  */
 import {roomAction} from "../network"
 import PlayerDom from '../../pages/room/components/PlayerDom'
+import sg_constant from "../../../services/sg_constant"
 
 /**
  * 从服务端接受请求,业务和房间相关
  */
 export default class RoomReduce {
-  constructor(socket, {playerContainer, chatContainer, gameLogContainer, infoContainer}) {
+  constructor(socket, {playerContainer, chatContainer, controlContainer, gameLogContainer, infoContainer}) {
     this.socket = socket
     this.socket.on("handshake", this.handshake.bind(this))
     this.socket.on("room", this.room.bind(this))
@@ -16,8 +17,11 @@ export default class RoomReduce {
     this.socket.on("gameLog", this.gameLog.bind(this))
     this.socket.on("errorLog", this.errorLog.bind(this))
     this.socket.on("alertLog", this.alertLog.bind(this))
+    this.socket.on("readyCheck", this.readyCheck.bind(this))
+
     this.playerContainer = playerContainer
     this.chatContainer = chatContainer
+    this.controlContainer = controlContainer
     this.gameLogContainer = gameLogContainer
     this.infoContainer = infoContainer
   }
@@ -58,10 +62,25 @@ export default class RoomReduce {
       this.infoContainer.startGameTime(now)
     }
 
-
     //domHanlder.updateRoomInfo(roomInfo);
     //domHanlder.updateGameInfo(gameInfo);
     //canvasHandler.updatePiecePosition(roomInfo.users);
+  }
+
+  /**
+   * 检查准备
+   */
+  readyCheck(userId, readyStatus) {
+    console.log("receive readyCheck:", userId, readyStatus)
+    this.playerContainer.setPlayerValueById({readyStatus}, userId)
+    const player = this.playerContainer.getPlayer(userId)
+    if(sg_constant.user_status.unready === readyStatus){
+      player.unready()
+      this.controlContainer.unready()
+    }else if(sg_constant.user_status.ready === readyStatus){
+      player.ready()
+      this.controlContainer.ready()
+    }
   }
 
   /**

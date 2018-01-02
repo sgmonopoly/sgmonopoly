@@ -12,7 +12,7 @@ import GameAction from "../../api/action/GameAction"
 import RoomReduce from "../../api/reduce/RoomReduce"
 import GameReduce from "../../api/reduce/GameReduce"
 
-let roomAction, gameAction, roomReduce, gameReduce, gameComponents
+let roomAction, gameAction, roomReduce, gameReduce
 
 /**
  * 连ws并接收ws任务

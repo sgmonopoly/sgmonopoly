@@ -4,6 +4,7 @@ import RightContainerDom from './components/RightContainerDom'
 import GameComponents from '../../api/domain/GameComponents'
 import {initNetwork} from '../../api/network'
 import {getQueryString} from '../../common/utils/router'
+import PlayerDom from "./components/PlayerDom"
 
 function initPage() {
     let lcd = new LeftContainerDom('lcd')
@@ -12,6 +13,9 @@ function initPage() {
     lcd.addToDom()
     ccd.addToDom()
     rcd.addToDom()
+
+    //测试用
+    lcd.addPlayer(new PlayerDom({id: 'id1', name: '小黄鸡', heroCount: 3, money: 2000, troops: 1000}))
 
     /*lcd.addPlayer(new PlayerDom({id: 'id1', name: '小黄鸡', heroCount: 3, money: 2000, troops: 1000}))
     lcd.addPlayer(new PlayerDom({id: 'id2', img: 'http://img1.3lian.com/2015/w3/98/d/1.jpg', name: '小黄鸭', color: 'red', heroCount: 3, money: 2000, troops: 1000}))
@@ -28,7 +32,7 @@ function initPage() {
         rcd.addLog('啦啦啦啦啦')
     }, 1000)*/
 
-    const gameComponents = new GameComponents(lcd, ccd, rcd.getState().gameLogDom, rcd.getState().chatDom)
+    const gameComponents = new GameComponents(lcd, ccd, ccd.getState().controlDom, rcd.getState().gameLogDom, rcd.getState().chatDom)
 
     //初始化网络
     const roomNo = getQueryString("roomNo");

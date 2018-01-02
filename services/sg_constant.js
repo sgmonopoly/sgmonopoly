@@ -103,6 +103,7 @@ module.exports = {
         room: "room",//房间信息
         gameLog: "gameLog",//操作日志
         handshake: "handshake",//连接成功信息
+        readyCheck: "readyCheck"//准备检查
     },
     item_count: {
         card: 54,//卡片总数量

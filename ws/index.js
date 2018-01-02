@@ -21,6 +21,7 @@ sg_constant.roomNumbers.forEach(roomNumber => {
         });
 
         const wsUtils = {
+
             /**
              * 局部
              * 全局错误日志
@@ -28,6 +29,7 @@ sg_constant.roomNumbers.forEach(roomNumber => {
             errorLog: (message) => {
                 socket.emit(sg_constant.ws_name.errorLog, message);
             },
+
             /**
              * 全局
              * 全局错误日志
@@ -35,6 +37,7 @@ sg_constant.roomNumbers.forEach(roomNumber => {
             errorLogAll: (message) => {
                 roomIo.emit(sg_constant.ws_name.errorLog, message);
             },
+
             /**
              * 局部
              * 警告日志
@@ -49,6 +52,7 @@ sg_constant.roomNumbers.forEach(roomNumber => {
             chat: (message) => {
                 roomIo.emit(sg_constant.ws_name.chat, message);
             },
+
             /**
              * 广播
              * 增加操作日志
@@ -56,6 +60,7 @@ sg_constant.roomNumbers.forEach(roomNumber => {
             gameLog: (messages) => {
                 common.addGameLog(roomIo, messages);
             },
+
             /**
              * 广播
              * 给所有人更新当前房间所有信息(包括用户),其他人触发时用
@@ -66,6 +71,14 @@ sg_constant.roomNumbers.forEach(roomNumber => {
                 const currentRoomInfo = _.omit(roomClone,"gameInfo");
                 roomIo.emit(sg_constant.ws_name.room, currentRoomInfo, currentGameInfo);
             },
+
+            /**
+             * 发送准备未准备
+             */
+            readyCheck: (userId, readyStatus) => {
+                roomIo.emit(sg_constant.ws_name.readyCheck, userId, readyStatus);
+            },
+
             /**
              * 通知前端可以显示回合结束了
              */

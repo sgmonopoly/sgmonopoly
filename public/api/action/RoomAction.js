@@ -29,6 +29,11 @@ export default class RoomAction {
     this.socket.emit("toUnready");
   }
 
+  readyCheck() {
+    console.log("send readyCheck ");
+    this.socket.emit("readyCheck");
+  }
+
   kick(kickUserId) {
     console.log("send kick ", kickUserId);
     this.socket.emit("kick", kickUserId);
