@@ -6,3 +6,4 @@ public/test/
 tmp/
 test.js
 *.css
+package-lock.json

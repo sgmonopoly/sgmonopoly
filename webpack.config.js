@@ -33,7 +33,8 @@ module.exports = {
                     'file?hash=sha512&digest=hex&name=[hash].[ext]',
                     'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
                 ]
-            }
+            },
+            { test: require.resolve("jquery"), loader: "expose-loader?$!expose-loader?jQuery" }
         ],
     },
     devtool: 'source-map', //编译时创建map文件

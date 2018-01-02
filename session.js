@@ -7,7 +7,7 @@ session = Session({
     store: new SessionStore({path: __dirname+'/tmp/sessions'}),
     secret: 'sgm',
     name: 'sgm',
-    cookie: {maxAge: 80000},
+    //cookie: {maxAge: 800000},
     resave: true,
     saveUninitialized: true,
 });

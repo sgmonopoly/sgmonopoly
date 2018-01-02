@@ -102,6 +102,20 @@ body {
       overflow:hidden;
       text-overflow:ellipsis;
     }
+    .player-pic-mask {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      filter: alpha(opacity=60);
+      background-color: #777;
+      opacity:0;
+      text-align: center;
+      .kick{
+        position: relative;
+        top: 50%;
+        cursor:pointer;
+      }
+    }
   }
   .right {
     box-sizing: border-box;

@@ -50,15 +50,15 @@ export default class RoomReduce {
             heroCount: user.heros.length,
             money: user.money,
             troop: user.troop,
-            citiesCount: user.citys.length
+            citiesCount: user.citys.length,
+            isHost: user.userId === roomInfo.hostId//确认房主
           }
         )
       )
     }
     //更新时间
-    if(gameInfo){
-      const {startTime} = gameInfo
-      const now = parseInt(new Date().getTime() / 1000) - startTime
+    if(gameInfo && gameInfo.startTime){
+      const now = parseInt(new Date().getTime() / 1000) - gameInfo.startTime
       this.infoContainer.startGameTime(now)
     }
 
