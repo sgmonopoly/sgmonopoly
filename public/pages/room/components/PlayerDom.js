@@ -54,9 +54,11 @@ export default class PlayerDom {
   }
 
   render() {
+    //房主不能踢自己
+    const kickHtml = this.isHost ? "" : `<button class="kick">踢人</button>`;
     return `<div class="player">
                     <div class="left">
-                        <div class="player-pic-mask"><button class="kick">踢人</button></div>  
+                        <div class="player-pic-mask">${kickHtml}</div>  
                         <div style="background-image:url(${this.img})" class="player-pic"></div>
                         <div class="name" style="background-color:${this.color}"><i id="ready-pic-${this.id}" class="fa fa-hand-paper-o" aria-hidden="true"></i>${this.name}</div>
                     </div><div class="right">
