@@ -19,7 +19,12 @@ export default class ControlContainerDom extends Component{
     this.startGameBtn = null
   }
 
-  componentDidMount(){
+  setState(obj = {}){
+    super.setState(obj)
+    this.refresh()
+  }
+
+  refresh(){
     this.readyBtn = $('#readyBtn')
     this.startGameBtn = $('#startGameBtn')
 
@@ -42,8 +47,10 @@ export default class ControlContainerDom extends Component{
         gameAction.startGame()
       })
     }
+  }
 
-
+  componentDidMount(){
+    this.refresh()
   }
 
   /**

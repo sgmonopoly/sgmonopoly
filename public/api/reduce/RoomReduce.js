@@ -149,8 +149,7 @@ export default class RoomReduce {
    * 设置开始游戏标志
    */
   setStartGameFlag(gameInfo){
-    const isGameStart = this.infoContainer.getSubComponent("controlDom").getState().isGameStart
-    if(gameInfo && gameInfo.startTime && !isGameStart){
+    if(gameInfo && gameInfo.startTime){
       this.infoContainer.getSubComponent("controlDom").setState({isGameStart:true})
     }
   }
