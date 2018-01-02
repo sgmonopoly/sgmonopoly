@@ -11,6 +11,10 @@ export default class Component {
         return this.state
     }
 
+    getSubComponent(){
+        return this.subComponent
+    }
+
     componentWillMount(){}
     render(){}
     componentDidMount(){}

@@ -26,11 +26,11 @@ export default class PlayerDom {
   }
 
   ready() {
-    this.readyDom.removeClass("ready-pic")
+    this.readyDom.show()
   }
 
   unready() {
-    this.readyDom.addClass("ready-pic")
+    this.readyDom.hide()
   }
 
   componentDidMount() {
@@ -51,7 +51,6 @@ export default class PlayerDom {
       )
     }
 
-
   }
 
   render() {
@@ -59,7 +58,7 @@ export default class PlayerDom {
                     <div class="left">
                         <div class="player-pic-mask"><button class="kick">踢人</button></div>  
                         <div style="background-image:url(${this.img})" class="player-pic"></div>
-                        <div class="name" style="background-color:${this.color}"><i id="ready-pic-${this.id}" class="fa fa-hand-paper-o ready-pic" aria-hidden="true"></i>${this.name}</div>
+                        <div class="name" style="background-color:${this.color}"><i id="ready-pic-${this.id}" class="fa fa-hand-paper-o" aria-hidden="true"></i>${this.name}</div>
                     </div><div class="right">
                         <div class="text">武将数: ${this.heroCount}</div>
                         <div class="text">银两: ${this.money}</div>

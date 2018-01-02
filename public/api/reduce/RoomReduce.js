@@ -41,7 +41,7 @@ export default class RoomReduce {
     console.log("receive room:", roomInfo, gameInfo)
     //更新用户
     for (const user of roomInfo.users) {
-      this.playerContainer.addPlayer(
+      this.playerContainer.mergePlayer(
         new PlayerDom({
             id: user.userId,
             img: 'http://img1.3lian.com/2015/w3/98/d/1.jpg',
@@ -111,7 +111,7 @@ export default class RoomReduce {
    * 接收警告日志
    */
   alertLog(message) {
-    //TODO 模态框显示
+    console.log("警告:", message);
   }
 
 }

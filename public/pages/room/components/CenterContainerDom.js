@@ -10,7 +10,9 @@ export default class CenterContainerDom extends JqueryComponent {
     this.state = {
       //单位是秒
       gameTime: 0,
-      leftHeroes: 0,
+      leftHeroes: 0
+    }
+    this.subComponent = {
       gameDom: new GameContainerDom(),
       controlDom: new ControlContainerDom()
     }
@@ -52,8 +54,8 @@ export default class CenterContainerDom extends JqueryComponent {
   }
 
   componentDidMount() {
-    this.state.gameDom.componentDidMount()
-    this.state.controlDom.componentDidMount()
+    this.subComponent.gameDom.componentDidMount()
+    this.subComponent.controlDom.componentDidMount()
   }
 
   render() {
@@ -63,8 +65,8 @@ export default class CenterContainerDom extends JqueryComponent {
                         </div><div class="block"><span class="left">剩余武将: <span id="leftHeroes" class="right">${this.state.leftHeroes}</span></span><span></span></div>
                     </div>
                     <div class="bottom" id="gameDiv">
-                        ${this.state.gameDom.render()}
-                        ${this.state.controlDom.render()}
+                        ${this.subComponent.gameDom.render()}
+                        ${this.subComponent.controlDom.render()}
                     </div>
                 </div>`
   }
