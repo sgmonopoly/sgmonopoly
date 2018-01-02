@@ -1,8 +1,11 @@
 import JqueryComponent from '../../../common/myreact/JqueryComponent'
 import GameContainerDom from './game/GameContainerDom'
 import ControlContainerDom from "./game/ControlContainerDom"
-
 import $ from 'jquery'
+
+/**
+ * 对应infoContainer,中间的区域
+ */
 export default class CenterContainerDom extends JqueryComponent {
 
   constructor(id) {

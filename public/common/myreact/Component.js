@@ -11,8 +11,13 @@ export default class Component {
         return this.state
     }
 
-    getSubComponent(){
-        return this.subComponent
+    getSubComponent(componentName){
+        if(!componentName){
+            return this.subComponent
+        }else{
+            return this.subComponent[componentName]
+        }
+
     }
 
     componentWillMount(){}

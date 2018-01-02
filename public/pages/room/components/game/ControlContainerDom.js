@@ -5,10 +5,16 @@ import Component from '../../../../common/myreact/Component'
 import {roomAction, gameAction} from "../../../../../public/api/network"
 import $ from 'jquery'
 
+/**
+ * 下方控制区
+ * 对应CenterContainerDom(infoContainer) 中的controlDom
+ */
 export default class ControlContainerDom extends Component{
-  constructor(){
+  constructor(isGameStart = false){
     super()
-    this.state = {}
+    this.state = {
+      isGameStart
+    }
     this.readyBtn = null
     this.startGameBtn = null
   }
@@ -16,19 +22,28 @@ export default class ControlContainerDom extends Component{
   componentDidMount(){
     this.readyBtn = $('#readyBtn')
     this.startGameBtn = $('#startGameBtn')
-    /**
-     * 绑定准备和未准备事件
-     */
-    this.readyBtn.on('click', () => {
-      roomAction.readyCheck()
-    })
 
-    /**
-     * 绑定开始游戏事件
-     */
-    this.startGameBtn.on('click', () => {
-      gameAction.startGame()
-    })
+    //开始游戏后,不显示开始游戏按钮和准备按钮
+    if(this.state.isGameStart){
+      this.readyBtn.hide()
+      this.startGameBtn.hide()
+    }else{
+      /**
+       * 绑定准备和未准备事件
+       */
+      this.readyBtn.on('click', () => {
+        roomAction.readyCheck()
+      })
+
+      /**
+       * 绑定开始游戏事件
+       */
+      this.startGameBtn.on('click', () => {
+        gameAction.startGame()
+      })
+    }
+
+
   }
 
   /**
