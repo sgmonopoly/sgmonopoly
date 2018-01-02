@@ -39,6 +39,7 @@ export default class RoomReduce {
    */
   room(roomInfo, gameInfo) {
     console.log("receive room:", roomInfo, gameInfo)
+    const removeUserIds = this.playerContainer.getAllPlayerId()
     //更新用户
     for (const user of roomInfo.users) {
       this.playerContainer.mergePlayer(
@@ -55,12 +56,13 @@ export default class RoomReduce {
           }
         )
       )
+      removeUserIds.splice(removeUserIds.findIndex(item => item === user.userId), 1)
     }
+
+    //移除已离线用户
+    this.removeOffLineUsers(removeUserIds)
     //更新时间
-    if(gameInfo && gameInfo.startTime){
-      const now = parseInt(new Date().getTime() / 1000) - gameInfo.startTime
-      this.infoContainer.startGameTime(now)
-    }
+    this.updateTime(gameInfo)
 
     //domHanlder.updateRoomInfo(roomInfo);
     //domHanlder.updateGameInfo(gameInfo);
@@ -112,6 +114,28 @@ export default class RoomReduce {
    */
   alertLog(message) {
     console.log("警告:", message);
+  }
+
+  /**
+   * 移除已离线用户
+   * @param removeUserIds
+   */
+  removeOffLineUsers(removeUserIds){
+    console.log("removeUserIds", removeUserIds)
+    if(removeUserIds && removeUserIds.length > 0){
+      this.playerContainer.removePlayer(removeUserIds)
+    }
+  }
+
+  /**
+   * 更新时间
+   * @param gameInfo
+   */
+  updateTime(gameInfo){
+    if(gameInfo && gameInfo.startTime){
+      const now = parseInt(new Date().getTime() / 1000) - gameInfo.startTime
+      this.infoContainer.startGameTime(now)
+    }
   }
 
 }

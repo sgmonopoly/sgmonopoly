@@ -21,8 +21,8 @@ export default class LeftContainerDom extends JqueryComponent {
     super.refresh()
   }
 
-  removePlayer(id) {
-    this.state.players = this.state.players.filter(p => p.id !== id)
+  removePlayer(...ids) {
+    ids.forEach(id => this.state.players = this.state.players.filter(p => p.id !== id))
     super.refresh()
   }
 
@@ -47,6 +47,10 @@ export default class LeftContainerDom extends JqueryComponent {
 
   getPlayer(id) {
     return this.state.players.find(p => p.id === id);
+  }
+
+  getAllPlayerId() {
+    return this.state.players.map(p => p.id)
   }
 
   componentDidMount() {
