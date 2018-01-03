@@ -7,5 +7,8 @@
 	gulp generate-sass
 	npm start
 
+### 首页
+[http://localhost:18080](http://localhost:18080)
+
 ### api 文档
 [http://localhost:18080/swagger/index.html](http://localhost:18080/swagger/index.html)
