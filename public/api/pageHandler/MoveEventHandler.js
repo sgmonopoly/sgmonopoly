@@ -3,9 +3,9 @@
  */
 
 import {map_info} from "../domain/MapInfo"
-import * as domHanlder from './DomHandler'
+//import * as domHanlder from './DomHandler'
 import {currentOwnerUserId} from '../domain/LocalCacheData'
-import {roomAction,gameAction} from "../network"
+import {roomAction, gameAction, gameReduce} from "../network"
 
 /**
  * 根据目标位置,作出需要的操作反馈
@@ -31,10 +31,10 @@ const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
             gameAction.inCity(endPosition);
             break;
         case 2://征兵
-            domHanlder.showBuyTroop();
+            //domHanlder.showBuyTroop();
             break;
         case 3://招将
-            domHanlder.showBuyHero();
+            //domHanlder.showBuyHero();
             break;
         case 4://游乐园
             gameAction.inPark();
@@ -53,7 +53,7 @@ const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
             break;
         case 9://赌馆
             gameAction.inBet();
-            domHanlder.showBet();
+            //domHanlder.showBet();
             break;
         case 10://紧急军情
             //调试用
@@ -81,10 +81,10 @@ const eventOverCallback = (overType) => {
             //TODO 以后做
             break;
         case 2://征兵
-            domHanlder.hideBuyTroop();
+            //domHanlder.hideBuyTroop();
             break;
         case 3://招将
-            domHanlder.hideBuyHero();
+            //domHanlder.hideBuyHero();
             break;
         case 4://游乐园
             break;
@@ -97,7 +97,7 @@ const eventOverCallback = (overType) => {
         case 8://金银岛
             break;
         case 9://赌馆
-            domHanlder.hideBet();
+            //domHanlder.hideBet();
             break;
         case 10://紧急军情
             break;
@@ -106,16 +106,16 @@ const eventOverCallback = (overType) => {
         case 12://起点
             break;
         case "buyCityOver"://购买城市结束
-            domHanlder.hideBuyCity();
+            //domHanlder.hideBuyCity();
             break;
         case "upgradeCityOver"://升级城市结束
-            domHanlder.hideUpgradeCity();
+            //domHanlder.hideUpgradeCity();
             break;
         case "payTollOver"://付过路费结束
-            domHanlder.hidePaytollOrAttack();
+            //domHanlder.hidePaytollOrAttack();
             break;
     }
-    domHanlder.showEndTurnBtn();
+    gameReduce.showEndTurnBtn();
 };
 
 export {targetPositionFeedback, eventOverCallback}

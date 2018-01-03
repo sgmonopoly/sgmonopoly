@@ -57,6 +57,7 @@ export default class RoomReduce {
           }
         )
       )
+      //移除已有的要删除的用户ID
       removeUserIds.splice(removeUserIds.findIndex(item => item === user.userId), 1)
     }
 
@@ -67,7 +68,7 @@ export default class RoomReduce {
     //更新棋子
     this.gameContainer.updatePiecePosition(roomInfo.users);
     //更新武将数
-    this.infoContainer.setLeftHeroes(gameInfo.herosOrders.length)
+    this.updateHeroNum(gameInfo)
     //设置开始游戏标志
     this.setStartGameFlag(gameInfo)
 
@@ -151,6 +152,16 @@ export default class RoomReduce {
   setStartGameFlag(gameInfo){
     if(gameInfo && gameInfo.startTime){
       this.infoContainer.getSubComponent("controlDom").setState({isGameStart:true})
+    }
+  }
+
+  /**
+   * 更新武将数
+   * @param gameInfo
+   */
+  updateHeroNum(gameInfo){
+    if(gameInfo && gameInfo.herosOrders){
+      this.infoContainer.setLeftHeroes(gameInfo.herosOrders.length)
     }
   }
 

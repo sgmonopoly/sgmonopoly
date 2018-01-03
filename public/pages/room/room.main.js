@@ -5,6 +5,7 @@ import GameComponents from '../../api/domain/GameComponents'
 import {initNetwork} from '../../api/network'
 import {getQueryString} from '../../common/utils/router'
 import PlayerDom from "./components/PlayerDom"
+import ModalDom from "./components/ModalDom"
 
 (() => {
   const lcd = new LeftContainerDom('lcd')
@@ -38,4 +39,21 @@ import PlayerDom from "./components/PlayerDom"
   //初始化网络
   const roomNo = getQueryString("roomNo");
   initNetwork(roomNo, gameComponents);
+
+  /*const test = new ModalDom({
+    message:"确定吗?",
+    options:[{
+      id:"option1",
+      name:"是",
+      cb:()=>{
+        alert("是")
+      }
+    },{
+      id:"option2",
+      name:"否",
+      cb:()=>{
+        alert("否")
+      }
+    }]
+  })*/
 })();

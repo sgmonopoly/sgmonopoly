@@ -1,4 +1,5 @@
 @import "../../common/sass/base";
+@import "../../common/sass/modal";
 body {
   background-color: #eeeeee;
   height: 100%;
@@ -202,5 +203,7 @@ body {
   }
 }
 .control{
-
+  button{
+    display: none;
+  }
 }

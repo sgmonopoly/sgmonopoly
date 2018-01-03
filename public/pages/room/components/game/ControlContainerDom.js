@@ -25,14 +25,24 @@ export default class ControlContainerDom extends Component{
   }
 
   refresh(){
-    this.readyBtn = $('#readyBtn')
-    this.startGameBtn = $('#startGameBtn')
-
     //开始游戏后,不显示开始游戏按钮和准备按钮
     if(this.state.isGameStart){
       this.readyBtn.hide()
       this.startGameBtn.hide()
+
+      /**
+       * 绑定回合结束事件
+       */
+      this.turnOverBtn.on('click', () => {
+        gameAction.endTurn()
+        this.turnOverBtn.hide()
+      })
+
     }else{
+
+      this.readyBtn.show()
+      this.startGameBtn.show()
+
       /**
        * 绑定准备和未准备事件
        */
@@ -50,6 +60,9 @@ export default class ControlContainerDom extends Component{
   }
 
   componentDidMount(){
+    this.readyBtn = $('#readyBtn')
+    this.startGameBtn = $('#startGameBtn')
+    this.turnOverBtn = $('#turnOverBtn')
     this.refresh()
   }
 
@@ -67,9 +80,14 @@ export default class ControlContainerDom extends Component{
     this.readyBtn.text("准备好了")
   }
 
+  showEndTurnBtn(){
+    this.turnOverBtn.show()
+  }
+
   render(){
     return `<div class="control">
             <button id="readyBtn">准备好了</button><button id="startGameBtn">开始游戏</button>
+            <button id="turnOverBtn">结束回合</button>
             </div>`
   }
 

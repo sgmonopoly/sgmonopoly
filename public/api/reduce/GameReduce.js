@@ -7,12 +7,13 @@ import * as canvasHandler from '../pageHandler/canvasHandler'
 import * as moveEventHandler from '../pageHandler/MoveEventHandler'
 import * as _ from 'lodash'
 import {hero_info} from "../domain/heroInfo"
+import ModalBuilder from "../common/ModalBuilder"
 
 /**
  * 从服务端接受请求,业务和游戏相关
  */
 export default class GameReduce {
-  constructor(socket) {
+  constructor(socket, {playerContainer, chatContainer, controlContainer, gameLogContainer, infoContainer, gameContainer}) {
     this.socket = socket
     this.socket.on("gameOver", this.gameOver.bind(this))
     this.socket.on("nextTurn", this.nextTurn.bind(this))
@@ -20,6 +21,13 @@ export default class GameReduce {
     this.socket.on("eventOver", this.eventOver.bind(this))
     this.socket.on("cityOwnerId", this.cityOwnerId.bind(this))
     this.socket.on("startBattle", this.startBattle.bind(this))
+
+    this.playerContainer = playerContainer
+    this.chatContainer = chatContainer
+    this.controlContainer = controlContainer
+    this.gameLogContainer = gameLogContainer
+    this.infoContainer = infoContainer
+    this.gameContainer = gameContainer
   }
 
   /**
@@ -34,24 +42,25 @@ export default class GameReduce {
    */
   nextTurn(currentTurnUser) {
     console.log("receive nextTurn ", currentTurnUser)
-    domHanlder.handleNextTurn(currentTurnUser);
+    //domHanlder.handleNextTurn(currentTurnUser);
+    if (currentTurnUser.userId === currentOwnerUserId) {
+      //如果是自己,则显示掷骰子
+      ModalBuilder.CREATE_DICE()
+    }
   }
 
   /**
    * 掷骰子结果,之后走路
    */
-  diceResultForWalk(result) {
-    console.log("receive diceResultForWalk ", result)
-    const point = result.point;
-    const userId = result.userId;
-    const midway = result.midway;
-    const offset = result.offset;
+  diceResultForWalk({point, userId, midway, offset, userInfo}) {
+
+    ModalBuilder.CLOSE()
+    console.log("receive diceResultForWalk ", {point, userId, midway, offset})
     console.log("掷骰子点数:", point, "途径", midway);
     //根据点数走路
+    this.gameContainer.movePiece(userId, _.cloneDeep(midway), offset);
 
-    canvasHandler.movePiece(userId, _.cloneDeep(midway), offset);
-
-    moveEventHandler.targetPositionFeedback(midway.shift(), midway.pop(), result.userInfo);
+    moveEventHandler.targetPositionFeedback(midway.shift(), midway.pop(), userInfo);
   }
 
   /**
@@ -103,6 +112,12 @@ export default class GameReduce {
       domHanlder.showSelectHero(battleId, getDetailHeroInfo(defUserHeros));
     }
 
+  }
+
+  //-----------------下面是只操作DOM
+
+  showEndTurnBtn(){
+    this.infoContainer.showEndTurnBtn()
   }
 
 
