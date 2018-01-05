@@ -16,7 +16,12 @@ module.exports = {
                 loader: 'babel-loader',
                 query: {
                     presets: [
-                        { "plugins": [ "transform-runtime" ] }, //async支持
+                        { 
+                            "plugins": [ 
+                                "transform-runtime",
+                                "transform-object-rest-spread"
+                            ] 
+                        },
                         'es2015',
                         'es2016',
                         'latest',
@@ -35,7 +40,12 @@ module.exports = {
                     'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
                 ]
             },
-            { test: require.resolve("jquery"), loader: "expose-loader?$!expose-loader?jQuery" }
+            { test: require.resolve("jquery"), loader: "expose-loader?$!expose-loader?jQuery" },
+            { 
+                test: /\.js$/, 
+                exclude: /node_modules/,
+                loader: 'eslint-loader'
+            }
         ],
     },
     devtool: 'source-map', //编译时创建map文件

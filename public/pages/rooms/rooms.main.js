@@ -43,19 +43,15 @@ async function init() {
 
         //增加事件
         const currentDiv = $(`#${roomNo}`)
-        currentDiv.on("click", () => {
-            enterRoom(roomNo)
-                .then(() => {
-                    //跳转
-                    open(pages.room, {roomNo})
-                })
-                .catch((err) => {
-                    alert(err.response.data)
-                    console.log(err.response.data)
-                })
+        currentDiv.on("click", async () => {
+            try{
+                await enterRoom(roomNo)
+                open(pages.room, {roomNo})
+            }catch(e){
+                alert(err.response.data)
+                console.log(err.response.data)
+            }
         })
-
-
     })
 
     //5秒刷新一次
