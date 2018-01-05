@@ -11,7 +11,7 @@ module.exports = {
         },
         "sourceType": "module"
     },
-    "parser": "babel-eslint"
+    "parser": "babel-eslint",
     "rules": {
         "strict": 0,
         "linebreak-style": [
@@ -22,6 +22,10 @@ module.exports = {
             "error",
             "never"
         ],
-        "no-console": "off"
+        "no-console": 0,
+        "no-unused-vars": 0,
+        "no-undef": 0,
+        "no-case-declarations": 0,
+        "no-extra-boolean-cast": 0
     }
 };
