@@ -1,6 +1,7 @@
 /**
  * Created by yuanxiang on 12/29/17.
  */
+'use strict'
 import Component from '../../../../common/myreact/Component'
 import {roomAction, gameAction} from "../../../../../public/api/network"
 import $ from 'jquery'

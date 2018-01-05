@@ -1,6 +1,7 @@
 /**
  * Created by yuanxiang on 1/3/18.
  */
+'use strict'
 import ModalDom from "../../pages/room/components/ModalDom"
 import {gameAction} from "../../api/network"
 /**

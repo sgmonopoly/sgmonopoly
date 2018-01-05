@@ -1,4 +1,5 @@
-var webpack = require('webpack');
+'use strict'
+var webpack = require('webpack')
 module.exports = {
     entry: require('./public/pages.config.json'),
     cache: true,
@@ -43,4 +44,4 @@ module.exports = {
             io: 'socket.io-client'
         })
     ]
-};
+}

@@ -1,3 +1,4 @@
+'use strict'
 import JqueryComponent from '../../../common/myreact/JqueryComponent'
 import GameLogDom from './GameLogDom'
 import ChatDom from './ChatDom'

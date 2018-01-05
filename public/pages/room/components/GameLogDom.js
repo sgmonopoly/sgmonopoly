@@ -1,3 +1,4 @@
+'use strict'
 import $ from 'jquery'
 import Component from '../../../common/myreact/Component'
 export default class GameLogDom extends Component {

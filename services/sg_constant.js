@@ -1,7 +1,7 @@
 /**
  * Created by yuanxiang on 2/21/17.
  */
-'use strict';
+'use strict'
 module.exports = {
     saveCheck: false,//全局安全检查,生产环境为true
     roomNamePrefix: "room",//默认返回的房间对象中,可能会包含自带属性,用这个名称来过滤房间对象
@@ -136,4 +136,4 @@ module.exports = {
         drawWithLoss: 4,//双方武将归还国库,且损失兵力
         littleBeat: 5,//双方损失兵力,输的人损失兵力,武将被俘虏
     }
-};
+}

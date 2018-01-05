@@ -1,3 +1,4 @@
+'use strict'
 import LeftContainerDom from './components/LeftContainerDom'
 import CenterContainerDom from './components/CenterContainerDom'
 import RightContainerDom from './components/RightContainerDom'
@@ -37,8 +38,8 @@ import ModalDom from "./components/ModalDom"
     rcd.getSubComponent("gameLogDom"), rcd.getSubComponent("chatDom"), ccd.getSubComponent("gameDom"))
 
   //初始化网络
-  const roomNo = getQueryString("roomNo");
-  initNetwork(roomNo, gameComponents);
+  const roomNo = getQueryString("roomNo")
+  initNetwork(roomNo, gameComponents)
 
   /*const test = new ModalDom({
     message:"确定吗?",
@@ -56,4 +57,4 @@ import ModalDom from "./components/ModalDom"
       }
     }]
   })*/
-})();
+})()

@@ -1,3 +1,4 @@
+'use strict'
 import JqueryComponent from '../../../common/myreact/JqueryComponent'
 import GameContainerDom from './game/GameContainerDom'
 import ControlContainerDom from "./game/ControlContainerDom"

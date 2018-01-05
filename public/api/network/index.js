@@ -1,10 +1,8 @@
 /**
- * Created by yuanxiang on 12/28/17.
- */
-/**
  * Created by yuanxiang on 4/21/17.
  * 这个用来连接ws
  */
+'use strict'
 import {enterRoom} from '../../api/rest/rooms'
 
 import RoomAction from "../../api/action/RoomAction"

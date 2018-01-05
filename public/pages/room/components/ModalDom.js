@@ -1,7 +1,8 @@
 /**
  * Created by yuanxiang on 1/2/18.
  */
-import $ from 'jquery'
+'use strict'
+ import $ from 'jquery'
 
 export default class ModalDom {
   /**
@@ -27,11 +28,11 @@ export default class ModalDom {
    * 开启modal
    */
   open() {
-    $('.cd-popup').addClass('is-visible');
+    $('.cd-popup').addClass('is-visible')
   }
 
   close() {
-    $('.cd-popup').removeClass('is-visible');
+    $('.cd-popup').removeClass('is-visible')
   }
 
   /**

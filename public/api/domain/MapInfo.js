@@ -1,5 +1,6 @@
+'use strict'
 import * as map_info_backend from '../../../models/map_info'
-export const map_info = map_info_backend;
+export const map_info = map_info_backend
 /*
 {
     "1": {"stageId": 1, "stageType": 12, "picPath": "", "stageName": "起点"},
@@ -358,5 +359,5 @@ export const map_info = map_info_backend;
         "tax3": 2000
     },
     "56": {"stageId": 56, "stageType": 6, "picPath": "", "stageName": "缴税"}
-};
+}
 */

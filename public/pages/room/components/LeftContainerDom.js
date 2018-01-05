@@ -1,3 +1,4 @@
+'use strict'
 import JqueryComponent from '../../../common/myreact/JqueryComponent'
 
 export default class LeftContainerDom extends JqueryComponent {
@@ -46,7 +47,7 @@ export default class LeftContainerDom extends JqueryComponent {
   }
 
   getPlayer(id) {
-    return this.state.players.find(p => p.id === id);
+    return this.state.players.find(p => p.id === id)
   }
 
   getAllPlayerIds() {

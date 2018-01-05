@@ -1,22 +1,22 @@
 /**
  * Created by yuanxiang on 2/21/17.
  */
-'use strict';
+'use strict'
 /**
  * 所有地图上节点的基类
  */
 class SG_Stage{
     constructor(stageId,_stageType,_stageName,_des){
-        this.stageId = stageId;//序列号
+        this.stageId = stageId//序列号
         /*
         1城池,2征兵,3招将,4游乐园,5按摩院,
         6缴税,7茅庐,8金银岛,9赌馆,
         10紧急军情,11锦囊妙计,12起点
          */
-        this.stageType = _stageType;
-        this.picPath = "";
-        this.stageName = _stageName;
-        this.des = _des;
+        this.stageType = _stageType
+        this.picPath = ""
+        this.stageName = _stageName
+        this.des = _des
     }
 }
-module.exports = SG_Stage;
+module.exports = SG_Stage

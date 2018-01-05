@@ -1,6 +1,7 @@
 /**
  * Created by yuanxiang on 12/28/17.
  */
+'use strict'
 import Component from './Component'
 import $ from 'jquery'
 export default class JqueryComponent extends Component{

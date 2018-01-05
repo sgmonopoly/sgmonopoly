@@ -1,6 +1,7 @@
 /**
  * Created by yuanxiang on 12/28/17.
  */
+'use strict'
 import {roomAction} from "../network"
 import PlayerDom from '../../pages/room/components/PlayerDom'
 import sg_constant from "../../../services/sg_constant"
@@ -31,8 +32,8 @@ export default class RoomReduce {
    * WS连接握手通知,并直接发送进入房间的消息
    */
   handshake(message) {
-    console.log("receive handshake:", message);
-    roomAction.enterGameRoom();
+    console.log("receive handshake:", message)
+    roomAction.enterGameRoom()
   }
 
   /**
@@ -66,15 +67,15 @@ export default class RoomReduce {
     //更新时间
     this.updateTime(gameInfo)
     //更新棋子
-    this.gameContainer.updatePiecePosition(roomInfo.users);
+    this.gameContainer.updatePiecePosition(roomInfo.users)
     //更新武将数
     this.updateHeroNum(gameInfo)
     //设置开始游戏标志
     this.setStartGameFlag(gameInfo)
 
-    //domHanlder.updateRoomInfo(roomInfo);
-    //domHanlder.updateGameInfo(gameInfo);
-    //canvasHandler.updatePiecePosition(roomInfo.users);
+    //domHanlder.updateRoomInfo(roomInfo)
+    //domHanlder.updateGameInfo(gameInfo)
+    //canvasHandler.updatePiecePosition(roomInfo.users)
   }
 
   /**
@@ -99,16 +100,16 @@ export default class RoomReduce {
   chat(message) {
     console.log("receive chat:", message)
     this.chatContainer.addMessage(message)
-    //domHanlder.addChatLog(message);
+    //domHanlder.addChatLog(message)
   }
 
   /**
    * 接收游戏日志
    */
   gameLog(message) {
-    console.log("receive gameLog:", message);
+    console.log("receive gameLog:", message)
     this.gameLogContainer.addLog(message)
-    //domHanlder.addGameLog(message);
+    //domHanlder.addGameLog(message)
   }
 
   /**
@@ -121,7 +122,7 @@ export default class RoomReduce {
    * 接收警告日志
    */
   alertLog(message) {
-    console.log("警告:", message);
+    console.log("警告:", message)
   }
 
   /**

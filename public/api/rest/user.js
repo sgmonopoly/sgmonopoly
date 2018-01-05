@@ -1,9 +1,10 @@
-import axios from 'axios';
+'use strict'
+import axios from 'axios'
 
 export function userLogin(nickname) {
     return axios.post('/user/login', {
         nickname: nickname
-    });
+    })
 }
 
 export function register(nickname = '', avatar = '', password = '') {
@@ -11,5 +12,5 @@ export function register(nickname = '', avatar = '', password = '') {
         nickname: nickname,
         avatar: avatar,
         password: password
-    });
+    })
 }

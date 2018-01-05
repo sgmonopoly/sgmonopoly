@@ -1,7 +1,7 @@
 /**
  * Created by yuanxiang on 6/14/17.
  */
-
+'use strict'
 import {map_info} from "../domain/MapInfo"
 //import * as domHanlder from './DomHandler'
 import {currentOwnerUserId} from '../domain/LocalCacheData'
@@ -14,108 +14,108 @@ import {roomAction, gameAction, gameReduce} from "../network"
  * @param userInfo
  */
 const targetPositionFeedback = (startPosition, endPosition, userInfo) => {
-    console.log('targetPositionFeedback', endPosition, userInfo);
+    console.log('targetPositionFeedback', endPosition, userInfo)
     if (currentOwnerUserId !== userInfo.userId) {
         //只对当前玩家生效
-        return;
+        return
     }
-    const city = map_info[endPosition];
+    const city = map_info[endPosition]
 
     if(startPosition > endPosition && endPosition != 1){
         //如果过了起点,且终点并不是起点,给2000
-        gameAction.passByStart();
+        gameAction.passByStart()
     }
 
     switch (city.stageType) {
         case 1://城池
-            gameAction.inCity(endPosition);
-            break;
+            gameAction.inCity(endPosition)
+            break
         case 2://征兵
-            //domHanlder.showBuyTroop();
-            break;
+            //domHanlder.showBuyTroop()
+            break
         case 3://招将
-            //domHanlder.showBuyHero();
-            break;
+            //domHanlder.showBuyHero()
+            break
         case 4://游乐园
-            gameAction.inPark();
-            break;
+            gameAction.inPark()
+            break
         case 5://按摩院
-            gameAction.inMassage();
-            break;
+            gameAction.inMassage()
+            break
         case 6://缴税
-            gameAction.inTax();
-            break;
+            gameAction.inTax()
+            break
         case 7://茅庐
-            gameAction.inCottage();
-            break;
+            gameAction.inCottage()
+            break
         case 8://金银岛
-            gameAction.inIsland();
-            break;
+            gameAction.inIsland()
+            break
         case 9://赌馆
-            gameAction.inBet();
-            //domHanlder.showBet();
-            break;
+            gameAction.inBet()
+            //domHanlder.showBet()
+            break
         case 10://紧急军情
             //调试用
-            const defaultSituation = domHanlder.getDefaultSituation();
-            gameAction.inSituation(defaultSituation);
-            break;
+            const defaultSituation = domHanlder.getDefaultSituation()
+            gameAction.inSituation(defaultSituation)
+            break
         case 11://锦囊妙计
             const defaultSuggestion = domHanlder.getDefaultSuggestion()
-            gameAction.inSuggestion(defaultSuggestion);
-            break;
+            gameAction.inSuggestion(defaultSuggestion)
+            break
         case 12://起点
-            gameAction.inStart();
-            break;
+            gameAction.inStart()
+            break
     }
 
-};
+}
 /**
  * 后端通知前端任务结束时,调用的回调
  * @param overType
  */
 const eventOverCallback = (overType) => {
-    console.log('eventOverCallback', overType);
+    console.log('eventOverCallback', overType)
     switch (overType) {
         case 1://城池
             //TODO 以后做
-            break;
+            break
         case 2://征兵
-            //domHanlder.hideBuyTroop();
-            break;
+            //domHanlder.hideBuyTroop()
+            break
         case 3://招将
-            //domHanlder.hideBuyHero();
-            break;
+            //domHanlder.hideBuyHero()
+            break
         case 4://游乐园
-            break;
+            break
         case 5://按摩院
-            break;
+            break
         case 6://缴税
-            break;
+            break
         case 7://茅庐
-            break;
+            break
         case 8://金银岛
-            break;
+            break
         case 9://赌馆
-            //domHanlder.hideBet();
-            break;
+            //domHanlder.hideBet()
+            break
         case 10://紧急军情
-            break;
+            break
         case 11://锦囊妙计
-            break;
+            break
         case 12://起点
-            break;
+            break
         case "buyCityOver"://购买城市结束
-            //domHanlder.hideBuyCity();
-            break;
+            //domHanlder.hideBuyCity()
+            break
         case "upgradeCityOver"://升级城市结束
-            //domHanlder.hideUpgradeCity();
-            break;
+            //domHanlder.hideUpgradeCity()
+            break
         case "payTollOver"://付过路费结束
-            //domHanlder.hidePaytollOrAttack();
-            break;
+            //domHanlder.hidePaytollOrAttack()
+            break
     }
-    gameReduce.showEndTurnBtn();
-};
+    gameReduce.showEndTurnBtn()
+}
 
 export {targetPositionFeedback, eventOverCallback}

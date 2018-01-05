@@ -1,3 +1,4 @@
+'use strict'
 import $ from 'jquery'
 import sg_constant from "../../../../services/sg_constant"
 
@@ -55,7 +56,7 @@ export default class PlayerDom {
 
   render() {
     //房主不能踢自己
-    const kickHtml = this.isHost ? "" : `<button class="kick">踢人</button>`;
+    const kickHtml = this.isHost ? "" : `<button class="kick">踢人</button>`
     return `<div class="player">
                     <div class="left">
                         <div class="player-pic-mask">${kickHtml}</div>  

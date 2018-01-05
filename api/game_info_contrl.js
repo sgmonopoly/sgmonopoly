@@ -1,27 +1,27 @@
 /**
  * Created by yuanxiang on 2/21/17.
  */
-'use strict';
-const mapInfo = require("../models/map_info");
-const heroInfo = require("../models/hero_info");
-const situationInfo = require("../models/situation_info");
-const suggestionInfo = require("../models/suggestion_info");
+'use strict'
+const mapInfo = require("../models/map_info")
+const heroInfo = require("../models/hero_info")
+const situationInfo = require("../models/situation_info")
+const suggestionInfo = require("../models/suggestion_info")
 /**
  * 基本的地图信息
  * @param req
  * @param res
  */
 exports.mapInfo = (req, res) => {
-    res.send(mapInfo);
-};
+    res.send(mapInfo)
+}
 /**
  * 基本的卡片信息
  * @param req
  * @param res
  */
 exports.heroInfo = (req, res) => {
-    res.send(heroInfo);
-};
+    res.send(heroInfo)
+}
 
 /**
  * 基本的紧急军情信息
@@ -29,8 +29,8 @@ exports.heroInfo = (req, res) => {
  * @param res
  */
 exports.situationInfo = (req, res) => {
-    res.send(situationInfo);
-};
+    res.send(situationInfo)
+}
 
 /**
  * 基本的锦囊妙计信息
@@ -38,5 +38,5 @@ exports.situationInfo = (req, res) => {
  * @param res
  */
 exports.suggestionInfo = (req, res) => {
-    res.send(suggestionInfo);
-};
+    res.send(suggestionInfo)
+}

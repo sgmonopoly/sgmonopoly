@@ -1,6 +1,7 @@
 /**
  * Created by yuanxiang on 4/1/17.
  */
+'use strict'
 export const game_constants = {
   /**
    * 整体缩放系数
@@ -43,4 +44,4 @@ export const game_constants = {
     11: "#005CB8",//锦囊妙计
     12: "#000000"//起点
   }
-};
+}

@@ -4,6 +4,7 @@
 /**
  * 将游戏的所有页面组件汇总在这里
  */
+'use strict'
 export default class GameComponents {
   constructor(playerContainer, infoContainer, controlContainer, gameLogContainer, chatContainer, gameContainer) {
     this.playerContainer = playerContainer

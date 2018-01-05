@@ -1,9 +1,10 @@
 /**
  * Created by yuanxiang on 7/4/17.
  */
+'use strict'
 import * as hero_info_backend from '../../../models/hero_info'
 
-export const hero_info = hero_info_backend;
+export const hero_info = hero_info_backend
 /*
 {
     "1": {
@@ -654,5 +655,5 @@ export const hero_info = hero_info_backend;
         "picPath": "",
         "des": ""
     }
-};
+}
 */

@@ -1,8 +1,9 @@
 /**
  * Created by yuanxiang on 12/28/17.
  */
+'use strict'
 import {currentOwnerUserId} from '../domain/LocalCacheData'
-import * as domHanlder from '../pageHandler/DomHandler'
+//import * as domHanlder from '../pageHandler/DomHandler'
 import * as canvasHandler from '../pageHandler/canvasHandler'
 import * as moveEventHandler from '../pageHandler/MoveEventHandler'
 import * as _ from 'lodash'
@@ -34,7 +35,7 @@ export default class GameReduce {
    * 游戏结束
    */
   gameOver() {
-    alert("游戏结束");
+    alert("游戏结束")
   }
 
   /**
@@ -42,7 +43,7 @@ export default class GameReduce {
    */
   nextTurn(currentTurnUser) {
     console.log("receive nextTurn ", currentTurnUser)
-    //domHanlder.handleNextTurn(currentTurnUser);
+    //domHanlder.handleNextTurn(currentTurnUser)
     if (currentTurnUser.userId === currentOwnerUserId) {
       //如果是自己,则显示掷骰子
       ModalBuilder.CREATE_DICE()
@@ -56,11 +57,11 @@ export default class GameReduce {
 
     ModalBuilder.CLOSE()
     console.log("receive diceResultForWalk ", {point, userId, midway, offset})
-    console.log("掷骰子点数:", point, "途径", midway);
+    console.log("掷骰子点数:", point, "途径", midway)
     //根据点数走路
-    this.gameContainer.movePiece(userId, _.cloneDeep(midway), offset);
+    this.gameContainer.movePiece(userId, _.cloneDeep(midway), offset)
 
-    moveEventHandler.targetPositionFeedback(midway.shift(), midway.pop(), userInfo);
+    moveEventHandler.targetPositionFeedback(midway.shift(), midway.pop(), userInfo)
   }
 
   /**
@@ -68,7 +69,7 @@ export default class GameReduce {
    */
   eventOver(overType) {
     console.log("receive eventOver ", overType)
-    moveEventHandler.eventOverCallback(overType);
+    moveEventHandler.eventOverCallback(overType)
   }
 
   /**
@@ -78,15 +79,15 @@ export default class GameReduce {
     console.log("receive cityOwnerId ", cityId, cityName, ownerId, ownerName, toll)
     if (!ownerId) {
       //空城,显示是否购买
-      domHanlder.showBuyCity(cityId, cityName);
+      //domHanlder.showBuyCity(cityId, cityName)
     } else if (ownerId === currentOwnerUserId) {
       //自己的城,显示是否升级
-      domHanlder.showUpgradeCity(cityId, cityName);
+      //domHanlder.showUpgradeCity(cityId, cityName)
     } else {
       //弹出选择付过路费,或者 攻打(攻打暂时不做)
-      domHanlder.showPaytollOrAttack({
+      /*domHanlder.showPaytollOrAttack({
         cityId, cityName, ownerName, toll
-      });
+      })*/
     }
   }
 
@@ -97,19 +98,19 @@ export default class GameReduce {
   startBattle({battleId, atkUserId, defUserId, atkUserHeros, defUserHeros}) {
     console.log("receive startBattle ", battleId, atkUserId, defUserId, atkUserHeros, defUserHeros)
     const getDetailHeroInfo = (heroIds) => {
-      const detailHeros = [];
+      const detailHeros = []
       heroIds.forEach(heroId => {
-        detailHeros.push(hero_info[heroId]);
-      });
-      return detailHeros;
-    };
+        detailHeros.push(hero_info[heroId])
+      })
+      return detailHeros
+    }
 
     if (currentOwnerUserId === atkUserId) {
-      console.log("startBattle atkHeros", atkUserHeros);
-      domHanlder.showSelectHero(battleId, getDetailHeroInfo(atkUserHeros));
+      console.log("startBattle atkHeros", atkUserHeros)
+      //domHanlder.showSelectHero(battleId, getDetailHeroInfo(atkUserHeros))
     } else if (currentOwnerUserId === defUserId) {
-      console.log("startBattle defHeros", defUserHeros);
-      domHanlder.showSelectHero(battleId, getDetailHeroInfo(defUserHeros));
+      console.log("startBattle defHeros", defUserHeros)
+      //domHanlder.showSelectHero(battleId, getDetailHeroInfo(defUserHeros))
     }
 
   }

@@ -1,3 +1,4 @@
+'use strict'
 import $ from 'jquery'
 import Component from '../../../common/myreact/Component'
 import {roomAction} from "../../../../public/api/network"
@@ -51,16 +52,16 @@ export default class ChatDom extends Component {
      * 绑定发送聊天事件
      */
     sendBtn.on('click', () => {
-      const message = sendContent.val();
+      const message = sendContent.val()
       if (message) {
-        roomAction.addChatMessage(message);
+        roomAction.addChatMessage(message)
       }
-      sendContent.val("");
-    });
+      sendContent.val("")
+    })
     //回车事件
     sendContent.on('keydown', event => {
       if(event.keyCode == "13") sendBtn.click()
-    });
+    })
   }
 
   render() {
