@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "8"
+before_script:
+  - npm install -g gulp-cli
+before_install:
+  - npm install
+cache:
+  directories:
+    - "node_modules"
+script: 
+  - gulp generate-web
+  - gulp generate-sass
