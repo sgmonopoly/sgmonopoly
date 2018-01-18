@@ -29,10 +29,6 @@ const initChessBoard = (domId = 'game', canvasWidth = ww) => {
     canvas = document.getElementById(domId)
     canvas.width = canvasWidth//parseInt(ww * game_constants.global_scale)//这里要乘以一个整体缩放系数
     canvas.height = parseInt(canvas.width / 1.625)
-    console.log("ww ", ww)
-    console.log("wh ", wh)
-    console.log("canvas.width ", canvas.width)
-    console.log("canvas.height ", canvas.height)
     //创建舞台
     stage = new cjs.Stage(canvas)
     container1 = new cjs.Container()//绘制第1层容器
@@ -47,7 +43,7 @@ const initChessBoard = (domId = 'game', canvasWidth = ww) => {
     const marginSpace = 5//每格之间间隙
     const minBoard = canvas.width > canvas.height ? canvas.height : canvas.width
     const boardLength = parseInt(minBoard / verticalCount) - marginSpace * 2
-    console.log("boardLength ", boardLength)
+    //console.log("boardLength ", boardLength)
 
     const w = boardLength * 2,
         h = boardLength
@@ -55,8 +51,8 @@ const initChessBoard = (domId = 'game', canvasWidth = ww) => {
     const allGameStageWidth = horizontalCount * w + (horizontalCount - 1) * 2 * marginSpace
     const allMarginLeft = (canvas.width - allGameStageWidth ) / 2 - marginSpace//为了居中,算出左边间隙
 
-    console.log("allGameStageWidth:", allGameStageWidth)
-    console.log("allMarginLeft:", allMarginLeft)
+    //console.log("allGameStageWidth:", allGameStageWidth)
+    //console.log("allMarginLeft:", allMarginLeft)
 
     let gameStageIndex = 1
     //算出所有shape的坐标参数

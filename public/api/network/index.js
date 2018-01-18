@@ -19,8 +19,6 @@ let roomAction, gameAction, roomReduce, gameReduce
  */
 const initNetwork = async(roomId, gameComponents) => {
 
-  console.log(`roomId:${roomId}`)
-
   //为了解决进入游戏后,刷新出错的问题,这里也执行一次enterRoom方法
   try {
     await enterRoom(roomId)
@@ -30,7 +28,7 @@ const initNetwork = async(roomId, gameComponents) => {
 
   const socket = io("/room/" + roomId)
 
-  console.log("前端连接初始化成功")
+  console.log("roomId:${roomId}, 前端连接初始化成功")
 
   roomAction = new RoomAction(socket)
   gameAction = new GameAction(socket)

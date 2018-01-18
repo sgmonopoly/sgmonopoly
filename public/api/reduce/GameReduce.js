@@ -4,7 +4,7 @@
 'use strict'
 import {currentOwnerUserId} from '../domain/LocalCacheData'
 //import * as domHanlder from '../pageHandler/DomHandler'
-import * as canvasHandler from '../pageHandler/canvasHandler'
+//import * as canvasHandler from '../pageHandler/canvasHandler'
 import * as moveEventHandler from '../pageHandler/MoveEventHandler'
 import * as _ from 'lodash'
 import {hero_info} from "../domain/heroInfo"
