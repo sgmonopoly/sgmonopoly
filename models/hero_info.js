@@ -284,7 +284,7 @@ hero_info[count++] = hero
 hero = new SG_Hero(count, "霸王卡", sg_constant.hero_suit.bigKing, i, sg_constant.point2info[i].a, sg_constant.point2info[i].d,
     sg_constant.hero_type.bigboss, null, "", "")
 hero_info[count++] = hero
-
-//console.log(JSON.stringify(hero_info))
+console.log(111111111)
+console.log(JSON.stringify(hero_info))
 
 module.exports = hero_info
