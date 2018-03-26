@@ -13,6 +13,7 @@ sg_constant.roomNumbers.forEach(roomNumber => {
     //让websocket也能用express的session中间件
     roomIo.use(ios(session))
     roomIo.on('connection', (socket) => {
+        console.log("有用户链接")
         //成功连接握手,发送一条信息
         socket.emit(sg_constant.ws_name.handshake, "success connected server")
 
